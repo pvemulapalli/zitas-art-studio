@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Node dependencies
+node_modules/
+
+# Shopify CLI / local tooling
+.shopify/
+
+# Editors
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.swp
+
+# High-resolution/private reference assets
+references/private/
+references/artwork-hires/
