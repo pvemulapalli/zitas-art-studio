@@ -25,6 +25,18 @@ She wants the redesigned storefront to feel:
 
 The site should still remain easy to shop and easy for Ranjeeta to manage.
 
+### Primary emotional objective
+
+**Confirmed preference (September 2026):** If Ranjeeta must choose one primary feeling for the site, it is **Inspired**.
+
+Other qualities discussed — calm, curious, reflective, energized, transported, intimate, sophisticated, welcoming, bold and peaceful — can all be relevant, but **Inspired** is the primary emotional objective.
+
+### Atmospheric reference
+
+**Confirmed preference (September 2026):** Ranjeeta prefers the overall **feeling of Dimitra Milan** over Rinske Douna: *"I really like the feeling of Dimitra, it is way more appealing."*
+
+This is an atmospheric/emotional reference preference, not a request to copy Dimitra's palette or layouts wholesale.
+
 ### Platform constraint
 
 Ranjeeta currently uses Shopify's Basic plan.
@@ -64,20 +76,33 @@ She likes the feeling this creates but does **not** want Zita to simply use Dimi
 
 She also likes Rinske's use of green, beige, and related neutral shades rather than continuous white backgrounds.
 
+### Brand-reference artwork
+
+**Confirmed preference (September 2026):** Ranjeeta selected **Vaayu - Air** as the best representation of how she wants the website to feel:
+
+https://www.zitasartstudio.com/products/perfect-storm?variant=37178945798331
+
 ### Direction for Zita
 
-Ranjeeta uses a significant amount of blue in her artwork.
+**Confirmed preference (September 2026):** Ranjeeta does **not** want Dimitra's color palette. She specifically suggested a nature-inspired **teal** direction: *"we can use a different palette, like Teal as that will go with my nature inspired art."*
 
-The likely direction is therefore a palette derived from Zita's artwork, potentially using:
+**Design interpretation / hypothesis:** The palette should be derived from Ranjeeta's artwork and nature-inspired identity. Teal is a strong candidate. Blue, teal, blue-grey, and warm sand/copper/gold neutrals may still be explored because they arise from her work — but the direction is no longer "blue-only."
 
-- deep blue/navy
-- softer blue tones
-- pale blue-gray or blue-tinted neutrals
-- complementary warm neutrals where appropriate
-
-Final colors have not yet been selected.
+**Still pending:** Exact final colors are not selected and should be confirmed after artwork sampling during the design brief/prototype phase.
 
 The palette should feel sophisticated and artistic while maintaining strong accessibility contrast.
+
+### Dark tonal sections
+
+**Confirmed preference (September 2026):** *"It will be harder to work with a dark palette, but I'm open to it if it looks good."*
+
+Therefore:
+
+- dark/navy/indigo/teal sections are allowed for design exploration
+- a predominantly dark website is **not** a confirmed requirement
+- final use should depend on whether it works visually with the artwork
+
+**Still pending:** Exact amount and location of dark tonal sections.
 
 ---
 
@@ -126,13 +151,15 @@ This is an important preference.
 
 Ranjeeta likes product imagery where:
 
-1. the artwork is shown cleanly at a consistent/fixed presentation size
+1. the artwork is shown cleanly within a consistent presentation frame/canvas (without cropping away meaningful artwork)
 2. a secondary image shows the artwork displayed on a wall or in a room
 3. desktop hover reveals the room/context image
 
 She specifically noticed and liked this behavior on Dimitra Milan's site.
 
-Ranjeeta is already using room/context photography for some of her existing products.
+**Confirmed preference (September 2026):** Room/context photography **already exists for many products**, particularly in [Walking the Trail](https://www.zitasartstudio.com/collections/walking-the-trail). Do not treat room photography as missing across the catalogue.
+
+**Confirmed problem (September 2026):** Ranjeeta specifically identified **inconsistent source-image aspect ratios** as a current problem the redesign must address.
 
 ### Likely Zita requirement
 
@@ -145,6 +172,8 @@ Where appropriate, product media should follow a consistent convention such as:
 Desktop product cards may use primary-image → room-view hover behavior.
 
 Mobile must have an equivalent solution because hover is unavailable.
+
+**Design interpretation / hypothesis:** Consistency should not require cropping away meaningful artwork. Explore a consistent presentation frame/canvas while preserving the complete artwork using techniques such as contain-style presentation.
 
 ---
 
@@ -180,9 +209,13 @@ Reference behavior from Dimitra and Rinske should inform this, but Zita's final 
 
 ### Series / collections
 
-Rinske Douna's use of named series/collections is potentially relevant.
+**Confirmed preference (September 2026):** Ranjeeta genuinely works in series. **Walking the Trail** remains an active series she is still creating work for. She also has newer series that are not yet substantial enough to feature prominently.
 
-Need to confirm how Ranjeeta currently organizes her work and whether her artistic practice naturally uses series.
+**Confirmed preference:** Only approximately **2–3 active series** should be foregrounded on the website at a time. Older/current series such as BlackWhiteandGrey or Elements may later be swapped out for newer bodies of work as her practice evolves.
+
+**Confirmed preference:** The numeric prefixes in existing collection names (`1.`, `2.`, `3.`, `4.`) are **not** part of her desired collection names. They exist only because she did not know another way to control Shopify collection ordering and did not want them alphabetized.
+
+**Design interpretation / hypothesis:** Future Shopify architecture/navigation should control ordering without polluting public collection titles. Final collection/series ordering should be owner-manageable where practical.
 
 ---
 
@@ -201,11 +234,26 @@ Important areas:
 - number of columns
 - product-card information
 
+### PLP preference — resolved (September 2026)
+
+**Confirmed preference:** Ranjeeta prefers **Rinske Douna's artwork-first PLP approach** over Dimitra Milan's persistent-filter-sidebar layout.
+
+She wants:
+
+- artwork to get most of the browser width
+- approximately **3 artwork columns on desktop** (preferred baseline, not a rigid rule across every viewport or composition)
+- filters accessed through a **Filter & Sort** control instead of permanently occupying a left sidebar
+- a presentation that feels closer to a gallery than a dense ecommerce catalogue
+
+This is Ranjeeta's explicit preference. The final Zita implementation does **not** need to literally copy Rinske's layout.
+
+**Design interpretation / hypothesis:** Because Zita is expected to feature a relatively small catalogue and only 2–3 active series at a time, an artwork-first PLP with on-demand filters is likely more appropriate than permanently visible desktop facets. This should still be validated during prototype testing. A Zita-specific variation and responsive/editorial deviations remain open to exploration.
+
 ### Faceted filtering
 
-Ranjeeta particularly likes Dimitra Milan's easily visible filtering experience.
-
 Shopify's native Search & Discovery functionality should be investigated first before considering a third-party filtering app.
+
+**Confirmed preference (September 2026):** On-demand/collapsed filters are preferred over a permanently visible sidebar. (This supersedes earlier notes of interest in Dimitra's easily visible filtering experience for the PLP context.)
 
 Potential useful filters may include:
 
@@ -219,20 +267,6 @@ Potential useful filters may include:
 
 The final filter set must be based on Zita's actual product taxonomy rather than copied from either reference site.
 
-### Open question
-
-Ranjeeta is deciding whether she prefers:
-
-- Rinske's product listing presentation
-- Dimitra's product listing presentation
-
-Questions still pending:
-
-- Does she prefer visible filters or a collapsed/hidden filter interface?
-- Does she prefer a 2-column or 3-column desktop artwork layout?
-
-We should also explore a third, Zita-specific collection layout rather than limiting the decision to the two reference sites.
-
 ---
 
 ## 9. Product Detail Pages
@@ -245,6 +279,16 @@ Potentially separate Shopify templates should be explored for:
 
 - Original Artwork
 - Prints
+
+### Sold artwork
+
+**Confirmed preference (September 2026):** Sold artworks should **remain visible** on the website.
+
+Likely goals:
+
+- preserve sold works as part of her artistic body of work / archive
+- clearly distinguish them from currently purchasable work
+- do not simply remove sold originals from the storefront experience
 
 ### Original artwork
 
@@ -336,6 +380,18 @@ Ranjeeta does **not** want to provide a physical address.
 
 She also wants to retain a contact form.
 
+### Approved public business contact details
+
+**Confirmed preference (September 2026):** Ranjeeta explicitly provided and approved these business contact details for use on the Contact page:
+
+- **Email:** ranjeeta.shroff@gmail.com
+- **Google Voice business phone:** 469-850-0196
+- **Physical address:** do **not** publish one
+
+These are approved **public business contact details**.
+
+**Still pending:** Whether Ranjeeta wants a response-time promise on the Contact page. Do not invent one.
+
 ### Desired direction
 
 The page should feel more personal and inviting than the current Zita contact page.
@@ -343,11 +399,9 @@ The page should feel more personal and inviting than the current Zita contact pa
 Possible elements to explore:
 
 - a warm personal invitation to contact her
-- email
-- phone
+- email and phone (see approved details above)
 - simple form
 - potentially a photograph of Ranjeeta or studio
-- clear response expectation
 - optional reason-for-contact selector
 
 The form should remain simple.
@@ -408,6 +462,17 @@ Ranjeeta should be able to manage normal articles through Shopify.
 
 Ranjeeta currently has an Exhibitions page but feels it is boring and visually flat.
 
+**Confirmed preference (September 2026):** Exhibition history and recognition **can** be highlighted: *"we can highlight them in some way."*
+
+This gives permission to surface:
+
+- Curator's Choice recognition
+- juried/international selections
+- exhibitions
+- other meaningful career milestones
+
+**Design interpretation / hypothesis:** Credentials should not dominate the visual identity. Recognition should be integrated selectively and tastefully into Homepage / About / Exhibitions / relevant artwork contexts rather than turning the site into a résumé.
+
 She wants a more compelling way to present:
 
 - upcoming exhibitions
@@ -466,15 +531,20 @@ Zita's policy content must reflect Ranjeeta's actual business, fulfillment, ship
 
 ## 16. Reference-Site Preference Summary
 
+**Confirmed preference (September 2026):**
+
+- **Dimitra Milan** — preferred overall **atmosphere / emotional reference**
+- **Rinske Douna** — preferred **PLP / artwork-listing approach**
+
+These are complementary reference roles, not a single-site template.
+
 ### Dimitra Milan — strongest likes
 
-- overall high-end/gallery feeling
+- overall high-end/gallery feeling *(preferred atmospheric reference)*
 - layered background colors rather than all-white pages
-- red announcement / white navigation / light blush page layering concept
+- red announcement / white navigation / light blush page layering concept *(layering idea only — not Dimitra's palette)*
 - Tenor Sans + Alegreya typography
 - artistic About page
-- visible collection filtering
-- collection/product presentation
 - artwork → room-view hover imagery
 - simple Contact page
 - simple policy-page layout
@@ -482,14 +552,15 @@ Zita's policy content must reflect Ranjeeta's actual business, fulfillment, ship
 
 ### Rinske Douna — strongest likes
 
+- artwork-first PLP / collection listing *(preferred PLP reference)*
+- on-demand Filter & Sort rather than persistent sidebar
+- approximately 3-column desktop artwork presentation
 - simple readable logo/wordmark
 - artwork/room presentation
 - multiple non-white background tones
 - newsletter visibility
 - News/Blog functionality
 - clean visual restraint
-
-Still awaiting Ranjeeta's final preference regarding Rinske versus Dimitra collection/product listing treatment.
 
 ---
 
@@ -499,51 +570,71 @@ These are hypotheses derived from Ranjeeta's feedback and should be validated du
 
 ### Likely direction
 
+- primary emotional outcome: **Inspired**
+- nature-derived **teal** is a strong palette candidate (artwork-derived palette overall)
+- Dimitra-like richness/layering without copying Dimitra's palette
 - artwork should dominate
 - the interface should be visually quiet
 - white should not be the only background
-- blue should probably become the primary family for Zita's identity
+- dark/navy/indigo/teal sections may be explored where they work with the artwork
 - typography should carry a substantial part of the luxury/high-end feeling
 - layout should use generous spacing
-- product photography should consistently include room/context imagery
+- artwork-first wide PLPs with on-demand filters
+- roughly 3-column desktop baseline for collection pages
+- product photography should include room/context imagery where available (many already exist)
+- inconsistent source-image aspect ratios must be solved without destructive cropping
 - navigation should be direct
+- only 2–3 active series foregrounded at a time; series may rotate
 - collection discovery should be easy
+- sold works remain visible as artistic archive, clearly distinguished from purchasable work
+- prints provide an accessible purchase path when originals are too expensive
+- Instagram is an important ongoing relationship channel
+- recognition/exhibitions can be surfaced selectively, not as a dominant CV
 - storytelling pages should be visually composed
 - utility pages can remain simple
 - newsletter capture should be visible but tasteful
-- commerce should remain obvious without dominating the art
+- commerce should remain easy and obvious without overwhelming the artistic experience
+
+### Emerging visitor journey (design hypothesis)
+
+Ranjeeta wants visitors to be able to:
+
+- buy an original
+- discover her work
+- understand her story
+- join her email list
+- contact her about commissions
+- follow exhibitions
+- follow her on Instagram, where she posts frequently
+- buy prints when an original is outside their budget
+
+This should **not** be collapsed into a conventional single ecommerce conversion objective.
+
+Proposed journey:
+
+discover artwork → feel inspired → understand Ranjeeta / her practice → purchase an original OR consider a print → enquire about commissions where relevant → follow on Instagram / join the audience → return for future work and exhibitions
 
 ---
 
 ## 18. Open Questions for Ranjeeta
 
-### Collection pages
+### Brand & visual direction
 
-- Dimitra or Rinske collection layout — which feels better?
-- Visible filters or hidden/collapsible filters?
-- Two or three artwork columns on desktop?
-- Would she like a third, more editorial/asymmetric Zita-specific option?
+- Exact final palette after artwork sampling
+- Exact amount and location of dark tonal sections
+- Would she like a third, more editorial/asymmetric Zita-specific PLP option beyond the Rinske-inspired baseline?
 
-### Artistic practice
+### Artistic practice & metadata
 
-- Does she work in clearly named series?
 - What artwork aspect ratios are most common?
 - How much written story is she willing to provide for individual originals?
-- Which physical details are consistently available for each artwork?
+- Which physical details are consistently available for each artwork (year, dimensions, certificates, shipping information, etc.)?
 
 ### Products
 
 - What print production/fulfillment process is currently used?
 - Which framing or finish options exist?
 - Which originals also have print editions?
-- Should sold originals remain visible?
-
-### Brand
-
-- Does she prefer the emotional feel of:
-  - Dimitra's warm gallery
-  - Rinske's calm studio
-  - or a combination interpreted through Zita's blue palette?
 
 ### Newsletter
 
@@ -553,8 +644,61 @@ These are hypotheses derived from Ranjeeta's feedback and should be validated du
 ### News / Press
 
 - Is the primary purpose press coverage, studio/news updates, or both?
+- Exact naming/emphasis: **News** versus **Press**
 
 ### Exhibitions
 
 - How many upcoming/past exhibitions need to be represented?
 - What information and imagery does she normally have for each exhibition?
+
+### Contact
+
+- Does she want a response-time promise on the Contact page?
+
+### Pending content (not open design preferences)
+
+Ranjeeta said she will send these series write-ups in a day or two:
+
+- Colored by Nature — series description
+- BlackWhiteandGrey — series description
+- Walking the Trail — series description
+
+These are **pending content**, not unresolved design preferences.
+
+---
+
+## 19. Design Discovery Responses — September 2026
+
+Compact dated record of the September 2026 feedback round.
+
+| Topic | Response |
+|---|---|
+| Brand-reference artwork | Vaayu - Air (`/products/perfect-storm`) |
+| Primary emotion | **Inspired** |
+| Atmospheric reference | Dimitra Milan (overall feeling) |
+| Palette direction | Nature-derived teal / artwork-derived (not Dimitra's palette) |
+| Dark sections | Open to them if visually successful; not mandated |
+| PLP preference | Rinske-style artwork-first |
+| Desktop PLP | Approx. 3-column baseline |
+| Filters | On-demand/collapsed preferred |
+| Room images | Already exist for many products |
+| Image-ratio inconsistency | Confirmed issue to solve |
+| Sold artworks | Remain visible as artistic archive |
+| Series | Yes; Walking the Trail active |
+| Active series count | Approximately 2–3 at a time |
+| Collection numeric prefixes | Unwanted Shopify-ordering workaround |
+| Exhibitions/recognition | Okay to highlight selectively |
+| Primary visitor outcomes | Discovery, originals, prints, commissions, newsletter, exhibitions, Instagram |
+| Series write-ups | Pending |
+| Contact email | ranjeeta.shroff@gmail.com |
+| Contact phone | 469-850-0196 |
+| Physical address | Do not publish |
+
+### Still Pending From This Feedback Round
+
+- Colored by Nature series description
+- BlackWhiteandGrey series description
+- Walking the Trail series description
+- Any higher-resolution artwork files Ranjeeta chooses to provide
+
+Existing Shopify imagery is sufficient for initial concept/prototype work; higher-resolution files are not blocking design work.
