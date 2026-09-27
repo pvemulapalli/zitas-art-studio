@@ -27,3 +27,6 @@ node_modules/
 # High-resolution/private reference assets
 references/private/
 references/artwork-hires/
+
+# Generated Claude Design exports
+references/claude-design/exports/
