@@ -1,15 +1,14 @@
 # Zita's Art Studio — Design Brief
 
 **Project:** Zita's Art Studio Shopify Redesign  
-**Status:** Draft v1 — ready for review  
-**Date:** 19 September 2026  
-**Purpose:** Translate research, Ranjeeta's stated preferences, and the current content inventory into a clear visual and experience direction before prototyping or Shopify implementation.
+**Status:** Approved design direction — ready for Shopify architecture and implementation  
+**Date:** October 2026 (V2 client approval)  
+**Purpose:** Prescriptive experience and visual direction for Shopify implementation. Supersedes exploratory draft language where Design V2 and October 2026 client decisions apply.
 
-> This document is the first prescriptive design artifact in the project.
->
 > Research documents describe what exists.  
-> `ranjeeta-preferences.md` records what Ranjeeta has explicitly said she wants.  
-> This brief defines what the redesigned Zita's Art Studio should become.
+> `ranjeeta-preferences.md` records Ranjeeta's explicit preferences and October 2026 decisions.  
+> `design-v2-acceptance.md` is the concise implementation handoff.  
+> This brief defines what the storefront should become in Shopify.
 
 ---
 
@@ -236,38 +235,34 @@ Strong candidate roles:
 - warm off-white or light natural canvas tone
 - occasional artwork-derived accent color
 
-No hex values are approved yet.
+Design V2 refined token roles; fine-tuning may continue in the development theme.
 
-### Design requirement
+### Artwork ground rule (approved)
 
-Claude Design should sample and compare colors from the actual artwork rather than choosing an arbitrary teal.
+- **Gesso / light neutral** is the **default ground** behind individual artwork, especially on PDPs.
+- Backgrounds are **not** automatically chosen based on artwork, product, tags, collection, or similar logic.
+- Artwork must read faithfully — no dark or strongly colored mat that could be mistaken for part of the painting (V1 Moonlit Waves mist treatment was rejected).
 
-### Dark-mode usage
+### Editorial / page backgrounds (approved)
 
-A dark website is **not** a requirement.
+Secondary tones (Vaayu Mist, Stone Mist, Sand, Deep Teal / Ink / Night) are for **deliberate editorial** moments — hero, story, recognition, footer — not product artwork mats.
 
-Dark teal, ink, indigo, or near-black sections may be explored where they:
+### Dark tonal usage
 
-- enhance artwork
-- improve page rhythm
-- create contrast between editorial moments
-- remain accessible
-- do not overpower the paintings
-
-A mostly light site with occasional dark tonal passages may prove stronger than an entirely dark treatment.
+A dark website is **not** a requirement. Darker passages belong in intentional editorial/story/recognition/footer contexts, not as default product presentation mats.
 
 ---
 
 ## 6. Typography
 
-Ranjeeta strongly likes the typography on Dimitra Milan.
+### Approved pairing (October 2026)
 
-Current candidate pairing:
+- **Marcellus** — display / heading typography
+- **Mulish** — body / supporting / UI typography
 
-- **Tenor Sans** — display / headings
-- **Alegreya** — body / editorial copy
+### Historical context
 
-These are serious candidates, not locked final choices.
+Early exploration referenced Dimitra Milan's **Tenor Sans + Alegreya**. That pairing informed research but is **not** the active system.
 
 ### Typography goals
 
@@ -280,13 +275,7 @@ Typography should feel:
 - strong enough to help create the gallery feeling
 - appropriate for longer artist-story copy
 
-### Claude Design should explore
-
-At minimum:
-
-1. Tenor Sans + Alegreya
-2. one alternative pairing with similar sophistication
-3. how the wordmark and navigation relate to the type system
+Font licensing, loading method, performance, and Shopify implementation will be validated during theme development.
 
 ### Do not
 
@@ -295,33 +284,23 @@ At minimum:
 - rely on ultra-light typography that harms readability
 - use typography that competes with the artwork
 
-Font licensing, loading method, performance, and Shopify implementation will be validated later.
-
 ---
 
 ## 7. Logo / Wordmark Direction
 
-Ranjeeta likes the simple, readable top-left logo treatments used by both reference sites.
+### Approved wordmark (October 2026)
 
-The first identity direction should therefore explore a **typography-led wordmark** before adding a symbol.
+**`ZITA'S | ART STUDIO`**
 
-Desired qualities:
+- tracked capitals
+- typography-led (no symbol required)
+- top-left aligned
+- desktop and mobile
+- readable; does not compete with artwork
 
-- immediately readable
-- elegant
-- calm
-- works at small mobile sizes
-- does not compete with artwork
-- works on both light and dark backgrounds
-- can live comfortably in a horizontal header
+Earlier one-line mixed-case explorations are historical only.
 
-The prototype may explore:
-
-- `Zita's Art Studio`
-- a refined `Zita's` wordmark with secondary studio descriptor
-- subtle typographic personalization
-
-Do not create an elaborate emblem unless the design genuinely benefits from one.
+Do not create an elaborate emblem unless a future need genuinely arises.
 
 ---
 
@@ -417,7 +396,7 @@ The header should remain calm and readable.
 
 ### Desired qualities
 
-- simple top-left wordmark
+- approved top-left wordmark: **`ZITA'S | ART STUDIO`**
 - artwork-focused rather than ecommerce-heavy
 - minimal visual clutter
 - clear access to active series
@@ -447,24 +426,31 @@ They are a workaround from the existing Shopify setup.
 
 The future architecture must allow collection ordering without exposing numeric ordering hacks publicly.
 
-### Navigation concept to explore
+### Approved Originals navigation (Design V2)
 
-A likely direction:
+V2's **Originals dropdown / mega-menu** is the approved starting direction for desktop. Mobile uses the same **content hierarchy** in a touch-friendly menu.
 
-- Art / Shop
-  - Active Series A
-  - Active Series B
-  - Active Series C
-  - View All / Archive if needed
-- Prints
-- About
-- Exhibitions
-- News / Press
-- Contact
+**UX direction:**
 
-This is a design exploration, not a finalized navigation label set.
+- top-level **Originals** foregrounds approximately **2–3 current/active series**
+- spacious mega-menu (not a cramped generic dropdown)
+- may also surface: **All originals**, **Earlier series & sold work**, **Commission a painting**, and artwork/collection visual preview where appropriate
+- clear, readable, accessible, artwork-first
+- do **not** hard-code current collection names in theme code
 
-Avoid an unnecessary generic "Collections" landing page in the primary journey unless the design brief later reveals a real purpose for it.
+**Content management:**
+
+- navigation **labels, links, nesting, and ordering** intended to be managed through **Shopify's native menu/navigation** content
+- custom theme code controls bespoke **visual presentation** only
+- Ranjeeta can replace/reorder active series through Shopify as her practice changes — without numeric prefixes or code edits
+
+**Deferred to architecture:** exact implementation of artwork/collection preview imagery in the mega-menu; final top-level label wording where still open (e.g. Prints, News vs Press).
+
+Avoid an unnecessary generic "Collections" landing page in the primary journey.
+
+### Historical navigation sketch (superseded as primary direction)
+
+Early exploration considered a simple Art/Shop dropdown list. V2 mega-menu supersedes that as the approved presentation; menu items remain Shopify-managed, not code-fixed.
 
 ---
 
@@ -485,41 +471,39 @@ A first-time visitor should quickly:
 7. encounter selective credibility
 8. have opportunities to follow or stay connected
 
-### Suggested narrative structure
+### Approved homepage structure (Design V2)
 
-This is a design framework, not a fixed section order.
+#### 1. Full-width rotating artwork carousel
 
-#### 1. Opening artwork moment
+The homepage **opens** with an immersive, full-browser-width carousel.
 
-Avoid a generic ecommerce hero banner.
+- artwork remains the visual hero; full bleed
+- reference inspiration for rotation concept only: https://www.plandingfineart.com/ (do not copy its branding or layout)
+- **merchant-editable** slides via future custom OS 2.0 section (schema deferred to architecture)
+- overlay copy must be **live HTML** in Shopify, not text baked into images
+- per slide: image, optional mobile image, heading, supporting text, CTA label/link, alignment options
+- manual prev/next, indicators, touch/swipe, optional pausable autoplay, reduced-motion support
 
-Explore:
+#### 2. Current Series — aligned grid
 
-- a large artwork-led composition
-- possible asymmetry
-- minimal copy
-- strong visual relationship to Vaayu - Air / the emerging palette
-- subtle motion only if it helps
+Present **2–3 active series** in a **simple aligned row/grid** (V1 asymmetric layout rejected).
 
-The opening should feel like entering a gallery.
+Each series block:
 
-#### 2. Active series discovery
+- image
+- series/collection name
+- optional short description
+- Explore the series link
 
-Present the current 2–3 active series prominently.
+3 series → 3 columns; 2 series → 2 columns; mobile stacks cleanly. Swapping featured series must not require layout redesign.
 
-This should feel curated, not like a standard collection-card grid.
-
-Possible approaches:
-
-- varied image scale
-- horizontal editorial rhythm
-- one large series + smaller supporting series
-- staggered compositions
-- text integrated into artwork fields
+**Merchant intent:** Ranjeeta chooses featured collections via Theme Editor / settings (exact schema deferred).
 
 #### 3. Selected artworks
 
 Show a small, intentional edit of work rather than a large generic product grid.
+
+**Aligned rows only** — no vertically staggered card rows. Preserve artwork aspect ratios within a consistent presentation field.
 
 Potential mix:
 
@@ -563,8 +547,8 @@ Newsletter and Instagram should both be available without competing with the art
 ### Homepage should not become
 
 - a giant product catalogue
-- a carousel-heavy theme demo
 - a stack of generic Shopify cards
+- staggered or choreographed product/series grids that are hard for the merchant to maintain
 - a collection of promotional banners
 - a wall of sales CTAs
 
@@ -655,17 +639,28 @@ Current design interpretation:
 - visual impact matters more than maximizing product density
 - persistent facets would consume valuable gallery space
 
-This interpretation should be validated through prototype review rather than treated as an immutable law.
+Design V2 accepts this direction for implementation; refine in the development theme as needed.
 
 ### Responsive behavior
 
-Likely:
-
-- large desktop — 3 columns
-- smaller desktop/tablet — 2 columns
-- mobile — 1 or 2 depending on legibility and image treatment
+- large desktop — ~3 columns, full width
+- smaller desktop/tablet — 2 columns as needed
+- mobile — large, artwork-first **single-column** layout for the current catalogue size
 
 Do not force three columns everywhere.
+
+### Aligned artwork rows
+
+Product/artwork cards use **consistent row alignment**. No decorative vertical stagger. Preserve full artwork; use a consistent presentation mat/field.
+
+### Optional collection editorial interruption (approved)
+
+- **Optional** per collection; not global hard-coded
+- belongs to the current series/collection
+- if absent, grid is uninterrupted
+- may include heading, text, image, CTA; deliberate insertion point (after a row or end of grid)
+- may hide during filter/sort if cleaner
+- **Merchant intent:** editable in Shopify without code (metafields/metaobjects possible — **deferred to architecture**)
 
 ### Filters
 
@@ -680,16 +675,7 @@ Potential useful filters may eventually include:
 
 Only expose filters that are supported by clean product data and genuinely help discovery.
 
-### Design opportunity
-
-Explore a **Zita-specific variation** where a regular grid can occasionally be interrupted by:
-
-- a larger featured artwork
-- a series statement
-- an editorial image
-- an exhibition reference
-
-This should never make browsing confusing.
+Editorial interruption replaces open-ended "explore asymmetric grid breaks" — see optional collection editorial band above.
 
 ---
 
@@ -722,6 +708,12 @@ Cards should feel more like artwork labels than ecommerce tiles.
 ## 15. Original Artwork PDP
 
 The original-artwork page should feel like an **artwork detail / gallery page with purchasing available**, not a standard product detail page.
+
+### Artwork presentation (approved)
+
+- large artwork on **Gesso / light neutral** ground
+- no automatic per-product background logic
+- prototype/demo prices, years, framing, certificates, print links, shipping, and scale imagery are **not authoritative** — use live Shopify product data in production
 
 ### Primary objectives
 
@@ -845,7 +837,7 @@ Ranjeeta's current About writing is strong and should be preserved in substance.
 
 The missing ingredient is specificity and scene.
 
-Additional About responses are useful but should not block the first prototype.
+Additional About responses are useful but should not block theme implementation.
 
 ---
 
@@ -1050,6 +1042,9 @@ Mobile is not a reduced desktop design.
 ### Requirements
 
 - artwork remains visually dominant
+- homepage carousel may use **separate mobile imagery**
+- Current Series stacks simply on mobile
+- artwork/product cards are **not** vertically staggered
 - navigation remains clear
 - series discovery works without hover
 - room-image behavior has a touch equivalent
@@ -1067,6 +1062,7 @@ Mobile is not a reduced desktop design.
 - overly tall stacked utility bars
 - hidden purchasing actions
 - interaction patterns requiring hover
+- decorative vertical offset in artwork card grids
 
 ---
 
@@ -1186,7 +1182,17 @@ The design should expose appropriate controls through:
 - metaobjects
 - blog/articles
 
+**Explicit merchant-editable experiences (schema deferred to architecture):**
+
+- homepage hero carousel slides (images + live HTML text + CTAs)
+- Current Series featured collections (2–3)
+- **navigation / menus** — link targets, labels, nesting, and order via Shopify native menus (theme presents the V2 mega-menu / mobile menu)
+- optional per-collection PLP editorial band
+- standard products, collections, blogs
+
 Do not make routine editorial changes require Cursor.
+
+Do **not** define final metafield/metaobject schemas in this design brief.
 
 ### Architecture principle
 
@@ -1194,24 +1200,19 @@ Do not make routine editorial changes require Cursor.
 
 ---
 
-## 29. AI / Prototype Design Guardrails
+## 29. Claude Design / Prototype Status
 
-Claude Design is being used to explore visual direction, not to define production Shopify architecture.
+**Claude Design V2** is the current **visual implementation reference** (see `references/claude-design/screenshots/v2/`).
 
-### Claude Design should explore
+**V1** remains useful historical context where it differs; **V2 wins**.
 
-- brand palette from actual artwork
-- typography system
-- wordmark direction
-- global shell
-- navigation
-- homepage
-- PLP
-- original-artwork PDP
-- mobile treatment
-- selected motion ideas
+Broad static visual exploration is **complete**. Do not restart primary visual direction exploration before Shopify implementation.
 
-### Claude Design should not decide
+Refinements belong in an **unpublished/development Shopify theme**, not production-as-design-lab.
+
+Claude Design / prototypes do **not** define production Shopify architecture.
+
+### Prototypes should not decide
 
 - final Shopify metafield schema
 - final metaobject schema
@@ -1284,139 +1285,57 @@ Avoid relying on:
 
 ---
 
-## 31. Initial Claude Design Prototype Scope
+## 31. Design V2 Scope Delivered
 
-Do **not** design the entire site in the first pass.
+Design V2 established and Ranjeeta approved:
 
-The first prototype should establish the visual system using five connected experiences:
+- brand foundations (palette roles, Marcellus + Mulish, wordmark)
+- global shell
+- homepage (carousel, Current Series, Selected Works)
+- PLP
+- original-artwork PDP (in-stock and sold states)
+- mobile treatments
 
-### 1. Brand Foundations
+Remaining page types (Prints, About, Exhibitions, News/Press, Contact, Commissions, policies) should follow the same system during Shopify theme build.
 
-Show:
-
-- palette options derived from the selected Zita artwork
-- typography
-- wordmark concepts
-- spacing
-- image treatment
-- button / link language
-- light and dark tonal contexts
-
-### 2. Global Shell
-
-Show:
-
-- desktop header/navigation
-- mobile header/navigation
-- footer
-- announcement treatment if used
-- Instagram/newsletter integration
-
-### 3. Homepage
-
-Establish:
-
-- first impression
-- page rhythm
-- active-series discovery
-- artwork presentation
-- artist-story entry
-- selective recognition
-- originals / prints pathway
-- newsletter / Instagram relationship
-
-### 4. Product Listing Page
-
-Demonstrate:
-
-- artwork-first wide layout
-- 3-column desktop baseline
-- Filter & Sort on demand
-- inconsistent artwork aspect ratios handled elegantly
-- artwork → room hover
-- sold works
-- mobile behavior
-
-### 5. Original Artwork PDP
-
-Demonstrate:
-
-- artwork scale
-- story
-- physical details
-- room imagery
-- commerce
-- sold-state behavior
-- related series
-- exhibition/recognition if relevant
-- print relationship where applicable
-
-### Why this scope
-
-If these five experiences feel coherent, the design language is strong enough to expand to:
-
-- Prints
-- About
-- Exhibitions
-- News / Press
-- Contact
-- Commissions
-- policy pages
-
-If they do not feel coherent, it is cheaper to fix the system now than after designing the entire site.
+See `docs/design/design-v2-acceptance.md` for the implementation handoff.
 
 ---
 
-## 32. Success Criteria for the Prototype
+## 32. Success Criteria for Shopify Implementation
 
-The first prototype succeeds if:
+Implementation in a development theme succeeds when:
 
 ### Brand
 
-- it feels specific to Ranjeeta
-- teal/nature influence feels derived from the art, not generic
-- typography feels sophisticated and readable
-- Dimitra's atmosphere is felt without copying Dimitra
+- it feels specific to Ranjeeta and matches approved V2 direction
+- teal/nature influence feels derived from the art
+- Marcellus + Mulish and the approved wordmark are implemented correctly
+- Dimitra-like atmosphere without copying Dimitra's palette
 
 ### Artwork
 
-- artwork dominates
-- inconsistent aspect ratios feel intentional
-- room imagery adds value
-- no artwork is destructively cropped
+- artwork dominates on Gesso/light neutral mats
+- inconsistent aspect ratios handled with aligned rows and contain-style fields
+- room imagery adds value where available
+- no destructive cropping
 
 ### UX
 
-- navigation is immediately understandable
-- series are easy to discover
-- PLP feels gallery-like
-- filters remain available but secondary
-- buying remains clear
+- navigation is clear; 2–3 active series are easy to discover
+- PLP is artwork-first with on-demand filters and optional editorial band
+- carousel and series blocks are merchant-editable
+- buying and sold state are clear
 
-### Story
+### Story & commerce
 
-- visitors understand there is a real artist behind the work
-- exhibitions/recognition add credibility without overwhelming the art
-- the site invites deeper exploration
-
-### Commerce
-
-- originals feel worthy of considered purchase
-- prints provide an accessible path
-- commissions are discoverable
-- sold works remain useful
-- commerce does not overpower the experience
-
-### Mobile
-
-- the experience still feels intentionally designed
-- key interactions do not depend on hover
-- purchasing remains easy
+- gallery-like PDP with story + commerce balance
+- sold archive visible; prints/commissions paths remain discoverable
 
 ### Operational
 
-- the eventual design appears implementable in Shopify Basic
-- normal content can reasonably be owner-managed
+- Shopify Basic–compatible
+- owner can manage carousel, featured series, and collection content without code where designed
 
 ---
 
@@ -1460,7 +1379,7 @@ These should continue to be resolved while the design phase proceeds.
 - commission pricing/process
 - shipping/returns specifics
 
-None of these should prevent brand foundations, homepage, PLP, or original-PDP prototyping from beginning.
+None of these should block Shopify theme implementation; use real product data in the development store.
 
 ---
 
@@ -1473,9 +1392,14 @@ None of these should prevent brand foundations, homepage, PLP, or original-PDP p
 | PLP reference | **Rinske Douna** |
 | Zita-specific identity | **Nature-led, artwork-derived, teal as strong candidate** |
 | Brand-reference artwork | **Vaayu - Air** |
-| Dark palette | Explore selectively; not required |
-| Typography | Tenor Sans + Alegreya are strong candidates |
-| Wordmark | Simple, readable, typography-led |
+| Dark palette | Editorial/story/footer only; not product artwork mats |
+| Typography | **Marcellus + Mulish** (approved) |
+| Wordmark | **`ZITA'S \| ART STUDIO`** tracked capitals |
+| Artwork ground | **Gesso / light neutral** default; no auto per-product backgrounds |
+| Homepage hero | Full-width rotating carousel; live HTML overlays |
+| Current Series | Aligned 2–3 column grid |
+| Card grids | Aligned rows; no vertical stagger |
+| PLP editorial band | Optional, per-collection |
 | Active series | Approximately 2–3 at a time |
 | Current active series | Walking the Trail confirmed |
 | Collection ordering | No numeric prefixes in public names |
@@ -1490,30 +1414,22 @@ None of these should prevent brand foundations, homepage, PLP, or original-PDP p
 | Newsletter | Recurring but tasteful |
 | Contact | Email + Google Voice + form; no address |
 | Shopify | Theme-first, Shopify Basic |
-| Prototype | Brand + shell + homepage + PLP + original PDP first |
+| Design reference | **Claude Design V2** (approved) |
+| Next phase | Shopify architecture + development theme |
 
 ---
 
 ## 35. Next Step
 
-Use this brief, together with:
+Proceed to **Shopify architecture** and **development-theme implementation** using:
 
-- `docs/research/dimitra-milan-audit.md`
-- `docs/research/rinske-douna-audit.md`
-- `docs/research/zita-content-brand-inventory.md`
-- `docs/design/ranjeeta-preferences.md`
-- selected Zita artwork imagery
-- relevant screenshots from the reference sites
+- this brief
+- `docs/design/ranjeeta-preferences.md` (October 2026 decisions)
+- `docs/design/design-v2-acceptance.md`
+- `references/claude-design/screenshots/v2/`
+- research and content inventory docs
 
-to create the first Claude Design exploration.
-
-The first Claude Design task should focus on:
-
-**Brand Foundations + Global Shell + Homepage + PLP + Original Artwork PDP**
-
-Do not expand to the entire site until Ranjeeta approves the visual language.
-
-After prototype approval, translate the approved experience into a separate Shopify architecture plan before production implementation begins.
+Do not restart broad static design exploration. Evaluate visual refinements in the unpublished development theme.
 
 ---
 
