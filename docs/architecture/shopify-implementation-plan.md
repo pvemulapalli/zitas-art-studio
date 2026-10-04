@@ -12,6 +12,7 @@ This document becomes authoritative only after review and commit. It maps approv
 - [Design V2 acceptance](../design/design-v2-acceptance.md)
 - [Content & brand inventory](../research/zita-content-brand-inventory.md)
 - [Design V2 screenshots index](../../references/claude-design/screenshots/v2/README.md)
+- [Product schema registry](product-schema.md) — **canonical** V2 product data model (Phase A proven)
 
 **Core principle:** **Art-first, commerce-enabled.**
 
@@ -46,7 +47,7 @@ Hybrid **Partner dev store** + **Ranjeeta merchant store**. Theme code is **one*
 PARTNER DEV STORE (Basic)
 ─────────────────────────
 Zita V2 theme (dev / CLI)
-PoC catalog (Moonlit Waves V2, test collection)
+PoC catalog (Essence V2 + sold-state fixture, test collection)
 Provisional metafields & schema experiments
 Active test products OK — isolated from zitasartstudio.com
 
@@ -74,7 +75,7 @@ Archive legacy after confidence period
 
 | Environment | Purpose |
 |---|---|
-| **Partner dev store** | Moonlit Waves V2 proof; clean test collection; category/custom metafield experiments; sold/available states; **PLP + PDP** data-model proof; Search & Discovery; GraphQL/Admin API learning; resettable/destructive tests **before** touching merchant catalog |
+| **Partner dev store** | **Essence** + **Colored by Nature-Blue** V2 fixtures; one clean test collection; category/custom metafield experiments; sold/available states; **PLP + PDP** proof; Search & Discovery; GraphQL/Admin API learning; resettable/destructive tests **before** touching merchant catalog |
 | **Ranjeeta — live** | Production traffic on **Flora**; legacy products remain source of truth for copy/media until V2 cutover |
 | **Ranjeeta — dev/review** | Unpublished **Zita V2** theme; validate shell/components against **real** legacy data; create V2 products as **Draft**; do **not** activate V2 products merely to test PLP on the live store (§3) |
 | **Launch** | Controlled V2 activation/publication; publish Zita V2; redirects; archive legacy (do not mass-delete immediately) |
@@ -85,6 +86,19 @@ Archive legacy after confidence period
 2. **Ranjeeta's store** — preferred target for real-content preview, merchant workflows, and pre-launch QA on unpublished Zita V2.
 
 Use explicit Shopify CLI **`--store`** (or equivalent) and **verify the target store** before every push, dev session, or Admin script. **Do not** maintain separate divergent theme codebases per store.
+
+### Theme baseline
+
+| Item | Decision |
+|---|---|
+| **Starting theme** | **Shopify Skeleton v1.0.0**, upstream commit `8b8a1f4d2ef437d4d60df7a9cc4770f85a2f1b76` |
+| **Architecture** | **Online Store 2.0:** JSON templates + **sections** + **blocks** + **Liquid** + snippets — matches this plan’s theme-first assumptions |
+| **Not adopted (now)** | Newer CLI **Liquid-first** Skeleton (`{% block %}`, `{% partial %}`, Liquid templates) — requires developer-preview capabilities; **deferred** for production stability on this redesign |
+| **Review gate** | Before **merchant-store integration** or substantial custom template work, reconsider Liquid-first only if Shopify has moved it to **GA** (or equivalent production maturity) **and** it clearly benefits Zita without compromising owner editability, maintainability, or stability |
+| **Verified toolchain** | **Node.js 22** (repository `.nvmrc`); **Shopify CLI 4.x**; **Basic** Partner dev store `zitas-art-studio-development.myshopify.com` |
+| **Verified baseline** | Untouched Skeleton v1.0.0 serves via Shopify CLI against that dev store with **no Liquid compilation/upload errors** |
+
+This is a **production-stability** choice, not a permanent rejection of Shopify’s Liquid-first direction.
 
 ---
 
@@ -144,7 +158,7 @@ Scale merchant-store V2 catalog creation only after Partner dev store PoC and Dr
 
 **Do not** assume Claude Design V2 prototype placeholders or screenshot copy are authoritative.
 
-**Do not** modify the **legacy** Moonlit Waves product during proof-of-concept work on a **new** V2 product record.
+**Do not** modify **legacy merchant-store source products** during PoC — create **new V2 records** on the Partner dev store (and later **Draft** mirrors on the merchant store) only.
 
 ---
 
@@ -152,34 +166,51 @@ Scale merchant-store V2 catalog creation only after Partner dev store PoC and Dr
 
 **Do not** create the full V2 catalog immediately.
 
-**PoC location:** **Partner dev store first** — prove data model, PLP, PDP, and metafields in isolation. **Legacy merchant-store Moonlit Waves remains untouched.**
+**Phase A product-data PoC (Partner dev store):** **Essence V2** and **Colored by Nature-Blue V2** are created with proven custom metafield definitions, category usage, and collection **`V2 PoC — Original Artworks`**. Sold-state behavior is proven via **Colored by Nature-Blue V2** (tracked inventory **0**, continue selling when out of stock **off**). Canonical detail: **[product-schema.md](product-schema.md)**.
 
-**PoC scope (dev store):**
+**Next before Zita-specific theme code:** PLP/PDP **theme** proof against this schema on the dev store (fixtures may remain **Draft** during data setup; use **Active** on dev store when storefront PLP/PDP testing requires it — §3).
 
-- **One** Moonlit Waves **V2** test product (may be **Active** on dev store for PLP/PDP)
-- **One** clean V2 test collection
+**PoC location:** **Partner dev store first** — prove data model, then templates. **Merchant-store source products are read-only** during this phase.
 
-**After dev-store proof:** create the corresponding V2 product on **Ranjeeta's store** as **Draft** only — do **not** activate it for routine development.
+**PoC scope (dev store) — intentionally small:**
 
-**Source product:** **Moonlit Waves** (legacy handle `/products/moonlit-waves` on merchant store — read-only source).
+- **Two** V2 test products (may be **Active** on dev store for PLP/PDP)
+- **One** clean V2 test collection (no legacy ordering-prefix names)
+- **Minimal** provisional custom metafields only where native + category data are insufficient
 
-**Confirmed from legacy Shopify Admin inspection (source for copying — not final V2 values until validated):**
+**After dev-store proof:** create corresponding V2 products on **Ranjeeta's store** as **Draft** only — do **not** activate them for routine development.
 
-- Multiple product media assets, including **context/room imagery**
-- Description currently states dimensions **`30 × 48 in`**
-- Current price in Admin: **`$1,500`**
-- Current legacy product status: **Draft**
-- Current collection assignment includes **`BlackWhiteandGrey`**
+### Primary fixture — **Essence** (available original)
 
-**Human validation before copying to V2:**
+**Merchant source (read-only):** Active; **$1,500**; inventory tracked; available **1**; sell when out of stock **off**. Rich media including artwork and **room/context** imagery. Description mixes story and structured facts (e.g. acrylic, **20 × 40 in** gallery-wrapped canvas, original, certificate, ready to hang). **Shopify category assigned** with several **category metafields** populated (color, material, canvas, authenticity, frame, orientation, medium, rarity, signature, theme) — preferred over duplicating as custom fields.
 
-- Older project inventory noted a possible **30×48 vs 36×48** conflict; Admin currently says **30×48** — **confirm with Ranjeeta** before copying dimensions to the V2 product
-- Do **not** treat Claude Design V2 prototype price, status, or metadata as authoritative
+**Proves:** clean V2 data model; category/taxonomy usage; media + room behavior; **available** PDP/PLP; commerce (add to cart); owner editability patterns.
+
+**Do not copy blindly:** legacy collection name `B - Walking the trail`; Type **None**; vendor `ZitasArt`; misaligned handle (e.g. `tangled-copy`).
+
+### Sold-state fixture — **Colored by Nature-Blue**
+
+**Merchant source (read-only):** Active; **$475**; inventory tracked; available **0** / on hand **0**; sell when out of stock **off** — theme should derive **Sold** / unavailable purchase from this commerce state **without** a manual `custom.sold` metafield. Description includes series/story, acrylic, **12 × 16 in** canvas, fluid-art notes. Category assigned; at earlier merchant review, **most category metafields were empty** on the legacy record (contrast with Essence merchant source).
+
+**V2 fixture (Partner dev store):** **Colored by Nature-Blue V2** includes **legacy-derived** category metadata copied from that merchant source — migration input, not assumed truth; subject to **merchant review** (provenance: merchant-confirmed / legacy-derived / Shopify-suggested). **Shopify suggestions were not automatically accepted** during V2 fixture setup. See **[product-schema.md](product-schema.md)** §3.
+
+**Proves:** sold work **visible and artistically equal**; purchase action removed/replaced from real availability; PLP + PDP sold presentation.
+
+**Do not copy blindly:** collections `A - Colored by Nature`, `Featured Products`; legacy tags; inconsistent Type/vendor patterns.
+
+### Secondary reference — **Horizon**
+
+Useful for ad-hoc comparison only — **not** a required PoC record at this stage.
+
+**General validation before V2 copy:**
+
+- Validate titles, dimensions, handles, collections, and SEO with Ranjeeta where legacy data is inconsistent
+- Do **not** treat Claude Design V2 prototype values as authoritative
 
 **PoC workflow:**
 
-1. **Partner dev store:** copy validated content from legacy Admin → V2 test product + collection; exercise **Active** states, PLP, PDP, metafields, sold/available as needed.
-2. **Merchant store:** push proven `theme/` to **unpublished** Zita V2; test layout against **legacy Active** catalog; add V2 Moonlit record as **Draft** when ready to mirror content — no activation for PLP proof on live store.
+1. **Partner dev store:** copy validated content from legacy Admin → **Essence V2**, **Colored by Nature-Blue V2**, and one test collection; exercise **Active** catalog, PLP, PDP, and sold/available rendering.
+2. **Merchant store:** push proven `theme/` to **unpublished** Zita V2; test layout against **legacy Active** catalog; add V2 **Draft** mirrors when ready — no activation for PLP proof on live store.
 
 **PoC must validate (primarily on dev store):**
 
@@ -246,25 +277,13 @@ Reuse structured category data where it fits, e.g. material, painting medium, or
 
 > **Why this belongs here:** Category metafields attach semantics Shopify already models for merchandising and discovery; duplicating them creates sync drift.
 
-### C. Proposed Zita-specific metafields (PROVISIONAL — finalize at Moonlit Waves PoC)
+### C. Zita-specific custom metafields
 
-Namespace/key names are **illustrative** until implementation review.
+**PROVEN** (Partner dev store): `custom.artwork_width`, `custom.artwork_height`, `custom.certificate_notes`, `custom.ready_to_hang`, `custom.artwork_story` — registry in **[product-schema.md](product-schema.md)**.
 
-| Intent | Proposed field (provisional) | Notes |
-|---|---|---|
-| Year | `custom.artwork_year` | If not carried in description |
-| Dimensions display | `custom.dimensions_display` or structured width/height | Only if category/native insufficient; Moonlit legacy Admin says 30×48 — confirm with Ranjeeta before V2 copy |
-| Extended story | `custom.artwork_story` | Only if product description should stay short for SEO/admin |
-| Ready to hang / framing | `custom.framing_notes` | |
-| Certificate | `custom.certificate_notes` | |
-| Shipping/packing | `custom.shipping_packing_notes` | |
-| Scale context | `custom.scale_notes` | |
-| Print link | `custom.print_product` (product reference) | When print exists |
-| Related artworks | `custom.related_artworks` | Only if collections/recommendations insufficient |
-| Exhibitions | `custom.exhibitions` (metaobject list) | If Exhibition metaobject adopted |
-| Short label | `custom.short_label` | Only if truly needed |
+**PROVISIONAL / FUTURE** (not proven): year, shipping/packing notes, scale notes, print link, related artworks, exhibitions references, short label, combined dimensions display string, etc. — see product-schema §10.
 
-**Do not** create custom fields for: price, availability, title, primary image, collection membership, medium/material when category metafields suffice.
+**Do not** create custom fields for: price, availability, title, primary image, collection membership, medium, orientation, authenticity, frame style, signature presence when category metafields suffice.
 
 ---
 
@@ -276,7 +295,7 @@ Namespace/key names are **illustrative** until implementation review.
 
 - **Do not** split sold vs available into separate product types for appearance alone.
 - Prefer deriving state from real Shopify commerce data: inventory/sellability, publication, intentional archival workflow where needed.
-- Legacy inventory inconsistencies mean the **exact sold-state rule** is finalized during **Moonlit Waves PoC on the Partner dev store** (include sold-style scenarios there).
+- **PROVEN (Partner dev store):** **Colored by Nature-Blue V2** — inventory tracked, available **0**, continue selling when out of stock **off** — theme derives **Sold** without `custom.sold`. **Essence V2** proves available path (qty **> 0**). See **[product-schema.md](product-schema.md)** §6. Merchant legacy sources informed fixtures; edge cases remain **FUTURE**.
 
 Requirements:
 
@@ -542,7 +561,7 @@ Do not embed prototype-only hex values without accessibility review.
 |---|---|---|
 | Product title, price, media, inventory | Product Admin | Render; sold/available UI |
 | Medium, orientation, category facts | Product + category metafields | Render metadata rows |
-| Artwork story | Description and/or custom metafield | Layout typography |
+| Artwork story | `custom.artwork_story` (Product **Description** = migration/source reference for now; long-term role **PROVISIONAL**) | Narrative / story presentation |
 | Series title, image, membership | Collection | PLP/header/context |
 | Series statement | Collection description and/or metafield | PLP hero/intro |
 | PLP editorial band | Collection metafields | Conditional section |
@@ -621,7 +640,7 @@ Review against [Design V2 acceptance](../design/design-v2-acceptance.md) and V2 
 
 | Phase | Where | Scope |
 |---|---|---|
-| **A — Isolated proof** | **Partner dev store** | Create Basic dev store; Skeleton in `theme/`; Moonlit Waves V2 test product; clean V2 collection; provisional metafields; PDP + PLP + sold state; validate architecture |
+| **A — Isolated proof** | **Partner dev store** | Skeleton in `theme/`; **Essence V2** + **Colored by Nature-Blue V2** + **`V2 PoC — Original Artworks`**; **proven custom metafields** + **[product-schema.md](product-schema.md)**; sold/available data rules proven; **theme** PLP/PDP proof next. **Later:** reproducible metafield-definition provisioning script, merchant catalog workbook, dev-store-tested migration/import |
 | **B — Merchant theme foundation** | **Ranjeeta's store** | Same theme repo (`--store` verified); development/unpublished Zita V2; global shell & components against **legacy real data**; **Flora untouched** |
 | **C — Commerce templates** | Dev → merchant | Originals + prints PLP/PDP (catalog behavior proven on dev store first) |
 | **D — Editorial pages** | Dev → merchant | About, Exhibitions, News, Contact, Commissions, policies |
@@ -680,7 +699,9 @@ Keep experiments documented in the learning log as PoC proceeds.
 
 Not finalized in this plan:
 
-- Exact Zita metafield namespace/key names and types
+- Additional custom metafields beyond [product-schema.md](product-schema.md) §4 PROVEN set
+- Reproducible Admin GraphQL metafield-definition provisioning (FUTURE)
+- Merchant catalog workbook + import pipeline (FUTURE)
 - Exhibition metaobject schema and Basic storefront exposure
 - Final V2 active series list (~2–3 foregrounded)
 - Collection description vs custom field for series statement
@@ -701,22 +722,23 @@ Not finalized in this plan:
 
 ### A — Partner dev store (isolated proof)
 
-1. Create/use **Basic** Partner dev store; confirm CLI **`--store`** targeting.
-2. Initialize `theme/` from **Skeleton** against **dev store**.
-3. Create **Moonlit Waves V2** test product + **one clean test collection** from validated **legacy Admin** source (do **not** edit merchant-store legacy product).
-4. Define **minimal provisional** metafields; prove PDP, PLP, sold/available on **Active** dev-store catalog if needed.
-5. Document proven schema; commit `theme/` to Git.
+1. Create/use **Basic** Partner dev store; confirm CLI **`--store`** targeting. — **Done**
+2. Initialize `theme/` from **Skeleton** against **dev store**. — **Done**
+3. Create **Essence V2** + **Colored by Nature-Blue V2** + **`V2 PoC — Original Artworks`** from validated legacy Admin (read-only). — **Done**
+4. Define and populate **proven custom metafields**; prove sold/available data model. — **Done** → **[product-schema.md](product-schema.md)**
+5. **Next:** PLP/PDP **theme** proof on dev store (no Zita-specific theme code until schema frozen in docs). Then commit `theme/` baseline as appropriate.
+6. **Later deliverables:** reproducible metafield-definition provisioning; **`Zita V2 Artwork Catalog.xlsx`** (or equivalent); dev-store-tested migration/import workflow.
 
 ### B — Ranjeeta's merchant store (integration)
 
-6. Connect same repo to **Ranjeeta's store** (verify **`--store`**); upload **unpublished** Zita V2; **Flora** stays published.
-7. Validate shell/PLP/PDP components against **legacy Active** products on unpublished theme.
-8. Create matching V2 Moonlit product as **Draft** only after dev-store proof; confirm dimensions with Ranjeeta (Admin currently **30×48**).
-9. Revise this document if merchant integration differs from dev-store PoC.
+7. Connect same repo to **Ranjeeta's store** (verify **`--store`**); upload **unpublished** Zita V2; **Flora** stays published.
+8. Validate shell/PLP/PDP components against **legacy Active** products on unpublished theme.
+9. Create matching V2 products as **Draft** only after dev-store theme + schema proof; validate handles, collections, and dimensions with Ranjeeta where legacy data is inconsistent.
+10. Revise architecture/schema docs if merchant integration differs from dev-store PoC.
 
 ### C — Scale
 
-10. Continue §24 phases C–H; merchant V2 catalog stays **Draft** until launch preparation.
+11. Continue §24 phases C–H; merchant V2 catalog stays **Draft** until launch preparation.
 
 ---
 
@@ -728,6 +750,7 @@ Not finalized in this plan:
 | **Design baseline** | Design V2 (October 2026) |
 | **Visual reference** | `references/claude-design/screenshots/v2/` |
 | **Authoritative product facts** | Live Shopify Admin + content inventory — not Claude prototypes |
-| **Next action** | Commit after human review; begin §28 Phase A on Partner dev store |
+| **Product schema** | [product-schema.md](product-schema.md) — Phase A data PoC |
+| **Next action** | PLP/PDP theme proof on Partner dev store using proven schema; then §28 Phase B |
 
 After commit, treat this file as the working architecture reference for `theme/`, updating when PoC or stakeholder decisions change deferred items.
