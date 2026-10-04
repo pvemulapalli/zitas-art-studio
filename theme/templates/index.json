@@ -15,6 +15,7 @@
         "slide_unknown": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/vaayu-air-c.png",
             "image_fit": "contain",
             "image_fit_mobile": "same",
             "ground": "vaayu_mist",
@@ -22,6 +23,7 @@
             "text": "“Every space deserves art that not only decorates but also provokes thought.”",
             "cta_label": "View originals",
             "cta_url": "/collections/all",
+            "artwork": "",
             "credit": "",
             "text_position": "left",
             "text_vertical": "bottom",
@@ -32,6 +34,7 @@
         "slide_moonlit": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/moonlit-waves.webp",
             "image_fit": "cover",
             "image_fit_mobile": "contain",
             "ground": "gesso",
@@ -39,6 +42,7 @@
             "text": "“…the moon illuminated the waves putting up a graceful show of light and sound.”",
             "cta_label": "View the painting",
             "cta_url": "",
+            "artwork": "",
             "credit": "",
             "text_position": "left",
             "text_vertical": "top",
@@ -63,15 +67,21 @@
       "blocks": {
         "series_1": {
           "type": "series",
-          "settings": {}
+          "settings": {
+            "collection": ""
+          }
         },
         "series_2": {
           "type": "series",
-          "settings": {}
+          "settings": {
+            "collection": ""
+          }
         },
         "series_3": {
           "type": "series",
-          "settings": {}
+          "settings": {
+            "collection": ""
+          }
         }
       },
       "block_order": [
@@ -89,6 +99,7 @@
     "point_of_view": {
       "type": "zita-point-of-view",
       "settings": {
+        "portrait": "shopify://shop_images/20190719_202656_23572d31-62ae-4b7f-a234-9f345e40329d.webp",
         "eyebrow": "In her words",
         "quote": "“I love the unpredictability and movement of colors on the canvas. The best part is being able to work through the composition while paint is flowing on the canvas.”",
         "quote_mobile": "“I love the unpredictability and movement of colors on the canvas.”",
@@ -101,7 +112,8 @@
       "type": "zita-selected-works",
       "settings": {
         "heading": "Selected works",
-        "intro": "From the <em>vastness of the skies</em> to <em>the depth of the oceans</em>. Hover a work to see it on a wall."
+        "intro": "From the <em>vastness of the skies</em> to <em>the depth of the oceans</em>. Hover a work to see it on a wall.",
+        "products": []
       }
     },
     "recognition": {
@@ -109,7 +121,7 @@
       "settings": {
         "eyebrow": "Recognition",
         "heading": "Curator’s Choice",
-        "body": "<p><em>Un Colored by Nature</em> received the Curator’s Choice award at the Black &amp; White juried international exhibition, Le Gateau Gallery, France, 3–17 April 2026.</p>",
+        "body": "<p><em>Un Colored by Nature</em> received the Curator’s Choice award at the Black & White juried international exhibition, Le Gateau Gallery, France, 3–17 April 2026.</p>",
         "secondary": "Exhibiting since 2019, across Texas galleries and internationally.",
         "link_label": "Exhibitions",
         "link_url": ""
