@@ -1,0 +1,403 @@
+{%- liquid
+  assign menu_art = section.settings.menu_art
+  assign menu_studio = section.settings.menu_studio
+  assign legal_menu = section.settings.legal_menu
+  assign phone_digits = settings.contact_phone | remove: '-' | remove: ' ' | remove: '(' | remove: ')' | remove: '.'
+-%}
+
+<footer class="site-footer full-width">
+  <div class="site-footer__top page-width">
+    <div class="site-footer__newsletter">
+      {%- if section.settings.newsletter_eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.newsletter_eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.newsletter_heading != blank -%}
+        <h2 class="site-footer__heading">{{ section.settings.newsletter_heading | escape }}</h2>
+      {%- endif -%}
+
+      {%- form 'customer', id: 'FooterNewsletter', class: 'newsletter' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        {%- if form.posted_successfully? -%}
+          <p class="newsletter__success" role="status">{{ 'footer.newsletter_success' | t }}</p>
+        {%- else -%}
+          <div class="newsletter__field">
+            <label class="visually-hidden" for="FooterNewsletterEmail">{{ 'footer.email_label' | t }}</label>
+            <input
+              id="FooterNewsletterEmail"
+              class="newsletter__input"
+              type="email"
+              name="contact[email]"
+              value="{{ form.email }}"
+              autocomplete="email"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              placeholder="{{ 'footer.email_placeholder' | t }}"
+              required
+              {% if form.errors %}
+                aria-invalid="true" aria-describedby="FooterNewsletterError"
+              {% endif %}
+            >
+            <button class="newsletter__button" type="submit">{{ 'footer.join' | t }}</button>
+          </div>
+          {%- if form.errors -%}
+            <div id="FooterNewsletterError" class="newsletter__error" role="alert">
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+
+    <div class="site-footer__columns">
+      {%- for column in (1..2) -%}
+        {%- if forloop.first -%}
+          {%- assign column_menu = menu_art -%}
+        {%- else -%}
+          {%- assign column_menu = menu_studio -%}
+        {%- endif -%}
+        {%- if column_menu.links.size > 0 -%}
+          <nav class="site-footer__column" aria-label="{{ column_menu.title | escape }}">
+            <h3 class="site-footer__column-heading">{{ column_menu.title | escape }}</h3>
+            <ul class="list-unstyled site-footer__list">
+              {%- for link in column_menu.links -%}
+                <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if settings.contact_email != blank or settings.contact_phone != blank or settings.social_instagram_link != blank -%}
+        <div class="site-footer__column">
+          <h3 class="site-footer__column-heading">{{ 'footer.contact' | t }}</h3>
+          <ul class="list-unstyled site-footer__list">
+            {%- if settings.contact_email != blank -%}
+              <li>
+                <a class="site-footer__email" href="mailto:{{ settings.contact_email | strip }}">
+                  {{- settings.contact_email | escape -}}
+                </a>
+              </li>
+            {%- endif -%}
+            {%- if settings.contact_phone != blank -%}
+              <li><a href="tel:{{ phone_digits }}">{{ settings.contact_phone | escape }}</a></li>
+            {%- endif -%}
+            {%- if settings.social_instagram_link != blank -%}
+              <li>
+                <a class="site-footer__social" href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener">
+                  {%- render 'icon', name: 'instagram', size: 18 -%}
+                  {{- 'general.instagram' | t -}}
+                </a>
+              </li>
+            {%- endif -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="site-footer__bottom">
+    <div class="site-footer__bottom-inner page-width">
+      <a class="site-footer__wordmark" href="{{ routes.root_url }}" aria-label="{{ 'header.home_label' | t: shop: shop.name }}">
+        {%- render 'wordmark', variant: 'footer' -%}
+      </a>
+
+      <div class="site-footer__legal">
+        {%- if legal_menu.links.size > 0 -%}
+          <ul class="list-unstyled site-footer__legal-list">
+            {%- for link in legal_menu.links -%}
+              <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- elsif shop.policies.size > 0 -%}
+          <ul class="list-unstyled site-footer__legal-list">
+            {%- for policy in shop.policies -%}
+              <li><a href="{{ policy.url }}">{{ policy.title | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+        <p class="site-footer__copyright">
+          &copy; {{ 'now' | date: '%Y' }}
+          {{ section.settings.copyright_name | default: shop.name | escape }}
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% stylesheet %}
+  .site-footer {
+    --eyebrow-color: var(--color-gold);
+    background: var(--color-ink);
+    color: var(--color-gesso);
+  }
+
+  .site-footer a {
+    color: var(--color-gesso);
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    color: var(--color-gold);
+  }
+
+  .site-footer__top {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: clamp(48px, 6vw, 96px);
+    padding-block: clamp(64px, 8vw, 112px) 72px;
+  }
+
+  .site-footer__newsletter {
+    display: grid;
+    align-content: start;
+    gap: 18px;
+    max-width: 30em;
+  }
+
+  .site-footer__heading {
+    margin: 0;
+    font-size: clamp(26px, 2.4vw, 34px);
+    line-height: 1.2;
+    color: var(--color-gesso);
+  }
+
+  .newsletter {
+    margin-block-start: 6px;
+  }
+
+  .newsletter__field {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .newsletter__input {
+    flex: 1 1 220px;
+    min-width: 0;
+    height: 52px;
+    padding: 0 16px;
+    border: 1px solid var(--color-stone-500);
+    border-right: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-gesso);
+    font-size: 17px;
+  }
+
+  .newsletter__input::placeholder {
+    color: var(--color-stone-300);
+    opacity: 1;
+  }
+
+  .newsletter__button {
+    height: 52px;
+    padding: 0 24px;
+    border: 1px solid var(--color-gesso);
+    border-radius: 0;
+    background: var(--color-gesso);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--ease-pour),
+      border-color var(--duration-fast) var(--ease-pour);
+  }
+
+  .newsletter__button:hover {
+    background: var(--color-pale-teal);
+    border-color: var(--color-pale-teal);
+  }
+
+  .newsletter__success {
+    margin: 0;
+    font-size: 18px;
+    color: var(--color-pale-teal);
+  }
+
+  .newsletter__error {
+    margin-block-start: 12px;
+    font-size: 15px;
+    color: var(--color-pale-teal);
+  }
+
+  .newsletter__error ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-footer__columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    align-content: start;
+    gap: 32px;
+  }
+
+  .site-footer__column {
+    display: grid;
+    align-content: start;
+    gap: 16px;
+  }
+
+  .site-footer__column-heading {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 11px;
+    line-height: 1.4;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-stone-300);
+  }
+
+  .site-footer__list {
+    display: grid;
+    gap: 12px;
+    font-size: 17px;
+    line-height: 1.45;
+  }
+
+  .site-footer__email {
+    overflow-wrap: anywhere;
+  }
+
+  .site-footer__social {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .site-footer__bottom {
+    border-top: 1px solid var(--color-text-secondary);
+  }
+
+  .site-footer__bottom-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px 32px;
+    padding-block: 22px;
+  }
+
+  .site-footer__wordmark {
+    display: inline-flex;
+  }
+
+  .site-footer__legal,
+  .site-footer__legal-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 24px;
+  }
+
+  .site-footer__legal {
+    font-size: 15px;
+    color: var(--color-stone-300);
+  }
+
+  .site-footer .site-footer__legal a {
+    color: var(--color-stone-300);
+  }
+
+  .site-footer .site-footer__legal a:hover {
+    color: var(--color-gesso);
+  }
+
+  .site-footer__copyright {
+    margin: 0;
+  }
+
+  @media (max-width: 749px) {
+    .site-footer__top {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 44px;
+      padding-block: 48px 40px;
+    }
+
+    .site-footer__heading {
+      font-size: 24px;
+    }
+
+    .site-footer__list {
+      gap: 0;
+    }
+
+    .site-footer__list a,
+    .site-footer__legal-list a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
+
+    .site-footer__legal,
+    .site-footer__legal-list {
+      gap: 0 24px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "paragraph",
+      "content": "Sign-ups are saved as customers tagged newsletter in Shopify."
+    },
+    {
+      "type": "text",
+      "id": "newsletter_eyebrow",
+      "label": "Eyebrow",
+      "default": "Letters from the studio"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Heading",
+      "default": "New paintings, exhibitions and studio news, sent when there is something to share."
+    },
+    {
+      "type": "header",
+      "content": "Links"
+    },
+    {
+      "type": "paragraph",
+      "content": "Each menu's title becomes its column heading. Contact details come from Theme settings > Contact and social."
+    },
+    {
+      "type": "link_list",
+      "id": "menu_art",
+      "label": "First menu"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_studio",
+      "label": "Second menu"
+    },
+    {
+      "type": "link_list",
+      "id": "legal_menu",
+      "label": "Policy menu",
+      "info": "Leave blank to list the store's policies automatically."
+    },
+    {
+      "type": "text",
+      "id": "copyright_name",
+      "label": "Copyright name",
+      "default": "Ranjeeta Shroff"
+    }
+  ]
+}
+{% endschema %}

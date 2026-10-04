@@ -48,5 +48,63 @@
     "submit": "Search",
     "no_results_html": "No results found for {{ terms }}",
     "results_for_html": "{{ count }} results found for {{ terms }}"
+  },
+  "general": {
+    "skip_to_content": "Skip to content",
+    "wordmark_primary": "Zita’s",
+    "wordmark_secondary": "Art Studio",
+    "instagram": "Instagram"
+  },
+  "header": {
+    "home_label": "{{ shop }}, home",
+    "main_navigation": "Main",
+    "search": "Search",
+    "bag": {
+      "one": "Bag, {{ count }} item",
+      "other": "Bag, {{ count }} items"
+    },
+    "originals_count": {
+      "one": "{{ count }} original",
+      "other": "{{ count }} originals"
+    },
+    "menu": "Menu",
+    "close": "Close",
+    "follow_instagram": "Follow on Instagram"
+  },
+  "hero": {
+    "carousel_label": "Featured paintings",
+    "slide_label": "{{ index }} of {{ total }}: {{ heading }}",
+    "choose_slide": "Choose a slide",
+    "show_slide": "Show slide {{ index }}: {{ heading }}",
+    "pause": "Pause slideshow",
+    "play": "Play slideshow",
+    "previous": "Previous slide",
+    "next": "Next slide"
+  },
+  "series": {
+    "explore": "Explore the series"
+  },
+  "artwork": {
+    "price_from": "From {{ price }}",
+    "sold": "Sold",
+    "swipe_room": "Swipe · room",
+    "room_view": "Room view"
+  },
+  "selected_works": {
+    "swipe": "Swipe"
+  },
+  "footer": {
+    "email_label": "Email address",
+    "email_placeholder": "Your email address",
+    "join": "Join",
+    "newsletter_success": "Thank you. You’re on the list.",
+    "contact": "Contact"
+  },
+  "editor": {
+    "add_slide_image": "Add a slide image. Slides without an image are hidden from visitors.",
+    "choose_collection": "Choose a collection for this series",
+    "choose_products": "Choose up to four artworks",
+    "add_portrait": "Add a portrait of Ranjeeta",
+    "add_image": "Add an image"
   }
 }

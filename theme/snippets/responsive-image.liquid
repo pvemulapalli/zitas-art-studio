@@ -1,0 +1,104 @@
+{% doc %}
+  Renders a responsive <img> from a Shopify image, or a <picture> when an art-directed
+  mobile image (under 750px) is supplied. Alt text comes from the Shopify image.
+
+  Focal points are exposed as --focal and --focal-mobile custom properties on the <img>,
+  so cover-fit components can apply the right one per breakpoint with object-position.
+
+  @param {image} image - Shopify image
+  @param {image} [mobile_image] - Optional image for viewports under 750px
+  @param {string} [sizes] - sizes attribute (default 100vw)
+  @param {string} [mobile_sizes] - sizes for the mobile source (default 100vw)
+  @param {string} [widths] - Comma-separated candidate widths
+  @param {string} [class] - Class names for the <img>
+  @param {string} [alt] - Overrides the Shopify alt text
+  @param {boolean} [decorative] - Renders an empty alt for supplementary images
+  @param {string} [loading] - 'lazy' (default) or 'eager'
+  @param {string} [fetchpriority] - 'high', 'low' or 'auto'
+
+  @example
+  {% render 'responsive-image', image: block.settings.image, sizes: '(min-width: 750px) 58vw, 100vw', loading: 'eager', fetchpriority: 'high' %}
+{% enddoc %}
+
+{%- liquid
+  assign candidate_widths = widths | default: '360, 540, 720, 960, 1200, 1500, 1800, 2200' | split: ','
+
+  if decorative
+    assign alt_text = ''
+  else
+    assign alt_text = alt | default: image.alt | escape
+  endif
+
+  assign srcset = ''
+  assign reached_native = false
+  for candidate in candidate_widths
+    assign w = candidate | strip | plus: 0
+    if w < image.width
+      assign entry = image | image_url: width: w | append: ' ' | append: w | append: 'w, '
+      assign srcset = srcset | append: entry
+    elsif reached_native == false
+      assign entry = image | image_url: width: image.width | append: ' ' | append: image.width | append: 'w, '
+      assign srcset = srcset | append: entry
+      assign reached_native = true
+    endif
+  endfor
+  assign srcset = srcset | strip | remove_last: ','
+
+  assign fallback_width = image.width | at_most: 1200
+  assign focal = image.presentation.focal_point
+
+  if mobile_image
+    assign mobile_srcset = ''
+    assign mobile_reached_native = false
+    for candidate in candidate_widths
+      assign w = candidate | strip | plus: 0
+      if w < mobile_image.width
+        assign entry = mobile_image | image_url: width: w | append: ' ' | append: w | append: 'w, '
+        assign mobile_srcset = mobile_srcset | append: entry
+      elsif mobile_reached_native == false
+        assign entry = mobile_image | image_url: width: mobile_image.width | append: ' ' | append: mobile_image.width | append: 'w, '
+        assign mobile_srcset = mobile_srcset | append: entry
+        assign mobile_reached_native = true
+      endif
+    endfor
+    assign mobile_srcset = mobile_srcset | strip | remove_last: ','
+    assign focal_mobile = mobile_image.presentation.focal_point
+  else
+    assign focal_mobile = focal
+  endif
+-%}
+
+{%- capture img_tag -%}
+  <img
+    src="{{ image | image_url: width: fallback_width }}"
+    srcset="{{ srcset }}"
+    sizes="{{ sizes | default: '100vw' }}"
+    width="{{ image.width }}"
+    height="{{ image.height }}"
+    alt="{{ alt_text }}"
+    loading="{{ loading | default: 'lazy' }}"
+    {% if fetchpriority %}
+      fetchpriority="{{ fetchpriority }}"
+    {% endif %}
+    decoding="async"
+    {% if class %}
+      class="{{ class }}"
+    {% endif %}
+    style="--focal: {{ focal }}; --focal-mobile: {{ focal_mobile }};"
+  >
+{%- endcapture -%}
+
+{%- if mobile_image -%}
+  <picture>
+    <source
+      media="(max-width: 749px)"
+      srcset="{{ mobile_srcset }}"
+      sizes="{{ mobile_sizes | default: '100vw' }}"
+      width="{{ mobile_image.width }}"
+      height="{{ mobile_image.height }}"
+    >
+    {{ img_tag }}
+  </picture>
+{%- else -%}
+  {{ img_tag }}
+{%- endif -%}

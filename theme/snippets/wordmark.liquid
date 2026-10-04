@@ -1,0 +1,83 @@
+{% doc %}
+  Renders the live-text "ZITA'S | ART STUDIO" wordmark (V2 tracked capitals).
+  The parent link supplies the accessible name.
+
+  @param {string} [variant] - 'header' (default) or 'footer' (reversed for dark grounds)
+
+  @example
+  {% render 'wordmark', variant: 'footer' %}
+{% enddoc %}
+
+<span class="wordmark wordmark--{{ variant | default: 'header' }}" aria-hidden="true">
+  <span class="wordmark__primary">{{ 'general.wordmark_primary' | t }}</span>
+  <span class="wordmark__rule"></span>
+  <span class="wordmark__secondary">{{ 'general.wordmark_secondary' | t }}</span>
+</span>
+
+{% stylesheet %}
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    white-space: nowrap;
+    font-family: var(--font-display);
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--color-ink);
+  }
+
+  .wordmark__primary {
+    font-size: 21px;
+    letter-spacing: 0.2em;
+  }
+
+  .wordmark__rule {
+    width: 1px;
+    height: 20px;
+    background: var(--color-stone-300);
+  }
+
+  .wordmark__secondary {
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    color: var(--color-text-secondary);
+  }
+
+  .wordmark--footer {
+    gap: 12px;
+    color: var(--color-gesso);
+  }
+
+  .wordmark--footer .wordmark__primary {
+    font-size: 18px;
+  }
+
+  .wordmark--footer .wordmark__rule {
+    height: 16px;
+    background: var(--color-stone-500);
+  }
+
+  .wordmark--footer .wordmark__secondary {
+    font-size: 10px;
+    color: var(--color-stone-200);
+  }
+
+  @media (max-width: 999px) {
+    .wordmark--header {
+      gap: 10px;
+    }
+
+    .wordmark--header .wordmark__primary {
+      font-size: 17px;
+    }
+
+    .wordmark--header .wordmark__rule {
+      height: 16px;
+    }
+
+    .wordmark--header .wordmark__secondary {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+    }
+  }
+{% endstylesheet %}

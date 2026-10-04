@@ -1,22 +1,34 @@
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
+    {% # Social, title, etc. %}
+    {% render 'meta-tags' %}
+
+    <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {{ settings.type_display_font | font_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: true }}
+    {{ settings.type_body_font | font_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: true }}
+
     {% # Inlined CSS Variables %}
     {% render 'css-variables' %}
 
     {% # Load and preload the critical CSS %}
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
-
-    {% # Social, title, etc. %}
-    {% render 'meta-tags' %}
+    {{ 'zita-base.css' | asset_url | stylesheet_tag }}
 
     {{ content_for_header }}
   </head>
 
   <body>
+    <a class="skip-link" href="#MainContent">{{ 'general.skip_to_content' | t }}</a>
+
     {% sections 'header-group' %}
 
-    {{ content_for_layout }}
+    <main id="MainContent" tabindex="-1">
+      {%- if request.page_type == 'index' -%}
+        <h1 class="visually-hidden">{{ page_title }}</h1>
+      {%- endif -%}
+      {{ content_for_layout }}
+    </main>
 
     {% sections 'footer-group' %}
   </body>

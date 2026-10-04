@@ -1,0 +1,202 @@
+{% doc %}
+  Renders an artwork on a mat: contained, never cropped, with the hang shadow.
+  Optionally layers a room/context photograph that a parent (such as the artwork card)
+  reveals on hover/focus, or that can be swiped to on touch screens.
+
+  Modifier classes: artwork-plate--square, artwork-plate--square-mobile, artwork-plate--wide-pad.
+
+  @param {image} [image] - The artwork image
+  @param {image} [room_image] - Optional room/context photograph
+  @param {boolean} [room_swipe] - On touch screens, lets the visitor swipe to the room view
+  @param {string} [sizes] - sizes attribute for the artwork image
+  @param {string} [loading] - 'lazy' (default) or 'eager'
+  @param {string} [class] - Modifier classes
+  @param {string} [placeholder] - Theme-editor-only text shown when there is no image
+
+  @example
+  {% render 'artwork-plate', image: product.featured_image, sizes: '(min-width: 750px) 25vw, 78vw' %}
+{% enddoc %}
+
+{%- liquid
+  assign plate_classes = 'artwork-plate'
+  if room_image
+    assign plate_classes = plate_classes | append: ' artwork-plate--has-room'
+    if room_swipe
+      assign plate_classes = plate_classes | append: ' artwork-plate--swipe'
+    endif
+  endif
+  if class
+    assign plate_classes = plate_classes | append: ' ' | append: class
+  endif
+-%}
+
+<div class="{{ plate_classes }}">
+  <plate-views class="artwork-plate__views">
+    <div class="artwork-plate__frame">
+      {%- if image -%}
+        {%- render 'responsive-image',
+          image: image,
+          sizes: sizes,
+          loading: loading,
+          widths: '240, 360, 480, 640, 800, 1000, 1200',
+          class: 'artwork-plate__image'
+        -%}
+      {%- elsif request.design_mode and placeholder != blank -%}
+        <span class="editor-placeholder">{{ placeholder }}</span>
+      {%- endif -%}
+    </div>
+    {%- if room_image -%}
+      <div class="artwork-plate__room">
+        {%- render 'responsive-image',
+          image: room_image,
+          sizes: sizes,
+          loading: 'lazy',
+          widths: '360, 480, 640, 800, 1000, 1200',
+          class: 'artwork-plate__room-image',
+          decorative: true
+        -%}
+      </div>
+    {%- endif -%}
+  </plate-views>
+  {%- if room_image and room_swipe -%}
+    <span class="artwork-plate__tag" aria-hidden="true">
+      <span class="artwork-plate__dot is-current"></span>
+      <span class="artwork-plate__dot"></span>
+      <span
+        class="artwork-plate__tag-label"
+        data-label-art="{{ 'artwork.swipe_room' | t }}"
+        data-label-room="{{ 'artwork.room_view' | t }}"
+      >
+        {{- 'artwork.swipe_room' | t -}}
+      </span>
+    </span>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .artwork-plate {
+    --plate-padding: 10%;
+    position: relative;
+    aspect-ratio: 4 / 5;
+    min-width: 0;
+    overflow: hidden;
+    background: var(--color-mat);
+    transition: background-color var(--duration-base) var(--ease-pour);
+  }
+
+  .artwork-plate--square {
+    aspect-ratio: 1;
+  }
+
+  .artwork-plate--wide-pad {
+    --plate-padding: 12%;
+  }
+
+  .artwork-plate__views {
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+
+  .artwork-plate__frame {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--plate-padding);
+    transition: opacity var(--duration-slow) var(--ease-pour);
+  }
+
+  .artwork-plate__image {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    box-shadow: var(--shadow-hang);
+  }
+
+  .artwork-plate__room {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity var(--duration-slow) var(--ease-pour);
+  }
+
+  .artwork-plate__room-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focal, 50% 50%);
+  }
+
+  .artwork-plate__tag {
+    display: none;
+  }
+
+  @media (max-width: 749px) {
+    .artwork-plate--square-mobile {
+      aspect-ratio: 1;
+    }
+  }
+
+  @media (hover: none) {
+    .artwork-plate--swipe .artwork-plate__views {
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+
+    .artwork-plate--swipe .artwork-plate__views::-webkit-scrollbar {
+      display: none;
+    }
+
+    .artwork-plate--swipe .artwork-plate__frame,
+    .artwork-plate--swipe .artwork-plate__room {
+      position: relative;
+      inset: auto;
+      flex: 0 0 100%;
+      height: 100%;
+      opacity: 1;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+
+    .artwork-plate--swipe .artwork-plate__tag {
+      position: absolute;
+      inset-block-end: 10px;
+      inset-inline-end: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      background: rgb(248 248 246 / 0.92);
+      pointer-events: none;
+    }
+
+    .artwork-plate__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-stone-300);
+    }
+
+    .artwork-plate__dot.is-current {
+      background: var(--color-ink);
+    }
+
+    .artwork-plate__tag-label {
+      margin-inline-start: 4px;
+      font-family: var(--font-display);
+      font-size: 10px;
+      line-height: 1;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-text-secondary);
+    }
+  }
+{% endstylesheet %}

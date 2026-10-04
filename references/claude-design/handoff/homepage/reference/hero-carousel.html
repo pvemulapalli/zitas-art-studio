@@ -1,0 +1,277 @@
+<!doctype html>
+<!-- REFERENCE ONLY — Cursor must translate this into Shopify Liquid/sections/blocks/snippets.
+     Illustrates the approved V2 hero carousel behaviour. Not production structure. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hero carousel — reference</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Mulish:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --gesso:#F8F8F6;--mist:#E3E7E7;--vaayu:#DCE6EA;--ink:#15202A;--body:#3B4044;--meta:#565C61;--stone5:#767C80;
+  --teal:#0F5468;--teal-h:#0B4050;--copper:#96502A;--focus:#2E8FB5;
+  --ease:cubic-bezier(.22,.61,.36,1);--gutter:clamp(20px,3.4vw,56px);
+  --font-display:'Marcellus',Georgia,serif;--font-body:'Mulish',Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--gesso);color:var(--ink);font-family:var(--font-body)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Desktop: stacked slides that crossfade ---------- */
+.hc{position:relative;background:var(--gesso)}
+.hc__viewport{position:relative;height:clamp(520px,calc(100vh - 250px),820px);overflow:hidden;touch-action:pan-y}
+.hc__slide{position:absolute;inset:0;background:var(--ground,var(--gesso));opacity:0;visibility:hidden;
+  transition:opacity 900ms var(--ease),visibility 0s linear 900ms}
+.hc__slide.is-active{opacity:1;visibility:visible;transition:opacity 900ms var(--ease),visibility 0s}
+.hc__text{display:grid;gap:24px;opacity:0;transform:translateY(12px);
+  transition:opacity 900ms var(--ease) 250ms,transform 900ms var(--ease) 250ms}
+.is-active .hc__text{opacity:1;transform:none}
+.hc__h{margin:0;font-family:var(--font-display);font-weight:400;font-size:clamp(40px,4.4vw,72px);line-height:1.06;text-wrap:balance}
+.hc__p{margin:0;font-size:clamp(18px,1.4vw,21px);line-height:1.55;max-width:28em;color:var(--body);text-wrap:pretty}
+.hc__p.is-quote{font-style:italic}
+.btn{display:inline-flex;align-items:center;gap:10px;height:56px;padding:0 32px;margin-top:6px;justify-self:start;
+  font-family:var(--font-display);font-size:14px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;
+  background:var(--teal);color:#F8F8F6;border:1px solid var(--teal);transition:background 160ms}
+.btn:hover{background:var(--teal-h)}
+.btn--inverse{background:var(--gesso);color:var(--ink);border-color:var(--gesso)}
+.btn--inverse:hover{background:#fff}
+.btn::after{content:"→";transition:transform 320ms var(--ease)}
+.btn:hover::after{transform:translateX(3px)}
+
+/* Whole painting (contain): 5 text / 7 art */
+.hc__slide--contain .hc__inner{position:absolute;inset:0;max-width:1680px;margin:0 auto;display:flex}
+.hc__slide--contain.text-right .hc__inner{flex-direction:row-reverse}
+.hc__col-text{flex:5 1 0;min-width:0;display:flex;flex-direction:column;justify-content:var(--vjc,flex-end);
+  padding:clamp(48px,6vw,104px) var(--gutter)}
+.hc__col-text .hc__h{max-width:12ch}
+.hc__col-art{flex:7 1 0;min-width:0;position:relative}
+.hc__art{position:absolute;inset:clamp(40px,5vw,80px) clamp(20px,4vw,72px);display:flex;align-items:center;justify-content:center}
+.hc__art img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;
+  box-shadow:0 1px 2px rgba(13,20,26,.06),0 30px 60px -28px rgba(13,20,26,.4);
+  transform:translateY(16px);transition:transform 1200ms var(--ease)}
+.is-active .hc__art img{transform:none}
+
+/* Full-bleed (cover) */
+.hc__slide--cover picture,.hc__slide--cover img.hc__bg{position:absolute;inset:0;width:100%;height:100%}
+.hc__slide--cover img.hc__bg{object-fit:cover;object-position:var(--focal,50% 50%)}
+.hc__overlay{position:absolute;inset:0;background:rgba(13,20,26,var(--overlay,0));pointer-events:none}
+.hc__over{position:absolute;inset:0;max-width:1680px;margin:0 auto;display:flex;justify-content:var(--jc,flex-start);
+  align-items:var(--vjc,flex-end);padding:clamp(48px,6vw,104px) var(--gutter);pointer-events:none}
+.hc__over .hc__text{max-width:min(560px,46%);pointer-events:auto}
+.tone-light .hc__h{color:#F8F8F6}.tone-light .hc__p{color:#E3E7E7}
+
+/* Label strip + controls (below the slide, never on the painting) */
+.hc__bar{border-bottom:1px solid var(--mist)}
+.hc__bar-in{max-width:1560px;margin:0 auto;padding:0 var(--gutter);min-height:76px;display:flex;align-items:center;flex-wrap:wrap;gap:8px 28px}
+.hc__credit{flex:1 1 280px;min-width:0;padding:12px 0;font-size:15px;line-height:1.4;color:var(--body);text-decoration:none}
+.hc__credit:hover{color:var(--copper)}
+.hc__ctrls{display:flex;align-items:center;gap:20px}
+.hc__dots{display:flex}
+.hc__dot{width:44px;height:44px;border:0;background:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.hc__dot span{display:block;width:30px;height:1px;background:var(--stone5);transition:background 160ms}
+.hc__dot[aria-current="true"] span{height:2px;background:var(--ink)}
+.hc__count{font-size:14px;font-variant-numeric:tabular-nums lining-nums;letter-spacing:.08em;color:var(--meta);min-width:58px;text-align:center}
+.hc__btns{display:flex;gap:6px}
+.ib{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:1px solid var(--ink);color:var(--ink);cursor:pointer;font-size:18px;transition:background 160ms,color 160ms}
+.ib:hover{background:var(--ink);color:#F8F8F6}
+
+/* ---------- Mobile (<750px): horizontal track, text below image ---------- */
+@media (max-width:749px){
+  .hc__viewport{height:auto}
+  .hc__track{display:flex;transition:transform 480ms var(--ease)}
+  .hc__track.is-dragging{transition:none}
+  .hc__slide{position:relative;inset:auto;flex:0 0 100%;opacity:1;visibility:visible;transition:none;
+    display:flex;flex-direction:column;background:var(--ground-m,var(--gesso))}
+  .hc__slide--contain .hc__inner,.hc__over{position:static;display:contents}
+  .hc__media{position:relative;aspect-ratio:4/5;overflow:hidden;order:0}
+  .hc__media--contain{display:flex;align-items:center;justify-content:center;padding:12% 11% 10%}
+  .hc__media--contain img{max-width:100%;max-height:100%;box-shadow:0 1px 2px rgba(13,20,26,.06),0 20px 40px -20px rgba(13,20,26,.4)}
+  .hc__media--cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--focal-m,50% 50%)}
+  .hc__col-art,.hc__overlay,.hc__slide--cover > picture{display:none}
+  .hc__col-text,.hc__over .hc__text{order:1;padding:22px 24px 32px;max-width:none}
+  .hc__text{opacity:1;transform:none;gap:14px}
+  .hc__h{font-size:32px;line-height:1.1;color:var(--ink)!important;max-width:none!important}
+  .hc__p{font-size:17px;color:var(--body)!important}
+  .btn{width:100%;justify-content:center}
+  .btn--inverse{background:var(--teal);color:#F8F8F6;border-color:var(--teal)}
+  .hc__m-credit{font-size:14px;color:var(--body);text-decoration:none}
+  .hc__credit{display:none}
+  .hc__bar{border-top:1px solid var(--mist)}
+  .hc__bar-in{padding:4px 12px 4px 10px;min-height:0;justify-content:space-between}
+  .hc__count{display:none}
+  .hc__dot span{width:22px}
+  .ib{border:0}
+}
+@media (min-width:750px){.hc__media,.hc__m-credit{display:none}}
+
+@media (prefers-reduced-motion:reduce){
+  .hc *,.hc *::after{transition-duration:1ms!important;transition-delay:0s!important}
+  .hc__text,.hc__art img{transform:none!important}
+}
+</style>
+</head>
+<body>
+
+<h1 class="vh">Zita’s Art Studio: fluid paintings by Ranjeeta Shroff</h1>
+
+<!-- In Liquid: one .hc__slide per block; settings become classes / CSS custom properties. -->
+<section class="hc" aria-roledescription="carousel" aria-label="Featured paintings" data-autoplay="true" data-interval="7">
+  <div class="vh" aria-live="off" aria-atomic="true" data-live></div>
+  <div class="hc__viewport">
+    <div class="hc__track">
+
+      <!-- Slide 1: whole painting, Vaayu mist ground, text left/bottom -->
+      <div class="hc__slide hc__slide--contain" role="group" aria-roledescription="slide" aria-label="1 of 3: Moving into Unknown through flowing paint"
+           style="--ground:#DCE6EA;--ground-m:#DCE6EA;--vjc:flex-end" data-credit="Vaayu – Air · Elements · 12 × 12 in" data-credit-url="#">
+        <div class="hc__media hc__media--contain"><img src="../../art/vaayu-air-c.png" alt="Vaayu – Air"></div>
+        <div class="hc__inner">
+          <div class="hc__col-text"><div class="hc__text">
+            <a class="hc__m-credit" href="#">Vaayu – Air · Elements · 12 × 12 in</a>
+            <h2 class="hc__h">Moving into Unknown through flowing paint</h2>
+            <p class="hc__p is-quote">“Every space deserves art that not only decorates but also provokes thought.”</p>
+            <a class="btn" href="#">View originals</a>
+          </div></div>
+          <div class="hc__col-art"><div class="hc__art"><img src="../../art/vaayu-air-c.png" alt="Vaayu – Air: white ground with a diagonal pour of cerulean, deep blue and copper cells" fetchpriority="high"></div></div>
+        </div>
+      </div>
+
+      <!-- Slide 2: full-bleed detail on desktop, whole painting on mobile; light text, 15% overlay -->
+      <div class="hc__slide hc__slide--cover tone-light" role="group" aria-roledescription="slide" aria-label="2 of 3: Moonlit Waves"
+           style="--focal:50% 40%;--overlay:.15;--jc:flex-start;--vjc:flex-start;--ground-m:#F8F8F6" data-credit="Moonlit Waves (detail) · BlackWhiteandGrey · 30 × 48 in" data-credit-url="#">
+        <div class="hc__media hc__media--contain"><img src="../../art/moonlit-waves.webp" alt="Moonlit Waves" loading="lazy"></div>
+        <picture><img class="hc__bg" src="../../art/moonlit-waves.webp" alt="Detail of Moonlit Waves" loading="lazy"></picture>
+        <div class="hc__overlay"></div>
+        <div class="hc__over"><div class="hc__text">
+          <a class="hc__m-credit" href="#">Moonlit Waves · BlackWhiteandGrey · 30 × 48 in</a>
+          <h2 class="hc__h">Moonlit Waves</h2>
+          <p class="hc__p is-quote">“…the moon illuminated the waves putting up a graceful show of light and sound.”</p>
+          <a class="btn btn--inverse" href="#">View the painting</a>
+        </div></div>
+      </div>
+
+      <!-- Slide 3: whole painting, gesso, text right/middle -->
+      <div class="hc__slide hc__slide--contain text-right" role="group" aria-roledescription="slide" aria-label="3 of 3: Elements"
+           style="--ground:#F8F8F6;--vjc:center" data-credit="Jal – Water · Elements · 12 × 12 in" data-credit-url="#">
+        <div class="hc__media hc__media--contain"><img src="../../art/jal-water-c.png" alt="Jal – Water" loading="lazy"></div>
+        <div class="hc__inner">
+          <div class="hc__col-text"><div class="hc__text">
+            <a class="hc__m-credit" href="#">Jal – Water · Elements · 12 × 12 in</a>
+            <h2 class="hc__h">Elements</h2>
+            <p class="hc__p">Our body is made of the five elements from nature - Prithvi (Earth), Agni (fire), Jal (Water), Vaayu (Air) and Akaash (aether/sky).</p>
+            <a class="btn" href="#">Explore the series</a>
+          </div></div>
+          <div class="hc__col-art"><div class="hc__art"><img src="../../art/jal-water-c.png" alt="Jal – Water: cerulean and ultramarine cells pouring across a white ground" loading="lazy"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="hc__bar"><div class="hc__bar-in">
+    <a class="hc__credit" href="#" data-credit-el></a>
+    <div class="hc__ctrls">
+      <div class="hc__dots" role="group" aria-label="Choose a slide" data-dots></div>
+      <span class="hc__count" aria-hidden="true" data-count></span>
+      <div class="hc__btns">
+        <button class="ib" type="button" data-play aria-label="Pause slideshow">❚❚</button>
+        <button class="ib" type="button" data-prev aria-label="Previous slide">←</button>
+        <button class="ib" type="button" data-next aria-label="Next slide">→</button>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<script>
+/* REFERENCE ONLY. In the theme, wrap as a custom element (e.g. <hero-carousel>) in assets/. ~2 KB. */
+(function () {
+  const root = document.querySelector('.hc');
+  const track = root.querySelector('.hc__track');
+  const slides = [...root.querySelectorAll('.hc__slide')];
+  const dotsEl = root.querySelector('[data-dots]'), countEl = root.querySelector('[data-count]');
+  const creditEl = root.querySelector('[data-credit-el]'), live = root.querySelector('[data-live]');
+  const playBtn = root.querySelector('[data-play]');
+  const mqMobile = matchMedia('(max-width:749px)');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const interval = (+root.dataset.interval || 7) * 1000;
+  const autoplay = root.dataset.autoplay === 'true';
+  let i = 0, paused = reduced || !autoplay, hover = false, focus = false, dragging = false, last = Date.now();
+  if (!autoplay) playBtn.hidden = true;
+
+  const dots = slides.map((s, n) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'hc__dot';
+    b.setAttribute('aria-label', 'Show slide ' + (n + 1) + ': ' + s.querySelector('.hc__h').textContent);
+    b.innerHTML = '<span></span>'; b.addEventListener('click', () => go(n, true));
+    dotsEl.appendChild(b); return b;
+  });
+
+  function render(announce) {
+    slides.forEach((s, n) => {
+      const on = n === i;
+      s.classList.toggle('is-active', on);
+      s.setAttribute('aria-hidden', on ? 'false' : 'true');
+      s.inert = !on;
+    });
+    dots.forEach((d, n) => d.setAttribute('aria-current', n === i ? 'true' : 'false'));
+    countEl.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+    creditEl.textContent = slides[i].dataset.credit || '';
+    creditEl.href = slides[i].dataset.creditUrl || '#';
+    track.style.transform = mqMobile.matches ? 'translateX(' + (-i * 100) + '%)' : '';
+    live.setAttribute('aria-live', announce ? 'polite' : 'off');
+    live.textContent = 'Slide ' + (i + 1) + ' of ' + slides.length + ': ' + slides[i].querySelector('.hc__h').textContent;
+  }
+  function go(n, user) { i = (n + slides.length) % slides.length; last = Date.now(); render(!!user); }
+  const running = () => !paused && !hover && !focus && !dragging && !document.hidden;
+
+  setInterval(() => {
+    if (!running()) { last = Math.max(last, Date.now() - interval + 1500); return; }
+    if (Date.now() - last >= interval) go(i + 1, false);
+  }, 250);
+
+  playBtn.addEventListener('click', () => {
+    paused = !paused; last = Date.now();
+    playBtn.textContent = paused ? '▶' : '❚❚';
+    playBtn.setAttribute('aria-label', paused ? 'Play slideshow' : 'Pause slideshow');
+  });
+  if (paused) { playBtn.textContent = '▶'; playBtn.setAttribute('aria-label', 'Play slideshow'); }
+  root.querySelector('[data-prev]').addEventListener('click', () => go(i - 1, true));
+  root.querySelector('[data-next]').addEventListener('click', () => go(i + 1, true));
+  root.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); go(i + 1, true); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(i - 1, true); }
+  });
+  root.addEventListener('mouseenter', () => { if (!mqMobile.matches) hover = true; });
+  root.addEventListener('mouseleave', () => { hover = false; last = Date.now(); });
+  root.addEventListener('focusin', () => { focus = true; });
+  root.addEventListener('focusout', (e) => { if (!root.contains(e.relatedTarget)) { focus = false; last = Date.now(); } });
+  document.addEventListener('visibilitychange', () => { last = Date.now(); });
+
+  /* Swipe: axis lock at 8px, threshold 50px, 35% resistance at the ends, swallow click after drag */
+  const vp = root.querySelector('.hc__viewport');
+  let p = null, moved = false;
+  vp.addEventListener('pointerdown', (e) => { if (e.button > 0) return; p = { x: e.clientX, y: e.clientY, dx: 0, h: null }; moved = false; });
+  vp.addEventListener('pointermove', (e) => {
+    if (!p) return; const dx = e.clientX - p.x, dy = e.clientY - p.y;
+    if (p.h === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) p.h = Math.abs(dx) > Math.abs(dy);
+    if (!p.h) return; p.dx = dx; moved = true; dragging = true;
+    if (mqMobile.matches) {
+      const edge = (i === 0 && dx > 0) || (i === slides.length - 1 && dx < 0);
+      track.classList.add('is-dragging');
+      track.style.transform = 'translateX(calc(' + (-i * 100) + '% + ' + (edge ? dx * .35 : dx) + 'px))';
+    }
+  });
+  const end = () => {
+    if (!p) return; const dx = p.h ? p.dx : 0; p = null; dragging = false;
+    track.classList.remove('is-dragging');
+    if (dx < -50) go(i + 1, true); else if (dx > 50) go(i - 1, true); else render(false);
+  };
+  vp.addEventListener('pointerup', end); vp.addEventListener('pointercancel', end);
+  vp.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+  mqMobile.addEventListener('change', () => render(false));
+
+  render(false);
+})();
+</script>
+</body>
+</html>

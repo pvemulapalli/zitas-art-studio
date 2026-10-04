@@ -1,0 +1,22 @@
+{% doc %}
+  Renders a caps label link with a hairline underline and trailing arrow.
+  Outputs nothing unless both a URL and a label are present.
+
+  @param {string} url - Destination
+  @param {string} label - Link text
+  @param {string} [tone] - 'light' (default) or 'dark' for dark grounds
+  @param {string} [class] - Extra class names
+
+  @example
+  {% render 'label-link', url: section.settings.link_url, label: section.settings.link_label, tone: 'dark' %}
+{% enddoc %}
+
+{%- if url != blank and label != blank -%}
+  <a
+    class="label-link{% if tone == 'dark' %} label-link--dark{% endif %} {{ class }}"
+    href="{{ url }}"
+  >
+    {{- label | escape -}}
+    {%- render 'icon', name: 'arrow-right', size: 16, class: 'label-link__arrow' -%}
+  </a>
+{%- endif -%}

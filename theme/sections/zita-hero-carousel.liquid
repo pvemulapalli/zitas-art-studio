@@ -1,0 +1,469 @@
+{{ 'zita-hero-carousel.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'zita-hero-carousel.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign slide_total = 0
+  for block in section.blocks
+    if block.settings.image or request.design_mode
+      assign slide_total = slide_total | plus: 1
+    endif
+  endfor
+
+  assign autoplay = section.settings.autoplay
+  if slide_total < 2
+    assign autoplay = false
+  endif
+-%}
+
+{%- if slide_total > 0 -%}
+  <zita-hero-carousel
+    class="hero hero--height-{{ section.settings.height_desktop }} full-width"
+    role="region"
+    aria-roledescription="carousel"
+    aria-label="{{ 'hero.carousel_label' | t }}"
+    data-autoplay="{{ autoplay }}"
+    data-interval="{{ section.settings.autoplay_speed }}"
+    data-label-pause="{{ 'hero.pause' | t }}"
+    data-label-play="{{ 'hero.play' | t }}"
+  >
+    <div class="visually-hidden" aria-live="off" aria-atomic="true" data-live></div>
+
+    <div class="hero__viewport">
+      <div class="hero__track">
+        {%- assign slide_index = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- unless block.settings.image or request.design_mode -%}
+            {%- continue -%}
+          {%- endunless -%}
+          {%- liquid
+            assign slide_index = slide_index | plus: 1
+            assign is_first = false
+            if slide_index == 1
+              assign is_first = true
+            endif
+
+            assign fit = block.settings.image_fit
+            assign fit_mobile = block.settings.image_fit_mobile
+            if fit_mobile == 'same'
+              assign fit_mobile = fit
+            endif
+
+            case block.settings.ground
+              when 'vaayu_mist'
+                assign ground = 'var(--color-vaayu-mist)'
+              when 'stone_mist'
+                assign ground = 'var(--color-stone-mist)'
+              when 'sand'
+                assign ground = 'var(--color-sand)'
+              else
+                assign ground = 'var(--color-gesso)'
+            endcase
+            assign ground_mobile = ground
+            if fit == 'cover'
+              assign ground_mobile = 'var(--color-gesso)'
+            endif
+
+            assign text_position = block.settings.text_position
+            if fit == 'contain' and text_position == 'center'
+              assign text_position = 'left'
+            endif
+
+            assign overlay = 0
+            if fit == 'cover'
+              assign overlay = block.settings.overlay_opacity | divided_by: 100.0
+            endif
+
+            if fit == 'cover'
+              assign desktop_size = '100vw'
+            else
+              assign desktop_size = 'min(58vw, 980px)'
+            endif
+            if fit_mobile == 'cover'
+              assign mobile_size = '100vw'
+            else
+              assign mobile_size = '78vw'
+            endif
+            assign image_sizes = '(min-width: 750px) ' | append: desktop_size | append: ', ' | append: mobile_size
+
+            assign image_loading = 'lazy'
+            assign image_priority = nil
+            if is_first and section.index == 1
+              assign image_loading = 'eager'
+              assign image_priority = 'high'
+            endif
+
+            assign heading = block.settings.heading | default: block.settings.artwork.title
+
+            assign text_is_quote = false
+            assign first_char = block.settings.text | strip | slice: 0
+            if first_char == '“' or first_char == '"' or first_char == '‘'
+              assign text_is_quote = true
+            endif
+
+            assign credit_text = ''
+            assign credit_url = ''
+            if block.settings.artwork
+              capture artwork_dimensions
+                render 'artwork-dimensions', product: block.settings.artwork
+              endcapture
+              assign credit_text = block.settings.artwork.title
+              if artwork_dimensions != blank
+                assign credit_text = credit_text | append: ' · ' | append: artwork_dimensions
+              endif
+              assign credit_url = block.settings.artwork.url
+            elsif block.settings.credit != blank
+              assign credit_text = block.settings.credit
+            endif
+            if section.settings.show_label == false
+              assign credit_text = ''
+            endif
+          -%}
+
+          <div
+            class="hero-slide hero-slide--{{ fit }} hero-slide--m-{{ fit_mobile }} hero-slide--text-{{ text_position }} hero-slide--v-{{ block.settings.text_vertical }}{% if block.settings.text_color == 'light' %} hero-slide--light{% endif %}{% if is_first %} is-active{% endif %}"
+            role="group"
+            aria-roledescription="slide"
+            aria-label="{{ 'hero.slide_label' | t: index: slide_index, total: slide_total, heading: heading }}"
+            data-credit="{{ credit_text | escape }}"
+            data-credit-url="{{ credit_url }}"
+            style="--slide-ground: {{ ground }}; --slide-ground-mobile: {{ ground_mobile }}; --overlay: {{ overlay }};"
+            {% unless is_first %}
+              aria-hidden="true" inert
+            {% endunless %}
+            {{ block.shopify_attributes }}
+          >
+            <div class="hero-slide__inner">
+              <div class="hero-slide__media">
+                <div class="hero-slide__frame">
+                  {%- if block.settings.image -%}
+                    {%- render 'responsive-image',
+                      image: block.settings.image,
+                      mobile_image: block.settings.image_mobile,
+                      sizes: image_sizes,
+                      mobile_sizes: mobile_size,
+                      widths: '480, 720, 960, 1200, 1500, 1800, 2200, 2800, 3200',
+                      class: 'hero-slide__image',
+                      loading: image_loading,
+                      fetchpriority: image_priority
+                    -%}
+                  {%- else -%}
+                    <span class="editor-placeholder">{{ 'editor.add_slide_image' | t }}</span>
+                  {%- endif -%}
+                </div>
+                {%- if overlay > 0 -%}
+                  <div class="hero-slide__overlay"></div>
+                {%- endif -%}
+              </div>
+
+              <div class="hero-slide__content">
+                <div class="hero-slide__text">
+                  {%- if credit_text != blank -%}
+                    {%- if credit_url != blank -%}
+                      <a class="hero-slide__credit" href="{{ credit_url }}">{{ credit_text | escape }}</a>
+                    {%- else -%}
+                      <p class="hero-slide__credit">{{ credit_text | escape }}</p>
+                    {%- endif -%}
+                  {%- endif -%}
+
+                  {%- if heading != blank -%}
+                    <h2 class="hero-slide__heading">{{ heading | escape }}</h2>
+                  {%- endif -%}
+
+                  {%- if block.settings.text != blank -%}
+                    <p class="hero-slide__body{% if text_is_quote %} hero-slide__body--quote{% endif %}">
+                      {{- block.settings.text | escape | newline_to_br -}}
+                    </p>
+                  {%- endif -%}
+
+                  {%- if block.settings.cta_label != blank and block.settings.cta_url != blank -%}
+                    <a
+                      class="button button--large hero-slide__button{% if block.settings.text_color == 'light' %} button--inverse{% endif %}"
+                      href="{{ block.settings.cta_url }}"
+                    >
+                      {{- block.settings.cta_label | escape -}}
+                      {%- render 'icon', name: 'arrow-right', size: 18, class: 'button__arrow' -%}
+                    </a>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {%- if is_first -%}
+            {%- assign first_credit_text = credit_text -%}
+            {%- assign first_credit_url = credit_url -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <div class="hero__bar">
+      <div class="hero__bar-inner page-width">
+        <a
+          class="hero__credit"
+          {% if first_credit_url != blank %}
+            href="{{ first_credit_url }}"
+          {% endif %}
+          data-credit-link
+        >
+          {{- first_credit_text | escape -}}
+        </a>
+
+        {%- if slide_total > 1 -%}
+          <div class="hero__controls">
+            <div class="hero__dots" role="group" aria-label="{{ 'hero.choose_slide' | t }}">
+              {%- assign dot_index = 0 -%}
+              {%- for block in section.blocks -%}
+                {%- unless block.settings.image or request.design_mode -%}
+                  {%- continue -%}
+                {%- endunless -%}
+                {%- assign dot_index = dot_index | plus: 1 -%}
+                {%- assign dot_heading = block.settings.heading | default: block.settings.artwork.title -%}
+                <button
+                  class="hero__dot"
+                  type="button"
+                  aria-label="{{ 'hero.show_slide' | t: index: dot_index, heading: dot_heading }}"
+                  aria-current="{% if dot_index == 1 %}true{% else %}false{% endif %}"
+                  data-dot
+                >
+                  <span></span>
+                </button>
+              {%- endfor -%}
+            </div>
+
+            <span class="hero__count" aria-hidden="true" data-count>
+              01 / {% if slide_total < 10 %}0{% endif %}{{ slide_total }}
+            </span>
+
+            <div class="hero__buttons">
+              {%- if autoplay -%}
+                <button
+                  class="icon-button icon-button--outline hero__button"
+                  type="button"
+                  aria-label="{{ 'hero.pause' | t }}"
+                  data-play
+                >
+                  {%- render 'icon', name: 'pause', size: 18, class: 'hero__icon-pause' -%}
+                  {%- render 'icon', name: 'play', size: 18, class: 'hero__icon-play' -%}
+                </button>
+              {%- endif -%}
+              <button
+                class="icon-button icon-button--outline hero__button"
+                type="button"
+                aria-label="{{ 'hero.previous' | t }}"
+                data-prev
+              >
+                {%- render 'icon', name: 'arrow-left', size: 18 -%}
+              </button>
+              <button
+                class="icon-button icon-button--outline hero__button"
+                type="button"
+                aria-label="{{ 'hero.next' | t }}"
+                data-next
+              >
+                {%- render 'icon', name: 'arrow-right', size: 18 -%}
+              </button>
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </zita-hero-carousel>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Hero carousel",
+  "class": "section-hero",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Rotate slides automatically",
+      "default": true,
+      "info": "Always starts paused for visitors who ask their device for reduced motion."
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Time per slide",
+      "min": 5,
+      "max": 12,
+      "step": 1,
+      "unit": "s",
+      "default": 7
+    },
+    {
+      "type": "select",
+      "id": "height_desktop",
+      "label": "Height on larger screens",
+      "options": [
+        { "value": "screen", "label": "First screen" },
+        { "value": "large", "label": "Large (760px)" },
+        { "value": "medium", "label": "Medium (640px)" }
+      ],
+      "default": "screen"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_label",
+      "label": "Show artwork credit",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Whole painting: the clean artwork file. Full-bleed: a landscape photograph at least 2400px wide. Slides without an image are not shown."
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Phone image",
+          "info": "Optional. Used on screens under 750px."
+        },
+        {
+          "type": "select",
+          "id": "image_fit",
+          "label": "Image fit",
+          "options": [
+            { "value": "contain", "label": "Whole painting" },
+            { "value": "cover", "label": "Full-bleed photograph" }
+          ],
+          "default": "contain"
+        },
+        {
+          "type": "select",
+          "id": "image_fit_mobile",
+          "label": "Image fit on phones",
+          "options": [
+            { "value": "same", "label": "Same as larger screens" },
+            { "value": "contain", "label": "Whole painting" },
+            { "value": "cover", "label": "Full-bleed photograph" }
+          ],
+          "default": "same"
+        },
+        {
+          "type": "select",
+          "id": "ground",
+          "label": "Ground",
+          "info": "Whole-painting slides only.",
+          "options": [
+            { "value": "gesso", "label": "Gesso" },
+            { "value": "vaayu_mist", "label": "Vaayu mist" },
+            { "value": "stone_mist", "label": "Stone mist" },
+            { "value": "sand", "label": "Sand" }
+          ],
+          "default": "gesso"
+        },
+        {
+          "type": "header",
+          "content": "Text"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "info": "About 45 characters or fewer."
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "info": "Text that starts with a quotation mark is set in italics."
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "cta_url",
+          "label": "Button link"
+        },
+        {
+          "type": "header",
+          "content": "Credit"
+        },
+        {
+          "type": "product",
+          "id": "artwork",
+          "label": "Artwork",
+          "info": "Fills the credit with the work's title and size, and links to it."
+        },
+        {
+          "type": "text",
+          "id": "credit",
+          "label": "Manual credit",
+          "info": "Used when no artwork is selected."
+        },
+        {
+          "type": "header",
+          "content": "Layout"
+        },
+        {
+          "type": "select",
+          "id": "text_position",
+          "label": "Text position",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "right", "label": "Right" },
+            { "value": "center", "label": "Center (full-bleed only)" }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "select",
+          "id": "text_vertical",
+          "label": "Vertical position",
+          "options": [
+            { "value": "top", "label": "Top" },
+            { "value": "middle", "label": "Middle" },
+            { "value": "bottom", "label": "Bottom" }
+          ],
+          "default": "bottom"
+        },
+        {
+          "type": "select",
+          "id": "text_color",
+          "label": "Text color",
+          "info": "Light is for dark full-bleed photographs. Phones always use dark text below the image.",
+          "options": [
+            { "value": "dark", "label": "Dark" },
+            { "value": "light", "label": "Light" }
+          ],
+          "default": "dark"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "label": "Image overlay",
+          "info": "Full-bleed only. A flat dark tint to help text contrast.",
+          "min": 0,
+          "max": 40,
+          "step": 5,
+          "unit": "%",
+          "default": 0
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero carousel",
+      "blocks": [
+        { "type": "slide" },
+        { "type": "slide" }
+      ]
+    }
+  ]
+}
+{% endschema %}

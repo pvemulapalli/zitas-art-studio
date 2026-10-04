@@ -1,0 +1,458 @@
+/* Hero carousel: crossfading slides above 750px, a swipe track with text below the image under 750px. */
+
+.hero {
+  display: block;
+  position: relative;
+  background: var(--color-gesso);
+}
+
+.hero__viewport {
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.hero-slide--v-top {
+  --slide-align: flex-start;
+}
+
+.hero-slide--v-middle {
+  --slide-align: center;
+}
+
+.hero-slide--v-bottom {
+  --slide-align: flex-end;
+}
+
+.hero-slide--text-left {
+  --slide-justify: flex-start;
+}
+
+.hero-slide--text-center {
+  --slide-justify: center;
+}
+
+.hero-slide--text-right {
+  --slide-justify: flex-end;
+}
+
+.hero-slide__frame picture {
+  display: contents;
+}
+
+.hero-slide__image {
+  display: block;
+}
+
+.hero-slide__text {
+  display: grid;
+  justify-items: start;
+  gap: 24px;
+}
+
+.hero-slide__heading {
+  margin: 0;
+  color: var(--color-ink);
+}
+
+.hero-slide__body {
+  margin: 0;
+  max-width: 28em;
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+
+.hero-slide__body--quote {
+  font-style: italic;
+}
+
+.hero-slide__button {
+  margin-block-start: 6px;
+}
+
+/* Label strip: credit on the left, controls on the right. Never over the artwork. */
+.hero__bar {
+  background: var(--color-gesso);
+  border-bottom: var(--hairline);
+}
+
+.hero__bar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 28px;
+  min-height: 76px;
+}
+
+.hero__credit {
+  flex: 1 1 280px;
+  min-width: 0;
+  padding-block: 12px;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.hero__credit[href]:hover {
+  color: var(--color-copper);
+}
+
+.hero__controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-inline-start: auto;
+}
+
+zita-hero-carousel:not(:defined) .hero__controls {
+  visibility: hidden;
+}
+
+.hero__dots {
+  display: flex;
+}
+
+.hero__dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.hero__dot span {
+  display: block;
+  width: 30px;
+  height: 1px;
+  background: var(--color-stone-500);
+  transition: background-color var(--duration-fast) var(--ease-pour);
+}
+
+.hero__dot[aria-current='true'] span {
+  height: 2px;
+  background: var(--color-ink);
+}
+
+.hero__count {
+  min-width: 58px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: 0.08em;
+  text-align: center;
+  color: var(--color-text-meta);
+}
+
+.hero__buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.hero__icon-play,
+.hero.is-paused .hero__icon-pause {
+  display: none;
+}
+
+.hero.is-paused .hero__icon-play {
+  display: block;
+}
+
+/* ---------- 750px and up: stacked slides that crossfade ---------- */
+@media (min-width: 750px) {
+  .hero__viewport {
+    height: clamp(520px, calc(100vh - 250px), 820px);
+  }
+
+  .hero--height-large .hero__viewport {
+    height: 760px;
+  }
+
+  .hero--height-medium .hero__viewport {
+    height: 640px;
+  }
+
+  .hero__track {
+    position: relative;
+    height: 100%;
+  }
+
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    background: var(--slide-ground);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 900ms var(--ease-pour),
+      visibility 0s linear 900ms;
+  }
+
+  .hero-slide.is-active {
+    z-index: 1;
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 900ms var(--ease-pour),
+      visibility 0s;
+  }
+
+  .hero-slide__inner {
+    display: flex;
+    height: 100%;
+    max-width: var(--carousel-max-width);
+    margin-inline: auto;
+  }
+
+  .hero-slide__text {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 900ms var(--ease-pour) 250ms,
+      transform 900ms var(--ease-pour) 250ms;
+  }
+
+  .hero-slide.is-active .hero-slide__text {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero-slide__heading {
+    font-size: clamp(40px, 4.4vw, 72px);
+    line-height: 1.06;
+  }
+
+  .hero-slide__body {
+    font-size: clamp(18px, 1.4vw, 21px);
+  }
+
+  .hero-slide__credit {
+    display: none;
+  }
+
+  .hero-slide--light .hero-slide__heading {
+    color: var(--color-gesso);
+  }
+
+  .hero-slide--light .hero-slide__body {
+    color: var(--color-stone-mist);
+  }
+
+  /* Whole painting: text 5 parts, artwork 7 parts. */
+  .hero-slide--contain .hero-slide__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: var(--slide-align);
+    flex: 5 1 0;
+    min-width: 0;
+    padding: clamp(48px, 6vw, 104px) var(--page-gutter);
+  }
+
+  .hero-slide--contain .hero-slide__heading {
+    max-width: 12ch;
+  }
+
+  .hero-slide--contain .hero-slide__media {
+    position: relative;
+    flex: 7 1 0;
+    min-width: 0;
+    order: 1;
+  }
+
+  .hero-slide--contain.hero-slide--text-right .hero-slide__media {
+    order: -1;
+  }
+
+  .hero-slide--contain .hero-slide__frame {
+    position: absolute;
+    inset: clamp(40px, 5vw, 80px) clamp(20px, 4vw, 72px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-slide--contain .hero-slide__image {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    box-shadow: var(--shadow-hang-deep);
+    transform: translateY(16px);
+    transition: transform 1200ms var(--ease-pour);
+  }
+
+  .hero-slide--contain.is-active .hero-slide__image {
+    transform: none;
+  }
+
+  /* Full-bleed photograph: the image covers the slide; text overlays it. */
+  .hero-slide--cover .hero-slide__inner {
+    justify-content: var(--slide-justify);
+    align-items: var(--slide-align);
+    padding: clamp(48px, 6vw, 104px) var(--page-gutter);
+  }
+
+  .hero-slide--cover .hero-slide__media,
+  .hero-slide--cover .hero-slide__frame,
+  .hero-slide__overlay {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-slide--cover .hero-slide__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focal, 50% 50%);
+  }
+
+  .hero-slide__overlay {
+    background: rgb(13 20 26 / var(--overlay, 0));
+    pointer-events: none;
+  }
+
+  .hero-slide--cover .hero-slide__content {
+    position: relative;
+    max-width: min(560px, 46%);
+  }
+
+  .hero-slide--cover.hero-slide--text-center .hero-slide__text {
+    justify-items: center;
+    text-align: center;
+  }
+}
+
+/* ---------- Under 750px: horizontal track, image above, text below ---------- */
+@media (max-width: 749px) {
+  .hero__track {
+    display: flex;
+    transition: transform 480ms var(--ease-pour);
+  }
+
+  .hero__track.is-dragging {
+    transition: none;
+  }
+
+  .hero-slide {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 100%;
+    min-width: 0;
+    background: var(--slide-ground-mobile);
+  }
+
+  .hero-slide__inner {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-slide__media {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+
+  .hero-slide__frame {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-slide--m-contain .hero-slide__frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12% 11% 10%;
+  }
+
+  .hero-slide--m-contain .hero-slide__image {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    box-shadow: var(--shadow-hang-mobile);
+  }
+
+  .hero-slide--m-cover .hero-slide__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focal-mobile, 50% 50%);
+  }
+
+  .hero-slide__overlay {
+    display: none;
+  }
+
+  .hero-slide__content {
+    padding: 22px 24px 32px;
+  }
+
+  .hero-slide__text {
+    gap: 14px;
+  }
+
+  .hero-slide__credit {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+  }
+
+  .hero-slide__heading {
+    font-size: 32px;
+    line-height: 1.1;
+  }
+
+  .hero-slide__body {
+    font-size: 17px;
+  }
+
+  .hero-slide__button {
+    width: 100%;
+  }
+
+  .hero-slide__button.button--inverse {
+    background: var(--color-teal);
+    border-color: var(--color-teal);
+    color: var(--color-gesso);
+  }
+
+  .hero__bar {
+    border-top: var(--hairline);
+  }
+
+  .hero__bar-inner {
+    min-height: 0;
+    padding: 4px 12px 4px 10px;
+  }
+
+  .hero__credit,
+  .hero__count {
+    display: none;
+  }
+
+  .hero__controls {
+    flex: 1 1 auto;
+    justify-content: space-between;
+    margin-inline-start: 0;
+  }
+
+  .hero__dot span {
+    width: 22px;
+  }
+
+  .hero__button {
+    border-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide__text,
+  .hero-slide__image {
+    transform: none !important;
+  }
+}

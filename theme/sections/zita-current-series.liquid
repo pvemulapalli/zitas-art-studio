@@ -1,0 +1,260 @@
+{%- liquid
+  assign series_total = 0
+  for block in section.blocks
+    if block.settings.collection or request.design_mode
+      assign series_total = series_total | plus: 1
+    endif
+  endfor
+-%}
+
+{%- if series_total > 0 -%}
+  <div class="current-series full-width">
+    <div class="current-series__inner page-width">
+      <div class="section-head">
+        <div class="section-head__titles">
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 class="section-heading current-series__heading">{{ section.settings.heading | escape }}</h2>
+          {%- endif -%}
+        </div>
+        {%- render 'label-link',
+          url: section.settings.link_url,
+          label: section.settings.link_label,
+          class: 'current-series__link'
+        -%}
+      </div>
+
+      <ul class="current-series__grid list-unstyled" style="--series-columns: {{ series_total }};">
+        {%- for block in section.blocks -%}
+          {%- assign collection = block.settings.collection -%}
+          {%- unless collection or request.design_mode -%}
+            {%- continue -%}
+          {%- endunless -%}
+          <li class="current-series__entry" {{ block.shopify_attributes }}>
+            {%- if collection -%}
+              <a class="current-series__item" href="{{ collection.url }}">
+                {%- render 'artwork-plate',
+                  image: collection.featured_image,
+                  sizes: '(min-width: 1200px) 28vw, (min-width: 750px) 44vw, 100vw',
+                  class: 'artwork-plate--wide-pad artwork-plate--square-mobile current-series__plate'
+                -%}
+                <h3 class="current-series__name">{{ collection.title | escape }}</h3>
+                {%- assign description = collection.description | strip_html | strip | truncatewords: 40 -%}
+                {%- if description != blank -%}
+                  <p class="current-series__description">{{ description }}</p>
+                {%- else -%}
+                  <span></span>
+                {%- endif -%}
+                <span class="current-series__explore">
+                  {{- 'series.explore' | t -}}
+                  {%- render 'icon', name: 'arrow-right', size: 16, class: 'label-link__arrow' -%}
+                </span>
+              </a>
+            {%- else -%}
+              {%- assign placeholder_text = 'editor.choose_collection' | t -%}
+              <div class="current-series__item">
+                {%- render 'artwork-plate',
+                  class: 'artwork-plate--wide-pad artwork-plate--square-mobile current-series__plate',
+                  placeholder: placeholder_text
+                -%}
+              </div>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .current-series {
+    background: var(--color-gesso);
+  }
+
+  .current-series__inner {
+    container-type: inline-size;
+    padding-block: var(--space-section-large) var(--space-section);
+  }
+
+  .current-series__heading {
+    max-width: 18ch;
+  }
+
+  .current-series__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--series-columns, 3), minmax(0, 1fr));
+    gap: clamp(48px, 5vw, 72px) clamp(24px, 3vw, 56px);
+  }
+
+  .current-series__entry {
+    min-width: 0;
+  }
+
+  .current-series__item {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 14px;
+    height: 100%;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .current-series__item:hover {
+    color: var(--color-text);
+  }
+
+  .current-series__plate {
+    margin-block-end: 10px;
+  }
+
+  .current-series__item:hover .current-series__plate {
+    background: var(--color-stone-mist);
+  }
+
+  .current-series__name {
+    margin: 0;
+    font-size: clamp(26px, 2.2vw, 32px);
+    line-height: 1.15;
+  }
+
+  .current-series__description {
+    margin: 0;
+    max-width: 30em;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+  }
+
+  .current-series__explore {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding-block-start: 6px;
+    font-family: var(--font-display);
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+    transition: color var(--duration-fast) var(--ease-pour);
+  }
+
+  .current-series__item:hover .current-series__explore {
+    color: var(--color-copper);
+  }
+
+  .current-series__item:hover .label-link__arrow {
+    transform: translateX(4px);
+  }
+
+  @container (max-width: 719px) {
+    .current-series__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 749px) {
+    .current-series__inner {
+      padding-block: 48px 56px;
+    }
+
+    .current-series .section-head {
+      margin-block-end: 28px;
+    }
+
+    .current-series__link {
+      display: none;
+    }
+
+    .current-series__grid {
+      gap: 28px;
+    }
+
+    .current-series__item {
+      grid-template-rows: none;
+      gap: 10px;
+    }
+
+    .current-series__plate {
+      margin-block-end: 6px;
+    }
+
+    .current-series__plate .artwork-plate__image {
+      box-shadow: 0 1px 2px rgb(13 20 26 / 0.06), 0 14px 28px -14px rgb(13 20 26 / 0.3);
+    }
+
+    .current-series__name {
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    .current-series__description {
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .current-series__explore {
+      min-height: 44px;
+      padding-block-start: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Current series",
+  "class": "section-current-series",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Current series"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Ranjeeta paints in series, each one a body of work."
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "All originals"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "series",
+      "name": "Series",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection",
+          "info": "Name, image and link come from the collection. The collection description is shown when it has one."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Current series",
+      "blocks": [
+        { "type": "series" },
+        { "type": "series" },
+        { "type": "series" }
+      ]
+    }
+  ]
+}
+{% endschema %}

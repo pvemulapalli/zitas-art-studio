@@ -1,0 +1,382 @@
+<div class="living full-width">
+  <div class="living__inner page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="section-heading living__heading">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+
+    <div class="living__columns">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'ruled' -%}
+            <div class="living__column" {{ block.shopify_attributes }}>
+              {%- if block.settings.eyebrow != blank -%}
+                <h3 class="eyebrow">{{ block.settings.eyebrow | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.statement != blank -%}
+                {%- if block.settings.statement_style == 'quote' -%}
+                  <blockquote class="living__quote">
+                    <p>{{ block.settings.statement | escape }}</p>
+                  </blockquote>
+                {%- else -%}
+                  <p class="living__statement">{{ block.settings.statement | escape }}</p>
+                {%- endif -%}
+              {%- endif -%}
+              {%- if block.settings.body != blank -%}
+                <p class="living__body{% if block.settings.statement_style == 'quote' %} living__body--small{% endif %}">
+                  {{- block.settings.body | escape -}}
+                </p>
+              {%- endif -%}
+              {%- render 'label-link',
+                url: block.settings.link_url,
+                label: block.settings.link_label,
+                class: 'living__link'
+              -%}
+            </div>
+
+          {%- when 'panel' -%}
+            <div class="living__panel" {{ block.shopify_attributes }}>
+              {%- if block.settings.image -%}
+                <div class="living__panel-media">
+                  {%- render 'responsive-image',
+                    image: block.settings.image,
+                    sizes: '(min-width: 1200px) 18vw, (min-width: 750px) 36vw, 1px',
+                    widths: '320, 480, 640, 800',
+                    class: 'living__panel-image'
+                  -%}
+                </div>
+              {%- elsif request.design_mode -%}
+                <div class="living__panel-media">
+                  <span class="editor-placeholder">{{ 'editor.add_image' | t }}</span>
+                </div>
+              {%- endif -%}
+              <div class="living__panel-text">
+                {%- if block.settings.eyebrow != blank -%}
+                  <h3 class="eyebrow">{{ block.settings.eyebrow | escape }}</h3>
+                {%- endif -%}
+                {%- if block.settings.statement != blank -%}
+                  <p class="living__statement living__statement--panel">{{ block.settings.statement | escape }}</p>
+                {%- endif -%}
+                {%- if block.settings.body != blank -%}
+                  <p class="living__body living__body--small">{{ block.settings.body | escape }}</p>
+                {%- endif -%}
+                {%- render 'label-link', url: block.settings.link_url, label: block.settings.link_label -%}
+              </div>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    <ul class="living__rows list-unstyled">
+      {%- for block in section.blocks -%}
+        {%- if block.settings.eyebrow == blank -%}
+          {%- continue -%}
+        {%- endif -%}
+        {%- liquid
+          assign row_text = block.settings.mobile_text
+          if row_text == blank and block.settings.statement_style != 'quote'
+            assign row_text = block.settings.statement
+          endif
+        -%}
+        {%- capture row_content -%}
+          <span class="living__row-title">
+            {{- block.settings.eyebrow | escape -}}
+            {%- if block.settings.link_url != blank -%}
+              {%- render 'icon', name: 'arrow-right', size: 20 -%}
+            {%- endif -%}
+          </span>
+          {%- if row_text != blank -%}
+            <span class="living__row-text">{{ row_text | escape }}</span>
+          {%- endif -%}
+        {%- endcapture -%}
+        <li>
+          {%- if block.settings.link_url != blank -%}
+            <a class="living__row" href="{{ block.settings.link_url }}">{{ row_content }}</a>
+          {%- else -%}
+            <div class="living__row">{{ row_content }}</div>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% stylesheet %}
+  .living {
+    background: var(--color-gesso);
+  }
+
+  .living__inner {
+    padding-block: var(--space-section-large);
+  }
+
+  .living__heading {
+    max-width: 16ch;
+    margin-block-end: var(--space-heading-to-content);
+  }
+
+  .living__columns {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: clamp(32px, 4vw, 64px);
+  }
+
+  .living__column {
+    display: grid;
+    align-content: start;
+    gap: 16px;
+    flex: 4 1 280px;
+    padding-block-start: 24px;
+    border-top: var(--rule-ink);
+  }
+
+  .living__statement {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 28px;
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+
+  .living__quote {
+    margin: 0;
+  }
+
+  .living__quote p {
+    margin: 0;
+    font-size: 21px;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--color-ink);
+  }
+
+  .living__body {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+  }
+
+  .living__body--small {
+    font-size: 17px;
+  }
+
+  .living__link {
+    justify-self: start;
+    margin-block-start: 8px;
+  }
+
+  .living__panel {
+    --eyebrow-color: var(--color-copper-on-sand);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: end;
+    gap: 28px;
+    flex: 5 1 340px;
+    padding: clamp(24px, 3vw, 44px);
+    background: var(--color-sand);
+  }
+
+  .living__panel-media {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    color: var(--color-text-meta);
+  }
+
+  .living__panel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focal, 50% 50%);
+  }
+
+  .living__panel-text {
+    display: grid;
+    justify-items: start;
+    gap: 14px;
+  }
+
+  .living__panel-text:only-child {
+    grid-column: 1 / -1;
+  }
+
+  .living__statement--panel {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+
+  .living__panel .label-link:hover {
+    color: var(--color-copper-on-sand);
+    border-color: var(--color-copper-on-sand);
+  }
+
+  .living__rows {
+    display: none;
+  }
+
+  @media (max-width: 749px) {
+    .living__inner {
+      padding-block: 48px;
+    }
+
+    .living__heading {
+      margin-block-end: 28px;
+    }
+
+    .living__columns {
+      display: none;
+    }
+
+    .living__rows {
+      display: grid;
+    }
+
+    .living__row {
+      display: grid;
+      gap: 4px;
+      padding-block: 20px;
+      border-top: var(--rule-ink);
+      color: var(--color-ink);
+      text-decoration: none;
+    }
+
+    .living__row-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      font-family: var(--font-display);
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .living__row-text {
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--color-text-secondary);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Living with the work",
+  "class": "section-living-with-work",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Living with the work"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "ruled",
+      "name": "Ruled column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow",
+          "info": "Also the row title on phones."
+        },
+        {
+          "type": "textarea",
+          "id": "statement",
+          "label": "Statement"
+        },
+        {
+          "type": "select",
+          "id": "statement_style",
+          "label": "Statement style",
+          "options": [
+            { "value": "statement", "label": "Large statement" },
+            { "value": "quote", "label": "Italic quote" }
+          ],
+          "default": "statement"
+        },
+        {
+          "type": "textarea",
+          "id": "body",
+          "label": "Text",
+          "info": "Write any price range here yourself; it is not calculated."
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link label"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link"
+        },
+        {
+          "type": "text",
+          "id": "mobile_text",
+          "label": "Phone description",
+          "info": "One short line under the row title on phones. Falls back to a large statement."
+        }
+      ]
+    },
+    {
+      "type": "panel",
+      "name": "Sand panel",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "For example, a print photographed in a room. Cropped to 4:5. Hidden on phones."
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow",
+          "info": "Also the row title on phones."
+        },
+        {
+          "type": "textarea",
+          "id": "statement",
+          "label": "Statement"
+        },
+        {
+          "type": "textarea",
+          "id": "body",
+          "label": "Text",
+          "info": "Write any price range here yourself; it is not calculated."
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link label"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link"
+        },
+        {
+          "type": "text",
+          "id": "mobile_text",
+          "label": "Phone description",
+          "info": "One short line under the row title on phones. Falls back to the statement."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Living with the work",
+      "blocks": [
+        { "type": "ruled" },
+        { "type": "panel" },
+        { "type": "ruled", "settings": { "statement_style": "quote" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

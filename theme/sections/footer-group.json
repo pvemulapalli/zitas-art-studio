@@ -12,10 +12,14 @@
   "name": "t:general.footer",
   "sections": {
     "footer": {
-      "type": "footer",
+      "type": "zita-footer",
       "settings": {
-        "menu": "",
-        "show_payment_icons": true
+        "newsletter_eyebrow": "Letters from the studio",
+        "newsletter_heading": "New paintings, exhibitions and studio news, sent when there is something to share.",
+        "menu_art": "",
+        "menu_studio": "",
+        "legal_menu": "",
+        "copyright_name": "Ranjeeta Shroff"
       }
     }
   },

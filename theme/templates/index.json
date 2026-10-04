@@ -9,12 +9,177 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "hello-world",
-      "settings": {}
+    "hero": {
+      "type": "zita-hero-carousel",
+      "blocks": {
+        "slide_unknown": {
+          "type": "slide",
+          "settings": {
+            "image_fit": "contain",
+            "image_fit_mobile": "same",
+            "ground": "vaayu_mist",
+            "heading": "Moving into Unknown through flowing paint",
+            "text": "“Every space deserves art that not only decorates but also provokes thought.”",
+            "cta_label": "View originals",
+            "cta_url": "/collections/all",
+            "credit": "",
+            "text_position": "left",
+            "text_vertical": "bottom",
+            "text_color": "dark",
+            "overlay_opacity": 0
+          }
+        },
+        "slide_moonlit": {
+          "type": "slide",
+          "settings": {
+            "image_fit": "cover",
+            "image_fit_mobile": "contain",
+            "ground": "gesso",
+            "heading": "Moonlit Waves",
+            "text": "“…the moon illuminated the waves putting up a graceful show of light and sound.”",
+            "cta_label": "View the painting",
+            "cta_url": "",
+            "credit": "",
+            "text_position": "left",
+            "text_vertical": "top",
+            "text_color": "light",
+            "overlay_opacity": 15
+          }
+        }
+      },
+      "block_order": [
+        "slide_unknown",
+        "slide_moonlit"
+      ],
+      "settings": {
+        "autoplay": true,
+        "autoplay_speed": 7,
+        "height_desktop": "screen",
+        "show_label": true
+      }
+    },
+    "current_series": {
+      "type": "zita-current-series",
+      "blocks": {
+        "series_1": {
+          "type": "series",
+          "settings": {}
+        },
+        "series_2": {
+          "type": "series",
+          "settings": {}
+        },
+        "series_3": {
+          "type": "series",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "series_1",
+        "series_2",
+        "series_3"
+      ],
+      "settings": {
+        "eyebrow": "Current series",
+        "heading": "Ranjeeta paints in series, each one a body of work.",
+        "link_label": "All originals",
+        "link_url": "/collections/all"
+      }
+    },
+    "point_of_view": {
+      "type": "zita-point-of-view",
+      "settings": {
+        "eyebrow": "In her words",
+        "quote": "“I love the unpredictability and movement of colors on the canvas. The best part is being able to work through the composition while paint is flowing on the canvas.”",
+        "quote_mobile": "“I love the unpredictability and movement of colors on the canvas.”",
+        "bio": "A self-taught artist, Ranjeeta spent about six years working in fused glass before returning to painting after her son was born.",
+        "link_label": "Read Ranjeeta’s story",
+        "link_url": ""
+      }
+    },
+    "selected_works": {
+      "type": "zita-selected-works",
+      "settings": {
+        "heading": "Selected works",
+        "intro": "From the <em>vastness of the skies</em> to <em>the depth of the oceans</em>. Hover a work to see it on a wall."
+      }
+    },
+    "recognition": {
+      "type": "zita-recognition",
+      "settings": {
+        "eyebrow": "Recognition",
+        "heading": "Curator’s Choice",
+        "body": "<p><em>Un Colored by Nature</em> received the Curator’s Choice award at the Black &amp; White juried international exhibition, Le Gateau Gallery, France, 3–17 April 2026.</p>",
+        "secondary": "Exhibiting since 2019, across Texas galleries and internationally.",
+        "link_label": "Exhibitions",
+        "link_url": ""
+      }
+    },
+    "living_with_work": {
+      "type": "zita-living-with-work",
+      "blocks": {
+        "originals": {
+          "type": "ruled",
+          "settings": {
+            "eyebrow": "Originals",
+            "statement": "One of a kind.",
+            "statement_style": "statement",
+            "body": "",
+            "link_label": "View originals",
+            "link_url": "/collections/all",
+            "mobile_text": ""
+          }
+        },
+        "prints": {
+          "type": "panel",
+          "settings": {
+            "eyebrow": "Prints",
+            "statement": "When an original is beyond reach.",
+            "body": "",
+            "link_label": "View prints",
+            "link_url": "",
+            "mobile_text": ""
+          }
+        },
+        "commissions": {
+          "type": "ruled",
+          "settings": {
+            "eyebrow": "Commissions",
+            "statement": "“My first commission work came after my first facebook share. I couldn’t be more grateful for their trust and confidence in me as an emerging artist.”",
+            "statement_style": "quote",
+            "body": "Ranjeeta paints commissions for collectors’ own spaces.",
+            "link_label": "Begin a commission",
+            "link_url": "",
+            "mobile_text": "Paintings made for your own space."
+          }
+        }
+      },
+      "block_order": [
+        "originals",
+        "prints",
+        "commissions"
+      ],
+      "settings": {
+        "heading": "Living with the work"
+      }
+    },
+    "from_the_studio": {
+      "type": "zita-from-the-studio",
+      "settings": {
+        "eyebrow": "From the studio",
+        "heading": "New work and studio moments, shared on Instagram.",
+        "button_label": "Follow Ranjeeta",
+        "instagram_url": ""
+      }
     }
   },
   "order": [
-    "main"
+    "hero",
+    "current_series",
+    "point_of_view",
+    "selected_works",
+    "recognition",
+    "living_with_work",
+    "from_the_studio"
   ]
 }

@@ -1,0 +1,90 @@
+{%- if section.settings.enabled and section.settings.message != blank -%}
+  <div class="announcement full-width">
+    <p class="announcement__text">
+      <span>{{ section.settings.message | escape }}</span>
+      {%- if section.settings.link_label != blank and section.settings.link_url != blank -%}
+        <a class="announcement__link" href="{{ section.settings.link_url }}">
+          {{- section.settings.link_label | escape -}}
+        </a>
+      {%- endif -%}
+    </p>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .announcement {
+    padding: 10px 24px;
+    background: var(--color-deep-teal);
+    color: var(--color-gesso);
+  }
+
+  .announcement__text {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    gap: 4px 16px;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.16em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .announcement__link {
+    color: var(--color-pale-teal);
+    text-decoration: underline;
+    text-underline-offset: 0.35em;
+  }
+
+  .announcement__link:hover {
+    color: var(--color-gesso);
+  }
+
+  @media (max-width: 749px) {
+    .announcement {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Announcement",
+  "class": "section-announcement",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Show announcement",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "message",
+      "label": "Message",
+      "info": "One short line. Hidden on phones."
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement"
+    }
+  ]
+}
+{% endschema %}

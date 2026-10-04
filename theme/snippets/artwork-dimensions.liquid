@@ -1,0 +1,64 @@
+{% doc %}
+  Outputs plain-text artwork dimensions such as "12 × 16 in" from the proven
+  custom.artwork_width and custom.artwork_height measurement metafields.
+  Outputs nothing unless both are present.
+
+  @param {product} product - Artwork product
+
+  @example
+  {% capture dimensions %}{% render 'artwork-dimensions', product: product %}{% endcapture %}
+{% enddoc %}
+
+{%- liquid
+  assign width_measure = product.metafields.custom.artwork_width.value
+  assign height_measure = product.metafields.custom.artwork_height.value
+
+  if width_measure != blank and height_measure != blank
+    assign width_parts = width_measure.value | round: 2 | append: '' | split: '.'
+    assign width_text = width_parts[0]
+    if width_parts[1] != blank
+      assign width_decimals = width_parts[1] | remove: '0'
+      if width_decimals != blank
+        assign width_text = width_text | append: '.' | append: width_parts[1]
+      endif
+    endif
+
+    assign height_parts = height_measure.value | round: 2 | append: '' | split: '.'
+    assign height_text = height_parts[0]
+    if height_parts[1] != blank
+      assign height_decimals = height_parts[1] | remove: '0'
+      if height_decimals != blank
+        assign height_text = height_text | append: '.' | append: height_parts[1]
+      endif
+    endif
+
+    assign width_unit = width_measure.unit | downcase
+    assign height_unit = height_measure.unit | downcase
+    case width_unit
+      when 'inches', 'inch'
+        assign width_unit = 'in'
+      when 'centimeters', 'centimetres'
+        assign width_unit = 'cm'
+      when 'millimeters', 'millimetres'
+        assign width_unit = 'mm'
+      when 'feet'
+        assign width_unit = 'ft'
+    endcase
+    case height_unit
+      when 'inches', 'inch'
+        assign height_unit = 'in'
+      when 'centimeters', 'centimetres'
+        assign height_unit = 'cm'
+      when 'millimeters', 'millimetres'
+        assign height_unit = 'mm'
+      when 'feet'
+        assign height_unit = 'ft'
+    endcase
+
+    if width_unit == height_unit
+      echo width_text | append: ' × ' | append: height_text | append: ' ' | append: width_unit
+    else
+      echo width_text | append: ' ' | append: width_unit | append: ' × ' | append: height_text | append: ' ' | append: height_unit
+    endif
+  endif
+-%}

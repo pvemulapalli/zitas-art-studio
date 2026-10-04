@@ -1,0 +1,197 @@
+{%- liquid
+  assign quote = section.settings.quote
+  assign quote_mobile = section.settings.quote_mobile | default: quote
+-%}
+
+<div class="point-of-view full-width">
+  <div class="point-of-view__inner page-width">
+    {%- if section.settings.portrait -%}
+      <div class="point-of-view__portrait">
+        {%- render 'responsive-image',
+          image: section.settings.portrait,
+          sizes: '(min-width: 750px) 360px, 1px',
+          widths: '360, 540, 720, 960',
+          class: 'point-of-view__image'
+        -%}
+      </div>
+    {%- elsif request.design_mode -%}
+      <div class="point-of-view__portrait">
+        <span class="editor-placeholder">{{ 'editor.add_portrait' | t }}</span>
+      </div>
+    {%- endif -%}
+
+    <div class="point-of-view__text">
+      {%- if section.settings.eyebrow != blank -%}
+        <h2 class="eyebrow point-of-view__eyebrow">{{ section.settings.eyebrow | escape }}</h2>
+      {%- endif -%}
+
+      {%- if quote != blank -%}
+        <blockquote class="point-of-view__quote{% if quote_mobile != quote %} point-of-view__quote--has-short{% endif %}">
+          <p class="point-of-view__quote-full">{{ quote | escape }}</p>
+          {%- if quote_mobile != quote -%}
+            <p class="point-of-view__quote-short">{{ quote_mobile | escape }}</p>
+          {%- endif -%}
+        </blockquote>
+      {%- endif -%}
+
+      {%- if section.settings.bio != blank -%}
+        <p class="point-of-view__bio">{{ section.settings.bio | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.link_url != blank and section.settings.link_label != blank -%}
+        <div>
+          {%- render 'label-link',
+            url: section.settings.link_url,
+            label: section.settings.link_label,
+            tone: 'dark'
+          -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .point-of-view {
+    --eyebrow-color: var(--color-gold);
+    background: var(--color-deep-teal);
+    color: var(--color-gesso);
+  }
+
+  .point-of-view__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: clamp(40px, 6vw, 112px);
+    padding-block: clamp(80px, 10vw, 160px);
+  }
+
+  .point-of-view__portrait {
+    position: relative;
+    flex: 0 1 360px;
+    min-width: 240px;
+    aspect-ratio: 4 / 5;
+    color: var(--color-pale-teal);
+  }
+
+  .point-of-view__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focal, 50% 50%);
+  }
+
+  .point-of-view__text {
+    display: grid;
+    gap: 30px;
+    flex: 1 1 440px;
+    max-width: 780px;
+  }
+
+  .point-of-view__quote {
+    margin: 0;
+  }
+
+  .point-of-view__quote p {
+    margin: 0;
+    font-size: clamp(26px, 2.6vw, 38px);
+    font-style: italic;
+    line-height: 1.38;
+    color: var(--color-gesso);
+  }
+
+  .point-of-view__quote-short {
+    display: none;
+  }
+
+  .point-of-view__bio {
+    margin: 0;
+    max-width: 34em;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--color-pale-teal);
+  }
+
+  @media (max-width: 749px) {
+    .point-of-view__inner {
+      padding-block: 56px;
+    }
+
+    .point-of-view__portrait,
+    .point-of-view__bio {
+      display: none;
+    }
+
+    .point-of-view__text {
+      gap: 20px;
+    }
+
+    .point-of-view__quote p {
+      font-size: 23px;
+      line-height: 1.4;
+    }
+
+    .point-of-view__quote-short {
+      display: block;
+    }
+
+    .point-of-view__quote--has-short .point-of-view__quote-full {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Point of view",
+  "class": "section-point-of-view",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "portrait",
+      "label": "Portrait",
+      "info": "Shown on larger screens, cropped to 4:5."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "In her words"
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Quote",
+      "info": "Ranjeeta's own words, verbatim."
+    },
+    {
+      "type": "textarea",
+      "id": "quote_mobile",
+      "label": "Shorter quote for phones",
+      "info": "Optional. Falls back to the quote above."
+    },
+    {
+      "type": "textarea",
+      "id": "bio",
+      "label": "Short bio",
+      "info": "Hidden on phones."
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "Read Ranjeeta’s story"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Point of view"
+    }
+  ]
+}
+{% endschema %}

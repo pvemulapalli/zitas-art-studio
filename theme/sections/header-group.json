@@ -11,12 +11,26 @@
   "type": "header",
   "name": "t:general.header",
   "sections": {
+    "announcement": {
+      "type": "zita-announcement",
+      "settings": {
+        "enabled": true,
+        "message": "Curator’s Choice · Black & White juried international exhibition · Le Gateau Gallery, France",
+        "link_label": "Exhibitions",
+        "link_url": ""
+      }
+    },
     "header": {
-      "type": "header",
-      "settings": {}
+      "type": "zita-header",
+      "settings": {
+        "menu": "main-menu",
+        "series_count": 3,
+        "series_heading": "Current series"
+      }
     }
   },
   "order": [
+    "announcement",
     "header"
-  ],
+  ]
 }

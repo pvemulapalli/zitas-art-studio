@@ -1,0 +1,175 @@
+{% doc %}
+  Renders the shared V2 artwork card: matted image, optional room view, and caption
+  (series, title, price or Sold, dimensions). Reused by the homepage and, later, PLP/PDP.
+
+  The room view is the product's second image when present. It cross-fades in on
+  hover/focus. With room_swipe, touch visitors can also swipe to it; the section must
+  then load zita-artwork-card.js. Leave room_swipe off inside horizontally scrolling rows,
+  where a nested swipe would compete with the row.
+
+  @param {product} product - Artwork product
+  @param {boolean} [room_swipe] - Enables the touch swipe to the room view
+  @param {string} [series] - Clean series name to show above the title
+  @param {string} [sizes] - sizes attribute for the artwork image
+  @param {string} [loading] - 'lazy' (default) or 'eager'
+  @param {string} [heading_tag] - Title element (default h3)
+
+  @example
+  {% render 'artwork-card', product: product, sizes: '(min-width: 750px) 25vw, 78vw' %}
+{% enddoc %}
+
+{%- liquid
+  assign primary_image = nil
+  assign room_image = nil
+  for media in product.media
+    if media.media_type == 'image'
+      if primary_image == nil
+        assign primary_image = media.preview_image
+      else
+        assign room_image = media.preview_image
+        break
+      endif
+    endif
+  endfor
+  if primary_image == nil
+    assign primary_image = product.featured_image
+  endif
+
+  assign title_tag = heading_tag | default: 'h3'
+-%}
+
+{%- capture dimensions -%}
+  {%- render 'artwork-dimensions', product: product -%}
+{%- endcapture -%}
+
+<a class="artwork-card" href="{{ product.url }}">
+  {%- render 'artwork-plate',
+    image: primary_image,
+    room_image: room_image,
+    room_swipe: room_swipe,
+    sizes: sizes,
+    loading: loading
+  -%}
+
+  <div class="artwork-card__caption">
+    {%- if series != blank -%}
+      <span class="artwork-card__series">{{ series | escape }}</span>
+    {%- endif -%}
+
+    <{{ title_tag }} class="artwork-card__title">{{ product.title | escape }}</{{ title_tag }}>
+
+    {%- if product.available -%}
+      <span class="artwork-card__price">
+        {%- if product.price_varies -%}
+          {%- assign price_min = product.price_min | money -%}
+          {{ 'artwork.price_from' | t: price: price_min }}
+        {%- else -%}
+          {{ product.price | money }}
+        {%- endif -%}
+      </span>
+    {%- else -%}
+      <span class="artwork-card__sold">{{ 'artwork.sold' | t }}</span>
+    {%- endif -%}
+
+    {%- if dimensions != blank -%}
+      <span class="artwork-card__meta">{{ dimensions }}</span>
+    {%- endif -%}
+  </div>
+</a>
+
+{% stylesheet %}
+  .artwork-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .artwork-card:hover {
+    color: var(--color-text);
+  }
+
+  .artwork-card__caption {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-block-start: 16px;
+  }
+
+  .artwork-card__series {
+    font-family: var(--font-display);
+    font-size: 11px;
+    line-height: 1.4;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-copper);
+  }
+
+  .artwork-card__title {
+    margin: 0;
+    font-size: 19px;
+    line-height: 1.25;
+    color: var(--color-ink);
+    transition: color var(--duration-fast) var(--ease-pour);
+  }
+
+  .artwork-card:hover .artwork-card__title,
+  .artwork-card:focus-visible .artwork-card__title {
+    color: var(--color-teal);
+  }
+
+  .artwork-card__price {
+    font-size: 17px;
+    line-height: 1.4;
+    color: var(--color-text);
+  }
+
+  .artwork-card__sold {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-size: 11px;
+    line-height: 1.4;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+  }
+
+  .artwork-card__sold::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-sold);
+  }
+
+  .artwork-card__meta {
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--color-text-meta);
+  }
+
+  @media (hover: hover) {
+    .artwork-card:hover .artwork-plate--has-room .artwork-plate__room,
+    .artwork-card:focus-visible .artwork-plate--has-room .artwork-plate__room {
+      opacity: 1;
+    }
+
+    .artwork-card:hover .artwork-plate--has-room .artwork-plate__frame,
+    .artwork-card:focus-visible .artwork-plate--has-room .artwork-plate__frame {
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 749px) {
+    .artwork-card__caption {
+      padding-block-start: 12px;
+    }
+
+    .artwork-card__title {
+      font-size: 18px;
+    }
+  }
+{% endstylesheet %}
