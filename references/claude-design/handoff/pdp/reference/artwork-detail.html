@@ -1,0 +1,435 @@
+<!doctype html>
+<!-- REFERENCE ONLY — Cursor must translate this into Shopify Liquid/sections/blocks/snippets.
+     Illustrates the approved V2 PDP (Artwork PDP.dc.html) mapped onto real data. Images are stand-ins:
+     the real Essence V2 / Colored by Nature-Blue V2 media are not in the design project. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artwork detail — reference</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Mulish:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --gesso:#F8F8F6;--mat:#F0F2F1;--mist:#E3E7E7;--hair:#CDD1D2;--ink:#15202A;--body:#3B4044;--meta:#565C61;--s3:#A4A9AC;--s5:#767C80;
+  --teal:#0F5468;--teal-h:#0B4050;--copper:#96502A;--gold:#C7A864;--green:#2F6B5A;--dot:#B0602F;--focus:#2E8FB5;
+  --ease:cubic-bezier(.22,.61,.36,1);--gutter:clamp(20px,3.4vw,56px);
+  --display:'Marcellus',Georgia,serif;--text:'Mulish',Arial,sans-serif;
+  --hang-deep:0 1px 2px rgba(13,20,26,.08),0 30px 60px -28px rgba(13,20,26,.45);
+  --hang:0 1px 2px rgba(13,20,26,.06),0 18px 40px -18px rgba(13,20,26,.28);
+}
+*{box-sizing:border-box}
+html{scroll-padding-bottom:96px}
+body{margin:0;background:var(--gesso);color:#1F2A33;font-family:var(--text)}
+a{color:var(--teal)}a:hover{color:var(--copper)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+[hidden]{display:none!important}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:1680px;margin:0 auto;padding-left:var(--gutter);padding-right:var(--gutter)}
+
+/* Reference-only state switcher (not part of the design) */
+.ref{position:sticky;top:0;z-index:20;background:#1F2A33;color:#CDD1D2;font:12px ui-monospace,Menlo,monospace;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;padding:6px 16px}
+.ref button{font:inherit;border:1px solid #3B4044;background:none;color:#CDD1D2;padding:5px 10px;cursor:pointer}
+.ref button[aria-pressed="true"]{background:#CFE4E9;color:#0D141A}
+.shell{height:84px;border-bottom:1px solid var(--mist);display:flex;align-items:center;font:12px var(--text);color:var(--s5)}
+
+/* Breadcrumb */
+.crumb ol{list-style:none;margin:0;padding:22px 0 0;display:flex;flex-wrap:wrap;gap:8px;font-size:15px;color:var(--meta)}
+.crumb li+li::before{content:"/";margin-right:8px}
+.crumb a{color:var(--meta);text-decoration:none;transition:color 160ms}.crumb a:hover{color:var(--copper)}
+.crumb [aria-current]{color:var(--ink)}
+
+/* Main 7/5 */
+.main{padding-top:20px;padding-bottom:clamp(80px,9vw,144px);display:flex;flex-wrap:wrap;gap:clamp(32px,5vw,96px);align-items:flex-start}
+.media{flex:7 1 520px;min-width:0;display:grid;grid-template-columns:72px minmax(0,1fr);gap:18px}
+.media.single{grid-template-columns:minmax(0,1fr)}
+.rail{display:grid;gap:10px;align-content:start;max-height:var(--stage-h,none);overflow-y:auto;scrollbar-width:thin}
+.thumb{width:72px;height:88px;padding:6px;border:1px solid transparent;background:var(--mat);cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:border-color 160ms}
+.thumb:hover{border-color:var(--s3)}
+.thumb[aria-current="true"]{border-color:var(--ink)}
+.thumb img{max-width:100%;max-height:100%;display:block}
+.thumb .room-ph{position:relative;width:100%;height:100%}
+.stage-wrap{display:grid;gap:14px;min-width:0}
+.stage{position:relative;aspect-ratio:1/1;background:var(--gesso);overflow:hidden}
+.panel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 320ms var(--ease)}
+.panel.on{opacity:1}
+.panel.art{padding:6% 14%}
+.panel.art img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;box-shadow:var(--hang-deep)}
+.caption{display:flex;justify-content:space-between;gap:16px;font-size:15px;color:var(--meta)}
+
+/* Room placeholder (stands in for a real room photograph = native media) */
+.room-ph{position:absolute;inset:0;background:var(--mist);overflow:hidden}
+.room-ph .floor{position:absolute;left:0;right:0;bottom:0;height:14%;background:var(--hair);border-top:1px solid var(--s3)}
+.room-ph .bench{position:absolute;left:50%;transform:translateX(-50%);bottom:14%;width:52%;height:7%;border-top:5px solid var(--body)}
+.room-ph .bench::before,.room-ph .bench::after{content:"";position:absolute;top:0;bottom:0;width:3px;background:var(--body);left:6%}
+.room-ph .bench::after{left:auto;right:6%}
+.room-ph img{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(14% + 7% + 5%);height:var(--rh,52%);box-shadow:0 14px 22px -12px rgba(13,20,26,.45)}
+.room-ph .tag{position:absolute;left:10px;top:10px;background:rgba(248,248,246,.9);padding:4px 7px;font:10px var(--display);letter-spacing:.2em;text-transform:uppercase;color:var(--meta)}
+.thumb .room-ph .tag{display:none}
+.detail-ph{position:absolute;inset:0;overflow:hidden}
+.detail-ph img{width:100%;height:100%;object-fit:cover;transform:scale(2.2);transform-origin:60% 45%}
+.detail-ph .tag{position:absolute;left:10px;top:10px;background:rgba(248,248,246,.9);padding:4px 7px;font:10px var(--display);letter-spacing:.2em;text-transform:uppercase;color:var(--meta)}
+
+/* Info column */
+.info{flex:5 1 360px;min-width:0;max-width:560px;position:sticky;top:24px;display:grid;gap:28px}
+.label{display:grid;gap:12px}
+.eyebrow{font:12px var(--display);letter-spacing:.22em;text-transform:uppercase;color:var(--copper);text-decoration:none}
+.eyebrow:hover{color:var(--ink)}
+h1{margin:0;font:400 clamp(40px,4vw,60px)/1.05 var(--display);color:var(--ink);text-wrap:balance}
+.sub{margin:0;font-size:19px;line-height:1.5;color:var(--body)}
+.sub .m-only{display:none}
+.buy{display:grid;gap:18px;padding-top:24px;border-top:1px solid var(--hair)}
+.price-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+.price{font-size:30px;color:var(--ink);font-variant-numeric:lining-nums}
+.status{display:inline-flex;align-items:center;gap:8px;font:12px var(--display);letter-spacing:.18em;text-transform:uppercase;color:var(--green)}
+.sold-label{display:inline-flex;align-items:center;gap:10px;font:15px var(--display);letter-spacing:.2em;text-transform:uppercase;color:var(--ink)}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--dot);flex:none}
+.note{margin:0;font-size:18px;line-height:1.6;color:var(--body)}
+.btn{display:flex;width:100%;align-items:center;justify-content:center;gap:10px;height:56px;padding:0 32px;border:1px solid var(--teal);background:var(--teal);color:var(--gesso);
+  font:14px/1 var(--display);letter-spacing:.16em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background 160ms var(--ease),color 160ms var(--ease),border-color 160ms var(--ease)}
+.btn:hover{background:var(--teal-h);border-color:var(--teal-h);color:var(--gesso)}
+.btn:disabled{cursor:default;background:var(--teal-h);border-color:var(--teal-h)}
+.btn--sec{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn--sec:hover{background:var(--ink);color:var(--gesso);border-color:var(--ink)}
+.btn svg{width:19px;height:19px;flex:none}
+.label-link{justify-self:start;display:inline-flex;align-items:center;gap:10px;font:13px var(--display);letter-spacing:.16em;text-transform:uppercase;color:var(--ink);text-decoration:none;padding:12px 0 6px;border-bottom:1px solid var(--hair);transition:color 160ms,border-color 160ms}
+.label-link::after{content:"→";transition:transform 320ms var(--ease)}
+.label-link:hover{color:var(--copper);border-color:var(--copper)}.label-link:hover::after{transform:translateX(4px)}
+.inline-link{justify-self:start;font-size:17px;color:var(--teal);text-decoration:underline;text-underline-offset:.22em;padding:10px 0}
+.facts{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px 28px;font-size:17px;line-height:1.45}
+.facts dt{font:11px var(--display);letter-spacing:.2em;text-transform:uppercase;color:var(--meta);padding-top:4px}
+.facts dd{margin:0;color:var(--ink)}
+.ask-m{display:none}
+.acc{border-top:1px solid var(--hair)}
+.acc-item{border-bottom:1px solid var(--hair)}
+.acc-item button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;border:0;background:none;cursor:pointer;text-align:left;font:13px var(--display);letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
+.acc-item button span:last-child{font:18px var(--text);width:16px;text-align:center}
+.acc-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows 320ms var(--ease)}
+.acc-item.open .acc-body{grid-template-rows:1fr}
+.acc-body>div{overflow:hidden}
+.acc-body p{margin:0;padding-bottom:20px;font-size:17px;line-height:1.6;color:var(--body)}
+
+/* Story band */
+.story{background:var(--ink);color:var(--gesso)}
+.story .in{max-width:1560px;margin:0 auto;padding:clamp(88px,10vw,168px) var(--gutter);display:flex;flex-wrap:wrap;gap:clamp(32px,6vw,112px)}
+.story .side{flex:3 1 220px;display:grid;gap:14px;align-content:start}
+.story .eb{font:12px var(--display);letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.story .sl{font-size:16px;color:var(--s3)}
+.story blockquote{flex:9 1 520px;max-width:900px;margin:0;font-style:italic;font-size:clamp(26px,2.5vw,36px);line-height:1.45;text-wrap:pretty}
+.story blockquote.long{font-style:normal;font-size:22px;line-height:1.6;color:var(--mist);max-width:34em}
+.story blockquote p{margin:0}.story blockquote p+p{margin-top:1em}
+
+/* Scale (OPTIONAL) */
+.scale{max-width:1560px;margin:0 auto;padding:clamp(88px,10vw,160px) var(--gutter);display:flex;flex-wrap:wrap;gap:clamp(40px,6vw,96px);align-items:center}
+.scale .pic{flex:7 1 460px;position:relative;aspect-ratio:5/4}
+.scale .txt{flex:5 1 320px;max-width:520px;display:grid;gap:22px}
+.scale .eb{font:12px var(--display);letter-spacing:.22em;text-transform:uppercase;color:var(--copper)}
+.scale h2{margin:0;font:400 clamp(30px,2.8vw,42px)/1.15 var(--display);color:var(--ink)}
+.scale p{margin:0;font-size:18px;line-height:1.6;color:var(--body)}
+.diagram{position:relative;height:190px;border-bottom:1px solid var(--ink);margin-top:12px}
+.diagram .w{position:absolute;left:0;bottom:0;background:#505359}
+.diagram .p{position:absolute;bottom:0;border:1px solid var(--s5);border-bottom:0}
+.legend{display:flex;gap:28px;flex-wrap:wrap;font-size:15px;color:var(--meta)}
+
+/* Related */
+.related{background:var(--mist)}
+.related .in{max-width:1680px;margin:0 auto;padding:clamp(80px,9vw,144px) var(--gutter)}
+.related .hd{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:clamp(36px,4vw,56px)}
+.related h2{margin:0;font:400 clamp(28px,2.6vw,40px)/1.15 var(--display);color:var(--ink)}
+.grid{--g:clamp(24px,3vw,56px);list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(max(260px,calc((100% - 2 * var(--g)) / 3)),1fr));gap:var(--g);align-items:start}
+.card a{display:grid;gap:16px;text-decoration:none;color:inherit}
+.card .plate{aspect-ratio:8/9;background:var(--mat);padding:10%;display:flex;align-items:center;justify-content:center;transition:background 320ms}
+.card .plate img{max-width:100%;max-height:100%;box-shadow:var(--hang)}
+.card a:hover .plate{background:var(--mist)}
+.card .row{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.card h3{margin:0;font:400 19px/1.25 var(--display);color:var(--ink);transition:color 160ms}
+.card a:hover h3{color:var(--teal)}
+.card .pr{font-size:17px;white-space:nowrap;color:var(--ink)}
+.card .sd{display:inline-flex;gap:7px;align-items:center;font:11px var(--display);letter-spacing:.2em;text-transform:uppercase;color:var(--ink)}
+.card .sd i{width:8px;height:8px;border-radius:50%;background:var(--dot)}
+.card .mt{font-size:15px;color:var(--meta);margin-top:-10px}
+.foot{background:var(--ink);color:var(--s3);padding:48px var(--gutter);font-size:13px}
+
+/* Mobile-only pieces */
+.m-media,.bar{display:none}
+
+@media (max-width:749px){
+  .shell{height:58px}
+  .crumb{display:none}
+  .wrap.main{padding:0;display:block}
+  .media{display:none}
+  .m-media{display:block;position:relative}
+  .strip{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;aspect-ratio:4/5;background:var(--gesso)}
+  .strip::-webkit-scrollbar{display:none}
+  .strip>div{flex:0 0 100%;scroll-snap-align:start;position:relative;display:flex;align-items:center;justify-content:center}
+  .strip>.art{padding:9% 14%}
+  .strip>.art img{max-width:100%;max-height:100%;box-shadow:0 24px 40px -20px rgba(13,20,26,.45)}
+  .swipe-tag{position:absolute;right:12px;bottom:12px;background:rgba(248,248,246,.92);padding:5px 9px;font:10px var(--display);letter-spacing:.18em;text-transform:uppercase;color:var(--body)}
+  .info{position:static;max-width:none;gap:0}
+  .label{padding:26px 20px 8px;gap:10px}
+  .eyebrow{font-size:11px}
+  h1{font-size:34px;line-height:1.1}
+  .sub{font-size:16px}
+  .sub .m-only{display:inline}.sub .d-only{display:none}
+  .m-note{margin:8px 0 0;font-size:16px;line-height:1.55;color:var(--body)}
+  .buy{display:none}
+  .facts{padding:16px 20px 0;font-size:16px}
+  .ask-m{display:inline-flex;margin:8px 20px 0}
+  .acc{margin:24px 20px 40px;order:9}
+  .info{display:flex;flex-direction:column}
+  .story .in{padding:40px 20px;gap:14px;display:grid}
+  .story .eb{font-size:11px}.story .sl{display:none}
+  .story blockquote{font-size:21px}
+  .story blockquote.long{font-size:18px}
+  .scale{padding:48px 20px;display:grid;gap:20px}
+  .scale .pic{aspect-ratio:4/5}
+  .scale h2{font-size:26px}
+  .diagram{height:150px}
+  .related .in{padding:48px 0}
+  .related .hd{padding:0 24px;margin-bottom:24px}
+  .related h2{font-size:24px}
+  .grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;padding:0 24px;scrollbar-width:none}
+  .grid>li{flex:0 0 78%;scroll-snap-align:start}
+  .card .plate{aspect-ratio:4/5}
+  .card h3{font-size:18px}
+  .bar{display:flex;position:sticky;bottom:0;z-index:10;gap:12px;align-items:center;background:rgba(248,248,246,.97);border-top:1px solid var(--hair);padding:12px 16px calc(22px + env(safe-area-inset-bottom))}
+  .bar .price{font-size:22px;min-width:64px}
+  .bar .btn{height:48px;font-size:13px;padding:0 16px;flex:1}
+  .bar .sold-label{font-size:12px;gap:8px;min-width:74px}
+  .bar .dot{width:8px;height:8px}
+}
+@media (min-width:750px){.m-note{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition-duration:1ms!important}}
+</style>
+</head>
+<body>
+
+<div class="ref" aria-label="Reference controls (not part of the design)">
+  <span>REFERENCE · state</span>
+  <button type="button" data-state="available" aria-pressed="true">Available · Essence V2</button>
+  <button type="button" data-state="sold" aria-pressed="false">Sold · Colored by Nature-Blue V2</button>
+  <span>media</span>
+  <button type="button" data-media="many" aria-pressed="true">Multiple</button>
+  <button type="button" data-media="one" aria-pressed="false">Single image</button>
+  <button type="button" data-story="toggle" aria-pressed="false">Long story</button>
+</div>
+<div class="shell"><div class="wrap">Existing header (not part of this reference)</div></div>
+
+<main id="pdp"></main>
+<div class="foot">Existing footer</div>
+<div class="vh" aria-live="polite" id="live"></div>
+
+<script>
+/* REFERENCE ONLY. Data shapes mirror the Shopify sources in handoff §9. Images are stand-ins. */
+const ART = '../../../art/';
+const PRODUCTS = {
+  available: {
+    id: 101, title: 'Essence V2', available: true, price: '$1,500', w: 20, h: 40,
+    collection: { title: 'Originals', url: '#' },            // only when reached via a collection URL
+    medium: null,                                             // taxonomy: not guaranteed -> omitted
+    readyToHang: true, certificate: 'Signed certificate of authenticity included.',
+    story: '[custom.artwork_story — Ranjeeta\u2019s own words about this painting appear here. Short stories set as the large italic quote.]',
+    media: [
+      { kind: 'art', src: ART + 'melting-away.webp', alt: 'Essence V2: stand-in image (primary artwork, media 1)' },
+      { kind: 'room', src: ART + 'melting-away.webp', alt: 'Room view: Essence V2 above a bench (stand-in for a room photograph)' },
+      { kind: 'detail', src: ART + 'melting-away.webp', alt: 'Detail of the pour (stand-in)' }
+    ]
+  },
+  sold: {
+    id: 102, title: 'Colored by Nature-Blue V2', available: false, price: '$475', w: 12, h: 16,
+    collection: { title: 'Originals', url: '#' }, medium: null,
+    readyToHang: null, certificate: 'Signed certificate of authenticity included.',
+    story: '[custom.artwork_story — Ranjeeta\u2019s words. A sold work keeps its story.]',
+    media: [
+      { kind: 'art', src: ART + 'colored-by-nature-purple.jpg', alt: 'Colored by Nature-Blue V2: stand-in image (primary artwork)' },
+      { kind: 'room', src: ART + 'colored-by-nature-purple.jpg', alt: 'Room view: Colored by Nature-Blue V2 (stand-in)' }
+    ]
+  }
+};
+const LONG_STORY = '<p>[A longer custom.artwork_story. Over ~420 characters or more than one paragraph switches to the roman reading size so it stays comfortable to read.]</p><p>Second paragraph of the story continues here with more about the process, the colours and the moment that started the painting. It sits at 22px Mulish on the ink band with a 34em measure.</p><p>A third paragraph closes the story.</p>';
+const RELATED = [
+  { t: 'Longing for Clouds', src: ART + 'longing-for-clouds.jpg', p: '$640', m: '24 × 24 in' },
+  { t: 'Uncolored by Nature', src: ART + 'uncolored-by-nature.jpg', sold: true, m: '16 × 20 in' },
+  { t: 'Prithvi – Earth', src: ART + 'prithvi-earth.webp', p: '$420', m: '12 × 12 in' }
+];
+const S = { state: 'available', media: 'many', longStory: false, idx: 0, inBag: false };
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const ICON_MAIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><rect x="2" y="4" width="20" height="16"/><path d="m22 7-10 6L2 7"/></svg>';
+const ICON_CHECK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+
+function roomPh(m, P) { // room photo stand-in: painting at relative scale above a 48in bench
+  const rh = Math.min(60, P.h / 48 * 44);
+  return `<div class="room-ph" style="--rh:${rh}%"><div class="floor"></div><div class="bench"></div><img src="${m.src}" alt=""><span class="tag">Room photo · placeholder</span></div>`;
+}
+function panelInner(m, P) {
+  if (m.kind === 'room') return roomPh(m, P);
+  if (m.kind === 'detail') return `<div class="detail-ph"><img src="${m.src}" alt=""><span class="tag">Detail photo · placeholder</span></div>`;
+  return `<img src="${m.src}" alt="${esc(m.alt)}" ${m === P.media[0] ? 'fetchpriority="high"' : 'loading="lazy"'}>`;
+}
+
+function render() {
+  const P = PRODUCTS[S.state];
+  const media = S.media === 'one' ? P.media.slice(0, 1) : P.media;
+  const N = media.length; if (S.idx >= N) S.idx = 0;
+  const dims = P.w && P.h ? `${P.w} × ${P.h} in` : null;
+  const subD = 'Original painting' + (P.medium ? ' · ' + P.medium : '');
+  const subM = [P.medium, dims].filter(Boolean).join(' · ');
+  const facts = [
+    dims && ['Size', dims + ' · ' + Math.round(P.w * 2.54) + ' × ' + Math.round(P.h * 2.54) + ' cm'],
+    P.medium && ['Medium', P.medium],
+    P.readyToHang != null && ['Ready to hang', P.readyToHang ? 'Yes' : 'Needs framing'],
+    P.certificate && ['Certificate', P.certificate.length < 60 ? P.certificate : 'Included · see below']
+  ].filter(Boolean);
+  const story = S.longStory ? LONG_STORY : P.story;
+  const storyLong = S.longStory || P.story.length > 420;
+  const s = 190 / Math.max(66, P.h);
+
+  const buyAvail = `
+    <form class="buy" id="product-form-${P.id}" action="/cart/add" method="post" novalidate>
+      <input type="hidden" name="id" value="${P.id}01"><input type="hidden" name="quantity" value="1">
+      <div class="price-row"><span class="price">${P.price}</span><span class="status">${ICON_CHECK}Available · one of one</span></div>
+      <button class="btn" type="submit" data-add ${S.inBag ? 'disabled' : ''}>${S.inBag ? 'Added to bag' : 'Add to bag'}</button>
+      ${S.inBag ? '<a class="label-link" href="#" style="padding-top:0">View bag</a>' : ''}
+      <a class="btn btn--sec" href="mailto:studio@example.com?subject=${encodeURIComponent(P.title)}">${ICON_MAIL}Ask Ranjeeta about this painting</a>
+    </form>`;
+  const buySold = `
+    <div class="buy">
+      <span class="sold-label"><span class="dot"></span>Sold</span>
+      <p class="note">This painting has been collected.${P.collection ? ' It stays here as part of the ' + esc(P.collection.title) + ' series.' : ''}</p>
+      <a class="btn btn--sec" href="#">See available works</a>
+      <a class="inline-link" href="#">Commission a painting in this spirit</a>
+    </div>`;
+
+  document.getElementById('pdp').innerHTML = `
+  <nav class="crumb wrap" aria-label="Breadcrumb"><ol>
+    <li><a href="#">Originals</a></li>${P.collection && P.collection.title !== 'Originals' ? `<li><a href="${P.collection.url}">${esc(P.collection.title)}</a></li>` : ''}
+    <li><span aria-current="page">${esc(P.title)}</span></li></ol></nav>
+
+  <section class="wrap main" aria-label="${esc(P.title)}">
+    <div class="media ${N === 1 ? 'single' : ''}">
+      ${N > 1 ? `<div class="rail" role="group" aria-label="Artwork images">${media.map((m, i) => `
+        <button type="button" class="thumb" data-i="${i}" aria-current="${i === S.idx}" aria-label="View image ${i + 1} of ${N}: ${esc(m.alt)}">
+          ${m.kind === 'room' ? roomPh(m, P) : `<img src="${m.src}" alt="" loading="lazy">`}</button>`).join('')}</div>` : ''}
+      <div class="stage-wrap">
+        <div class="stage">${media.map((m, i) => `<div class="panel ${m.kind === 'art' ? 'art' : ''} ${i === S.idx ? 'on' : ''}" ${i === S.idx ? '' : 'aria-hidden="true"'}>${panelInner(m, P)}</div>`).join('')}</div>
+        <div class="caption"><span>${i0(media, P)}</span>${N > 1 ? `<span>${S.idx + 1} / ${N}</span>` : ''}</div>
+      </div>
+    </div>
+
+    <div class="m-media">
+      <div class="strip" tabindex="0" role="region" aria-label="${esc(P.title)}: ${N} image${N > 1 ? 's' : ''}">
+        ${media.map((m) => m.kind === 'art' ? `<div class="art"><img src="${m.src}" alt="${esc(m.alt)}"></div>` : `<div>${panelInner(m, P)}</div>`).join('')}
+      </div>
+      ${N > 1 ? `<span class="swipe-tag" data-tag>Swipe · ${N} views</span>` : ''}
+    </div>
+
+    <div class="info">
+      <div class="label">
+        ${P.collection ? `<a class="eyebrow" href="${P.collection.url}">${esc(P.collection.title)}</a>` : ''}
+        <h1>${esc(P.title)}</h1>
+        <p class="sub"><span class="d-only">${subD}</span><span class="m-only">${subM}</span></p>
+        ${P.available ? '' : '<p class="m-note">This painting has been collected.</p>'}
+      </div>
+      ${P.available ? buyAvail : buySold}
+      ${facts.length ? `<dl class="facts">${facts.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl>` : ''}
+      ${P.available ? `<a class="label-link ask-m" href="mailto:studio@example.com?subject=${encodeURIComponent(P.title)}">Ask Ranjeeta about this painting</a>` : ''}
+      <div class="acc">
+        ${accItem('ship', 'Shipping & packing', 'Theme Editor rich text (shop-wide): where paintings ship from, packing, insurance, delivery time.')}
+        ${P.certificate ? accItem('cert', 'Certificate of authenticity', P.certificate) : ''}
+      </div>
+    </div>
+  </section>
+
+  ${story ? `<section class="story" aria-label="The story"><div class="in">
+    <div class="side"><div class="eb">The story</div><span class="sl">In Ranjeeta\u2019s words</span></div>
+    <blockquote class="${storyLong ? 'long' : ''}">${storyLong ? story : '<p>' + esc(story) + '</p>'}</blockquote>
+  </div></section>` : ''}
+
+  ${dims ? `<section class="scale" aria-labelledby="scale-h">
+    ${N > 1 && media.find((m) => m.kind === 'room') ? `<div class="pic">${roomPh(media.find((m) => m.kind === 'room'), P)}</div>` : ''}
+    <div class="txt">
+      <div class="eb">Scale · optional section</div>
+      <h2 id="scale-h">${dims}</h2>
+      <p>Shown with a 5 ft 6 in figure for scale.</p>
+      <div class="diagram" aria-hidden="true">
+        <div class="w" style="width:${Math.round(P.w * s)}px;height:${Math.round(P.h * s)}px"></div>
+        <div class="p" style="left:${Math.round(P.w * s) + 24}px;width:${Math.round(18 * s)}px;height:${Math.round(66 * s)}px"></div>
+      </div>
+      <div class="legend"><span>■ ${esc(P.title)} · ${dims}</span><span>□ Person, 5 ft 6 in</span></div>
+    </div>
+  </section>` : ''}
+
+  <section class="related" aria-labelledby="more-h"><div class="in">
+    <div class="hd"><h2 id="more-h">More originals</h2><a class="label-link" href="#">All originals</a></div>
+    <ul class="grid">${RELATED.map((r) => `<li class="card"><a href="#" aria-label="${esc(r.t)}, ${r.sold ? 'sold' : r.p}">
+      <div class="plate"><img src="${r.src}" alt="" loading="lazy"></div>
+      <div class="row"><h3>${esc(r.t)}</h3>${r.sold ? '<span class="sd"><i></i>Sold</span>' : `<span class="pr">${r.p}</span>`}</div>
+      <div class="mt">${r.m}</div></a></li>`).join('')}</ul>
+  </div></section>
+
+  <div class="bar">
+    ${P.available
+      ? `<span class="price">${P.price}</span><button class="btn" type="submit" form="product-form-${P.id}" ${S.inBag ? 'disabled' : ''}>${S.inBag ? 'Added to bag' : 'Add to bag'}</button>`
+      : `<span class="sold-label"><span class="dot"></span>Sold</span><a class="btn btn--sec" href="#">See available works</a>`}
+  </div>`;
+  wire(media, P);
+}
+function i0(media, P) { return S.idx === 0 ? esc(P.title) : esc(media[S.idx].alt); }
+function accItem(id, t, body) {
+  return `<div class="acc-item"><button type="button" aria-expanded="false" aria-controls="acc-${id}"><span>${t}</span><span aria-hidden="true">+</span></button>
+    <div class="acc-body" id="acc-${id}" role="region"><div><p>${esc(body)}</p></div></div></div>`;
+}
+
+function wire(media, P) {
+  const root = document.getElementById('pdp');
+  const thumbs = [...root.querySelectorAll('.thumb')];
+  const panels = [...root.querySelectorAll('.stage .panel')];
+  const cap = root.querySelector('.caption');
+  const stage = root.querySelector('.stage'), rail = root.querySelector('.rail');
+  if (rail && stage) rail.style.setProperty('--stage-h', stage.offsetHeight + 'px');
+  const show = (i, focus) => {
+    S.idx = (i + media.length) % media.length;
+    panels.forEach((p, n) => { p.classList.toggle('on', n === S.idx); p.toggleAttribute('aria-hidden', n !== S.idx); });
+    thumbs.forEach((t, n) => t.setAttribute('aria-current', n === S.idx));
+    cap.innerHTML = `<span>${i0(media, P)}</span><span>${S.idx + 1} / ${media.length}</span>`;
+    if (focus) thumbs[S.idx].focus();
+  };
+  thumbs.forEach((t, n) => {
+    t.addEventListener('click', () => show(n));
+    t.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); show(S.idx + 1, true); }
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); show(S.idx - 1, true); }
+    });
+  });
+  // Mobile strip: tag becomes "n / N" after the first swipe (NIJ, recommended)
+  const strip = root.querySelector('.strip'), tag = root.querySelector('[data-tag]');
+  if (strip && tag) {
+    let t; strip.addEventListener('scroll', () => { clearTimeout(t); t = setTimeout(() => {
+      const n = Math.round(strip.scrollLeft / strip.clientWidth) + 1;
+      tag.textContent = n + ' / ' + media.length;
+      document.getElementById('live').textContent = 'Image ' + n + ' of ' + media.length;
+    }, 120); });
+  }
+  root.querySelectorAll('.acc-item button').forEach((b) => b.addEventListener('click', () => {
+    const it = b.parentElement, open = !it.classList.contains('open');
+    it.classList.toggle('open', open); b.setAttribute('aria-expanded', open); b.lastElementChild.textContent = open ? '−' : '+';
+  }));
+  // Add to bag: progressive enhancement. Without JS the form POSTs to /cart/add.
+  const form = root.querySelector('form.buy');
+  if (form) form.addEventListener('submit', (e) => {
+    e.preventDefault(); // production: fetch('/cart/add.js', {method:'POST', body:new FormData(form)}) then update the bag count
+    S.inBag = true; render();
+    document.getElementById('live').textContent = P.title + ' added to your bag.';
+  });
+}
+
+document.querySelector('.ref').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.state) { S.state = b.dataset.state; S.idx = 0; S.inBag = false; document.querySelectorAll('[data-state]').forEach((x) => x.setAttribute('aria-pressed', x === b)); }
+  if (b.dataset.media) { S.media = b.dataset.media; S.idx = 0; document.querySelectorAll('[data-media]').forEach((x) => x.setAttribute('aria-pressed', x === b)); }
+  if (b.dataset.story) { S.longStory = !S.longStory; b.setAttribute('aria-pressed', S.longStory); }
+  render();
+});
+render();
+</script>
+</body>
+</html>
