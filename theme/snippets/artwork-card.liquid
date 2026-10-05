@@ -1,17 +1,20 @@
 {% doc %}
   Renders the shared V2 artwork card: matted image, optional room view, and caption
-  (series, title, price or Sold, dimensions). Reused by the homepage and, later, PLP/PDP.
+  (series, title, price or Sold, dimensions). Used by the homepage and the collection page.
 
-  The room view is the product's second image when present. It cross-fades in on
-  hover/focus. With room_swipe, touch visitors can also swipe to it; the section must
-  then load zita-artwork-card.js. Leave room_swipe off inside horizontally scrolling rows,
-  where a nested swipe would compete with the row.
+  The caption is the card's only link; it stretches over the whole card, so the plate is
+  clickable too. The room view is the product's second image when present. It cross-fades
+  in on hover/focus. With room_swipe, touch visitors swipe to it instead: the link then
+  stops covering the plate so the swipe region is never nested inside the link, and the
+  section must load zita-artwork-card.js. Leave room_swipe off inside horizontally
+  scrolling rows, where a nested swipe would compete with the row.
 
   @param {product} product - Artwork product
   @param {boolean} [room_swipe] - Enables the touch swipe to the room view
   @param {string} [series] - Clean series name to show above the title
   @param {string} [sizes] - sizes attribute for the artwork image
   @param {string} [loading] - 'lazy' (default) or 'eager'
+  @param {string} [fetchpriority] - 'high' for the first artwork on a page
   @param {string} [heading_tag] - Title element (default h3)
 
   @example
@@ -36,58 +39,103 @@
   endif
 
   assign title_tag = heading_tag | default: 'h3'
+  assign artwork_alt = primary_image.alt | default: product.title
+  assign region_label = 'artwork.artwork_and_room' | t: title: product.title
+
+  assign card_classes = 'artwork-card'
+  if room_image and room_swipe
+    assign card_classes = card_classes | append: ' artwork-card--swipe'
+  endif
 -%}
 
 {%- capture dimensions -%}
   {%- render 'artwork-dimensions', product: product -%}
 {%- endcapture -%}
 
-<a class="artwork-card" href="{{ product.url }}">
+<div class="{{ card_classes }}">
   {%- render 'artwork-plate',
     image: primary_image,
     room_image: room_image,
     room_swipe: room_swipe,
+    region_label: region_label,
+    alt: artwork_alt,
     sizes: sizes,
-    loading: loading
+    loading: loading,
+    fetchpriority: fetchpriority
   -%}
 
-  <div class="artwork-card__caption">
-    {%- if series != blank -%}
-      <span class="artwork-card__series">{{ series | escape }}</span>
-    {%- endif -%}
+  <a class="artwork-card__link" href="{{ product.url }}">
+    <div class="artwork-card__caption">
+      {%- if series != blank -%}
+        <span class="artwork-card__series">{{ series | escape }}</span>
+      {%- endif -%}
 
-    <{{ title_tag }} class="artwork-card__title">{{ product.title | escape }}</{{ title_tag }}>
+      <div class="artwork-card__row">
+        <{{ title_tag }} class="artwork-card__title">{{ product.title | escape }}</{{ title_tag }}>
 
-    {%- if product.available -%}
-      <span class="artwork-card__price">
-        {%- if product.price_varies -%}
-          {%- assign price_min = product.price_min | money -%}
-          {{ 'artwork.price_from' | t: price: price_min }}
+        {%- if product.available -%}
+          <span class="artwork-card__price">
+            {%- if product.price_varies -%}
+              {%- assign price_min = product.price_min | money_without_trailing_zeros -%}
+              {{ 'artwork.price_from' | t: price: price_min }}
+            {%- else -%}
+              {{ product.price | money_without_trailing_zeros }}
+            {%- endif -%}
+          </span>
         {%- else -%}
-          {{ product.price | money }}
+          <span class="artwork-card__sold">{{ 'artwork.sold' | t }}</span>
         {%- endif -%}
-      </span>
-    {%- else -%}
-      <span class="artwork-card__sold">{{ 'artwork.sold' | t }}</span>
-    {%- endif -%}
+      </div>
 
-    {%- if dimensions != blank -%}
-      <span class="artwork-card__meta">{{ dimensions }}</span>
-    {%- endif -%}
-  </div>
-</a>
+      {%- if dimensions != blank or series != blank -%}
+        <span class="artwork-card__meta">
+          {%- if series != blank -%}
+            <span class="artwork-card__meta-series">
+              {{- series | escape -}}
+              {%- if dimensions != blank %} · {% endif -%}
+            </span>
+          {%- endif -%}
+          {{- dimensions -}}
+        </span>
+      {%- endif -%}
+    </div>
+  </a>
+</div>
 
 {% stylesheet %}
   .artwork-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     min-width: 0;
     color: var(--color-text);
+  }
+
+  .artwork-card__link {
+    display: block;
+    color: inherit;
     text-decoration: none;
   }
 
-  .artwork-card:hover {
-    color: var(--color-text);
+  .artwork-card__link:hover {
+    color: inherit;
+  }
+
+  /* Stretches the link over the whole card, plate included. */
+  .artwork-card__link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .artwork-card__link:focus-visible {
+    outline: none;
+  }
+
+  .artwork-card__link:focus-visible::before {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
   }
 
   .artwork-card__caption {
@@ -106,6 +154,13 @@
     color: var(--color-copper);
   }
 
+  .artwork-card__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+
   .artwork-card__title {
     margin: 0;
     font-size: 19px;
@@ -115,26 +170,30 @@
   }
 
   .artwork-card:hover .artwork-card__title,
-  .artwork-card:focus-visible .artwork-card__title {
+  .artwork-card:focus-within .artwork-card__title {
     color: var(--color-teal);
   }
 
   .artwork-card__price {
+    flex: none;
     font-size: 17px;
     line-height: 1.4;
-    color: var(--color-text);
+    color: var(--color-ink);
+    white-space: nowrap;
   }
 
   .artwork-card__sold {
     display: inline-flex;
+    flex: none;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     font-family: var(--font-display);
     font-size: 11px;
     line-height: 1.4;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--color-text-secondary);
+    color: var(--color-ink);
+    white-space: nowrap;
   }
 
   .artwork-card__sold::before {
@@ -151,25 +210,60 @@
     color: var(--color-text-meta);
   }
 
+  .artwork-card__meta-series {
+    display: none;
+  }
+
   @media (hover: hover) {
     .artwork-card:hover .artwork-plate--has-room .artwork-plate__room,
-    .artwork-card:focus-visible .artwork-plate--has-room .artwork-plate__room {
+    .artwork-card:focus-within .artwork-plate--has-room .artwork-plate__room {
       opacity: 1;
     }
 
     .artwork-card:hover .artwork-plate--has-room .artwork-plate__frame,
-    .artwork-card:focus-visible .artwork-plate--has-room .artwork-plate__frame {
+    .artwork-card:focus-within .artwork-plate--has-room .artwork-plate__frame {
       opacity: 0;
+    }
+  }
+
+  /* Touch screens swipe the plate, so the link stops covering it and the caption alone is the link. */
+  @media (hover: none) {
+    .artwork-card--swipe .artwork-card__link::before {
+      display: none;
+    }
+
+    .artwork-card--swipe .artwork-card__link {
+      position: relative;
+    }
+
+    .artwork-card--swipe .artwork-card__link:focus-visible {
+      outline: 2px solid var(--color-focus);
+      outline-offset: 3px;
     }
   }
 
   @media (max-width: 749px) {
     .artwork-card__caption {
+      gap: 4px;
+      min-height: 44px;
       padding-block-start: 12px;
+    }
+
+    .artwork-card__series {
+      display: none;
+    }
+
+    .artwork-card__meta-series {
+      display: inline;
     }
 
     .artwork-card__title {
       font-size: 18px;
+    }
+
+    .artwork-card__sold::before {
+      width: 7px;
+      height: 7px;
     }
   }
 {% endstylesheet %}

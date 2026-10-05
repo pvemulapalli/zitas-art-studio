@@ -1,7 +1,7 @@
 {% doc %}
   Renders a decorative outline icon (1.25px stroke). Icon geometry is from Lucide (ISC licence).
 
-  @param {string} name - search | instagram | shopping-bag | chevron-down | arrow-right | arrow-left | pause | play
+  @param {string} name - search | instagram | shopping-bag | chevron-down | arrow-right | arrow-left | pause | play | sliders-horizontal | x
   @param {number} [size] - Rendered width and height in pixels (default 20)
   @param {string} [class] - Extra class names
 
@@ -40,5 +40,9 @@
       <rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>
     {%- when 'play' -%}
       <polygon points="6 3 20 12 6 21 6 3"/>
+    {%- when 'sliders-horizontal' -%}
+      <line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/>
+    {%- when 'x' -%}
+      <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
   {%- endcase -%}
 </svg>

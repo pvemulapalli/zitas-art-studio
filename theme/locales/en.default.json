@@ -88,7 +88,47 @@
     "price_from": "From {{ price }}",
     "sold": "Sold",
     "swipe_room": "Swipe · room",
-    "room_view": "Room view"
+    "room_view": "Room view",
+    "artwork_and_room": "{{ title }}: artwork and room view"
+  },
+  "plp": {
+    "series_nav": "Series",
+    "artworks": "Artworks",
+    "works_count": {
+      "one": "{{ count }} work",
+      "other": "{{ count }} works"
+    },
+    "filter_sort": "Filter & Sort",
+    "filters_applied": {
+      "one": "{{ count }} filter applied",
+      "other": "{{ count }} filters applied"
+    },
+    "applied_filters": "Applied filters",
+    "remove_filter": "Remove filter: {{ label }}",
+    "clear_all": "Clear all",
+    "clear_filters": "Clear filters",
+    "close": "Close",
+    "show_works": {
+      "one": "Show {{ count }} work",
+      "other": "Show {{ count }} works"
+    },
+    "sort": "Sort",
+    "sort_price_ascending": "Price, low to high",
+    "sort_price_descending": "Price, high to low",
+    "available": "Available",
+    "sold": "Sold",
+    "price_min": "From",
+    "price_max": "To",
+    "price_range": "{{ min }} – {{ max }}",
+    "price_at_least": "From {{ min }}",
+    "price_up_to": "Up to {{ max }}",
+    "empty_filtered": "No works match these filters.",
+    "empty": "There are no works in this collection yet.",
+    "editorial_label": "About {{ title }}",
+    "pagination": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "page_of": "Page {{ current }} of {{ total }}"
   },
   "selected_works": {
     "swipe": "Swipe"

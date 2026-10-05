@@ -1,0 +1,78 @@
+{% doc %}
+  Renders the optional per-collection editorial band as a grid item spanning every column.
+  The parent places it in the product sequence (after work 3, after work 6, or at the end).
+  Content comes from collection metafields (namespace "custom"); nothing renders unless
+  custom.editorial_text has a value. Missing optional fields are simply omitted: without
+  custom.editorial_image the band is text only.
+
+  custom.editorial_eyebrow (single line text), custom.editorial_text (multi-line text),
+  custom.editorial_link_label (single line text), custom.editorial_link (single-line text; relative storefront path or full external URL),
+  custom.editorial_image (file: image), custom.editorial_product (product reference; the image links to it).
+
+  @param {collection} collection - The current collection
+  @param {string} [variant] - Approved band treatment; only 'default' exists today
+
+  @example
+  {% render 'collection-editorial', collection: collection %}
+{% enddoc %}
+
+{%- liquid
+  assign fields = collection.metafields.custom
+  assign editorial_text = fields.editorial_text.value
+  assign band_variant = variant | default: 'default'
+
+  if editorial_text != blank
+    assign eyebrow = fields.editorial_eyebrow.value
+    assign link_label = fields.editorial_link_label.value
+    assign link_url = fields.editorial_link.value
+    assign featured_product = fields.editorial_product.value
+
+    assign editorial_image = fields.editorial_image.value
+    if editorial_image.preview_image
+      assign editorial_image = editorial_image.preview_image
+    endif
+
+    assign image_alt = editorial_image.alt | default: featured_product.title
+
+    # The image is capped at 520px tall, so a portrait image never fills the 520px-wide slot.
+    assign image_sizes = '(min-width: 1100px) 520px, 50vw'
+    if editorial_image.aspect_ratio < 1
+      assign portrait_slot = editorial_image.aspect_ratio | times: 520 | round
+      assign portrait_breakpoint = portrait_slot | times: 2
+      assign image_sizes = '(min-width: ' | append: portrait_breakpoint | append: 'px) ' | append: portrait_slot | append: 'px, 50vw'
+    endif
+  endif
+-%}
+
+{%- if editorial_text != blank -%}
+  <li class="collection-editorial collection-editorial--{{ band_variant | handleize }}">
+    <aside class="collection-editorial__inner" aria-label="{{ 'plp.editorial_label' | t: title: collection.title }}">
+      <div class="collection-editorial__text">
+        {%- if eyebrow != blank -%}
+          <p class="eyebrow collection-editorial__eyebrow">{{ eyebrow | escape }}</p>
+        {%- endif -%}
+        <p class="collection-editorial__statement">{{ editorial_text | escape | newline_to_br }}</p>
+        {%- render 'label-link', url: link_url, label: link_label, class: 'collection-editorial__link' -%}
+      </div>
+
+      {%- if editorial_image != blank -%}
+        <div class="collection-editorial__media">
+          {%- capture media_image -%}
+            {%- render 'responsive-image',
+              image: editorial_image,
+              alt: image_alt,
+              sizes: image_sizes,
+              widths: '360, 520, 720, 1040',
+              class: 'collection-editorial__image'
+            -%}
+          {%- endcapture -%}
+          {%- if featured_product -%}
+            <a class="collection-editorial__media-link" href="{{ featured_product.url }}">{{ media_image }}</a>
+          {%- else -%}
+            {{ media_image }}
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </aside>
+  </li>
+{%- endif -%}

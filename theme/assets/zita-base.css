@@ -165,6 +165,10 @@ button {
   padding-inline: var(--page-gutter);
 }
 
+.page-width--wide {
+  max-width: calc(var(--carousel-max-width) + 2 * var(--page-gutter));
+}
+
 .list-unstyled {
   margin: 0;
   padding: 0;

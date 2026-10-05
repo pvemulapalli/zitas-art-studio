@@ -1,0 +1,251 @@
+{% doc %}
+  Renders the Filter & Sort trigger and its drawer (a left drawer on desktop, a bottom sheet on
+  phones). The drawer is a plain GET form of Shopify's native storefront filters and sort_by,
+  inside a <details> element, so it opens and submits without JavaScript; zita-collection.js
+  adds live updates, the focus trap, Esc and scrim closing.
+
+  Only the filter groups switched on in the section render. Values of hidden groups that are
+  active (for example from a shared link) are carried as hidden inputs so they aren't lost.
+
+  @param {collection} collection - The current collection
+  @param {string} section_id - The section id, for unique element ids
+  @param {number} active_count - Number of active filter values
+  @param {string} clear_url - URL with every filter removed (sort kept)
+  @param {string} current_sort - The sort in effect
+  @param {string} default_sort_label - Label for the collection's own order
+  @param {boolean} show_availability - Show the availability group
+  @param {boolean} show_price - Show the price group
+  @param {boolean} show_other - Show any other configured groups
+
+  @example
+  {% render 'collection-filters', collection: collection, section_id: section.id, active_count: 0, clear_url: collection.url, current_sort: 'manual', default_sort_label: 'Featured', show_availability: true, show_price: true, show_other: false %}
+{% enddoc %}
+
+{%- liquid
+  assign works_count = 'plp.works_count' | t: count: collection.products_count
+  assign title_id = 'FilterDrawerTitle-' | append: section_id
+  assign sort_values = collection.default_sort_by | append: ',price-ascending,price-descending' | split: ',' | uniq
+-%}
+
+<details class="filter-drawer" scroll-lock data-filter-drawer>
+  <summary class="filter-trigger">
+    {%- render 'icon', name: 'sliders-horizontal', size: 18 -%}
+    <span class="filter-trigger__label">{{ 'plp.filter_sort' | t }}</span>
+    <span class="filter-trigger__count" data-refresh="trigger-count">· {{ works_count }}</span>
+    <span class="filter-trigger__badge-slot" data-refresh="badge">
+      {%- if active_count > 0 -%}
+        <span class="filter-trigger__badge">
+          <span aria-hidden="true">{{ active_count }}</span>
+          <span class="visually-hidden">{{ 'plp.filters_applied' | t: count: active_count }}</span>
+        </span>
+      {%- endif -%}
+    </span>
+  </summary>
+
+  <div class="filter-drawer__scrim" data-filter-close></div>
+
+  <div class="filter-drawer__panel" role="dialog" aria-modal="true" aria-labelledby="{{ title_id }}">
+    <form class="filter-drawer__form" action="{{ collection.url }}" method="get" data-filter-form>
+      <div class="filter-drawer__header">
+        <h2 class="filter-drawer__title" id="{{ title_id }}">{{ 'plp.filter_sort' | t }}</h2>
+        <button
+          type="submit"
+          class="icon-button filter-drawer__close"
+          aria-label="{{ 'plp.close' | t }}"
+          data-filter-close
+        >
+          {%- render 'icon', name: 'x', size: 22 -%}
+        </button>
+      </div>
+
+      <div class="filter-drawer__body" data-filter-body>
+        <div data-refresh="groups">
+          {%- for filter in collection.filters -%}
+            {%- liquid
+              assign group = 'other'
+              if filter.param_name == 'filter.v.availability'
+                assign group = 'availability'
+              elsif filter.type == 'price_range'
+                assign group = 'price'
+              endif
+
+              assign visible = show_other
+              if group == 'availability'
+                assign visible = show_availability
+              elsif group == 'price'
+                assign visible = show_price
+              endif
+
+              assign hidden_group = true
+              if visible
+                assign hidden_group = false
+              endif
+
+              comment
+                Price values arrive in cents; inputs take whole currency units (decimals only when needed).
+              endcomment
+              if filter.type == 'price_range'
+                assign range_max = filter.range_max | divided_by: 100.0 | ceil
+                assign min_input = ''
+                assign max_input = ''
+                if filter.min_value.value != nil
+                  assign min_input = filter.min_value.value | divided_by: 100.0
+                  assign remainder = filter.min_value.value | modulo: 100
+                  if remainder == 0
+                    assign min_input = filter.min_value.value | divided_by: 100
+                  endif
+                endif
+                if filter.max_value.value != nil
+                  assign max_input = filter.max_value.value | divided_by: 100.0
+                  assign remainder = filter.max_value.value | modulo: 100
+                  if remainder == 0
+                    assign max_input = filter.max_value.value | divided_by: 100
+                  endif
+                endif
+              endif
+            -%}
+
+            {%- if hidden_group -%}
+              {%- if filter.type == 'price_range' -%}
+                {%- if min_input != '' -%}
+                  <input type="hidden" name="{{ filter.min_value.param_name }}" value="{{ min_input }}">
+                {%- endif -%}
+                {%- if max_input != '' -%}
+                  <input type="hidden" name="{{ filter.max_value.param_name }}" value="{{ max_input }}">
+                {%- endif -%}
+              {%- else -%}
+                {%- for value in filter.active_values -%}
+                  <input type="hidden" name="{{ value.param_name }}" value="{{ value.value | escape }}">
+                {%- endfor -%}
+              {%- endif -%}
+            {%- elsif filter.type == 'price_range' -%}
+              <fieldset class="filter-group filter-group--price">
+                <legend class="filter-group__legend">{{ filter.label | escape }}</legend>
+                <div class="filter-price">
+                  <label class="filter-price__field">
+                    <span class="filter-price__label">{{ 'plp.price_min' | t }}</span>
+                    <span class="filter-price__control">
+                      <span class="filter-price__currency" aria-hidden="true">{{ cart.currency.symbol }}</span>
+                      <input
+                        class="filter-price__input"
+                        type="number"
+                        inputmode="decimal"
+                        name="{{ filter.min_value.param_name }}"
+                        id="Filter-{{ section_id }}-price-min"
+                        value="{{ min_input }}"
+                        placeholder="0"
+                        min="0"
+                        max="{{ range_max }}"
+                        step="any"
+                      >
+                    </span>
+                  </label>
+                  <label class="filter-price__field">
+                    <span class="filter-price__label">{{ 'plp.price_max' | t }}</span>
+                    <span class="filter-price__control">
+                      <span class="filter-price__currency" aria-hidden="true">{{ cart.currency.symbol }}</span>
+                      <input
+                        class="filter-price__input"
+                        type="number"
+                        inputmode="decimal"
+                        name="{{ filter.max_value.param_name }}"
+                        id="Filter-{{ section_id }}-price-max"
+                        value="{{ max_input }}"
+                        placeholder="{{ range_max }}"
+                        min="0"
+                        max="{{ range_max }}"
+                        step="any"
+                      >
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+            {%- else -%}
+              <fieldset class="filter-group">
+                <legend class="filter-group__legend">{{ filter.label | escape }}</legend>
+                <div class="filter-group__options">
+                  {%- for value in filter.values -%}
+                    {%- liquid
+                      assign value_label = value.label
+                      if group == 'availability'
+                        if value.value == '1'
+                          assign value_label = 'plp.available' | t
+                        elsif value.value == '0'
+                          assign value_label = 'plp.sold' | t
+                        endif
+                      endif
+                      assign input_id = 'Filter-' | append: section_id | append: '-' | append: value.param_name | append: '-' | append: value.value | handleize
+                    -%}
+                    <label class="filter-option" for="{{ input_id }}">
+                      <input
+                        class="filter-option__input"
+                        type="checkbox"
+                        id="{{ input_id }}"
+                        name="{{ value.param_name }}"
+                        value="{{ value.value | escape }}"
+                        {% if value.active %}
+                          checked
+                        {% endif %}
+                        {% if value.count == 0 and value.active == false %}
+                          disabled
+                        {% endif %}
+                      >
+                      <span class="filter-option__label">
+                        {{- value_label | escape -}}
+                        <span class="filter-option__count"> ({{ value.count }})</span>
+                      </span>
+                    </label>
+                  {%- endfor -%}
+                </div>
+              </fieldset>
+            {%- endif -%}
+          {%- endfor -%}
+
+          <fieldset class="filter-group filter-group--sort">
+            <legend class="filter-group__legend">{{ 'plp.sort' | t }}</legend>
+            <div class="filter-group__options">
+              {%- for sort_value in sort_values -%}
+                {%- liquid
+                  if sort_value == collection.default_sort_by
+                    assign sort_option_label = default_sort_label
+                  elsif sort_value == 'price-ascending'
+                    assign sort_option_label = 'plp.sort_price_ascending' | t
+                  else
+                    assign sort_option_label = 'plp.sort_price_descending' | t
+                  endif
+                  assign input_id = 'Sort-' | append: section_id | append: '-' | append: sort_value | handleize
+                -%}
+                <label class="filter-option" for="{{ input_id }}">
+                  <input
+                    class="filter-option__input"
+                    type="radio"
+                    id="{{ input_id }}"
+                    name="sort_by"
+                    value="{{ sort_value }}"
+                    {% if sort_value == current_sort %}
+                      checked
+                    {% endif %}
+                  >
+                  <span class="filter-option__label">{{ sort_option_label | escape }}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        </div>
+      </div>
+
+      <div class="filter-drawer__footer">
+        <span class="filter-drawer__clear" data-refresh="drawer-clear">
+          {%- if active_count > 0 -%}
+            <a class="filter-clear" href="{{ clear_url }}" data-filter-link>{{ 'plp.clear_all' | t }}</a>
+          {%- endif -%}
+        </span>
+        <button type="submit" class="button filter-drawer__apply" data-refresh="apply-label">
+          {{- 'plp.show_works' | t: count: collection.products_count -}}
+        </button>
+      </div>
+
+      <p class="visually-hidden" aria-live="polite" data-filter-live></p>
+    </form>
+  </div>
+</details>

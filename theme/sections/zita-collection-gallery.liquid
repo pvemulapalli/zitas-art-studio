@@ -1,0 +1,272 @@
+{{ 'zita-collection.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'zita-collection.js' | asset_url }}" defer></script>
+<script src="{{ 'zita-artwork-card.js' | asset_url }}" defer></script>
+
+{%- paginate collection.products by section.settings.products_per_page -%}
+  {%- liquid
+    assign default_sort = collection.default_sort_by
+    assign current_sort = collection.sort_by | default: default_sort
+    assign default_sort_label = section.settings.default_sort_label | default: default_sort
+
+    if current_sort == default_sort
+      assign sort_label = default_sort_label
+    elsif current_sort == 'price-ascending'
+      assign sort_label = 'plp.sort_price_ascending' | t
+    elsif current_sort == 'price-descending'
+      assign sort_label = 'plp.sort_price_descending' | t
+    else
+      assign sort_label = current_sort
+      for option in collection.sort_options
+        if option.value == current_sort
+          assign sort_label = option.name
+        endif
+      endfor
+    endif
+
+    assign active_count = 0
+    for filter in collection.filters
+      if filter.type == 'price_range'
+        if filter.min_value.value != nil or filter.max_value.value != nil
+          assign active_count = active_count | plus: 1
+        endif
+      else
+        assign active_count = active_count | plus: filter.active_values.size
+      endif
+    endfor
+
+    assign clear_url = collection.url
+    if collection.sort_by != blank
+      assign sort_param = collection.sort_by | url_encode
+      assign clear_url = clear_url | append: '?sort_by=' | append: sort_param
+    endif
+
+    assign works_count = 'plp.works_count' | t: count: collection.products_count
+
+    assign card_series = ''
+    if section.settings.show_card_collection
+      assign card_series = collection.title
+    endif
+
+    assign page_count = collection.products.size
+    assign show_band = false
+    if collection.metafields.custom.editorial_text.value != blank and paginate.current_page == 1 and active_count == 0 and current_sort == default_sort and page_count > 0
+      assign show_band = true
+    endif
+
+    comment
+      Placement is a position in the curated sequence, identical at every column count.
+    endcomment
+    assign band_after = page_count
+    case collection.metafields.custom.editorial_position.value
+      when 'end'
+        assign band_after = page_count
+      when 'after_row_2'
+        if page_count >= 6
+          assign band_after = 6
+        endif
+      else
+        if page_count >= 3
+          assign band_after = 3
+        endif
+    endcase
+  -%}
+
+  <collection-gallery class="collection-gallery full-width" data-section-id="{{ section.id }}">
+    <div class="collection-gallery__inner page-width page-width--wide">
+      <h2 class="visually-hidden">{{ 'plp.artworks' | t }}</h2>
+
+      <div class="collection-toolbar">
+        <div class="collection-toolbar__start">
+          {%- render 'collection-filters',
+            collection: collection,
+            section_id: section.id,
+            active_count: active_count,
+            clear_url: clear_url,
+            current_sort: current_sort,
+            default_sort_label: default_sort_label,
+            show_availability: section.settings.filter_availability,
+            show_price: section.settings.filter_price,
+            show_other: section.settings.filter_other
+          -%}
+
+          <div class="collection-toolbar__active" data-refresh="active">
+            {%- if active_count > 0 -%}
+              <ul class="filter-chips list-unstyled" aria-label="{{ 'plp.applied_filters' | t }}">
+                {%- for filter in collection.filters -%}
+                  {%- if filter.type == 'price_range' -%}
+                    {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+                      {%- liquid
+                        assign price_min = filter.min_value.value | money_without_trailing_zeros
+                        assign price_max = filter.max_value.value | money_without_trailing_zeros
+                        if filter.min_value.value != nil and filter.max_value.value != nil
+                          assign chip_label = 'plp.price_range' | t: min: price_min, max: price_max
+                        elsif filter.min_value.value != nil
+                          assign chip_label = 'plp.price_at_least' | t: min: price_min
+                        else
+                          assign chip_label = 'plp.price_up_to' | t: max: price_max
+                        endif
+                      -%}
+                      <li>
+                        <a
+                          class="filter-chip"
+                          href="{{ filter.url_to_remove }}"
+                          aria-label="{{ 'plp.remove_filter' | t: label: chip_label | escape }}"
+                          data-filter-link
+                        >
+                          {{- chip_label -}}
+                          {%- render 'icon', name: 'x', size: 16 -%}
+                        </a>
+                      </li>
+                    {%- endif -%}
+                  {%- else -%}
+                    {%- for value in filter.active_values -%}
+                      {%- liquid
+                        assign chip_label = value.label
+                        if filter.param_name == 'filter.v.availability'
+                          if value.value == '1'
+                            assign chip_label = 'plp.available' | t
+                          elsif value.value == '0'
+                            assign chip_label = 'plp.sold' | t
+                          endif
+                        endif
+                      -%}
+                      <li>
+                        <a
+                          class="filter-chip"
+                          href="{{ value.url_to_remove }}"
+                          aria-label="{{ 'plp.remove_filter' | t: label: chip_label | escape }}"
+                          data-filter-link
+                        >
+                          {{- chip_label | escape -}}
+                          {%- render 'icon', name: 'x', size: 16 -%}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+              <a class="filter-clear" href="{{ clear_url }}" data-filter-link>{{ 'plp.clear_all' | t }}</a>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <p class="collection-toolbar__count" aria-live="polite" data-refresh="count">
+          {{- works_count }} · {{ sort_label | escape -}}
+        </p>
+      </div>
+
+      <div class="collection-gallery__results" data-refresh="results">
+        {%- if page_count > 0 -%}
+          <ul class="collection-grid list-unstyled" role="list">
+            {%- for product in collection.products -%}
+              {%- liquid
+                assign card_loading = 'lazy'
+                assign card_priority = nil
+                if paginate.current_page == 1 and forloop.index <= 3
+                  assign card_loading = 'eager'
+                  if forloop.first
+                    assign card_priority = 'high'
+                  endif
+                endif
+              -%}
+              <li class="collection-grid__item">
+                {%- render 'artwork-card',
+                  product: product,
+                  room_swipe: true,
+                  series: card_series,
+                  sizes: '(min-width: 1800px) 540px, (min-width: 1100px) 31vw, (min-width: 750px) 46vw, calc(100vw - 40px)',
+                  loading: card_loading,
+                  fetchpriority: card_priority
+                -%}
+              </li>
+              {%- if show_band and forloop.index == band_after -%}
+                {%- render 'collection-editorial', collection: collection -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- else -%}
+          <div class="collection-empty">
+            {%- if active_count > 0 -%}
+              <p class="collection-empty__message">{{ 'plp.empty_filtered' | t }}</p>
+              <a class="button button--secondary" href="{{ clear_url }}" data-filter-link>
+                {{- 'plp.clear_filters' | t -}}
+              </a>
+            {%- else -%}
+              <p class="collection-empty__message">{{ 'plp.empty' | t }}</p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        {%- render 'pagination', paginate: paginate -%}
+      </div>
+    </div>
+  </collection-gallery>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection gallery",
+  "class": "section-collection-gallery",
+  "enabled_on": {
+    "templates": ["collection"]
+  },
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Artworks per page",
+      "min": 12,
+      "max": 48,
+      "step": 12,
+      "default": 24,
+      "info": "Multiples of 12 keep every row full at 3, 2 and 1 columns."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_card_collection",
+      "label": "Show the collection name above each artwork",
+      "default": false,
+      "info": "Turn on only in a template used by single-series collections, where the collection name is the artwork's series."
+    },
+    {
+      "type": "text",
+      "id": "default_sort_label",
+      "label": "Name for the collection’s own order",
+      "default": "Featured",
+      "info": "The order set on the collection in Shopify admin."
+    },
+    {
+      "type": "header",
+      "content": "Filters"
+    },
+    {
+      "type": "paragraph",
+      "content": "Filters are created in the Search & Discovery app. Only the groups switched on here are shown."
+    },
+    {
+      "type": "checkbox",
+      "id": "filter_availability",
+      "label": "Availability (Available / Sold)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "filter_price",
+      "label": "Price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "filter_other",
+      "label": "Other filters",
+      "default": false,
+      "info": "Any other filter configured in Search & Discovery, such as product type or vendor."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection gallery"
+    }
+  ]
+}
+{% endschema %}

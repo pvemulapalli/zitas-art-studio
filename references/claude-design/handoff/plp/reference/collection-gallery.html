@@ -1,0 +1,394 @@
+<!doctype html>
+<!-- REFERENCE ONLY — Cursor must translate this into Shopify Liquid/sections/blocks/snippets.
+     Illustrates the approved V2 PLP behaviour. Header/footer omitted (already in the theme).
+     Comments marked NIJ = needs implementation judgment (see handoff §26). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collection gallery — reference</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Mulish:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --gesso:#F8F8F6;--mat:#F0F2F1;--mist:#E3E7E7;--vaayu:#DCE6EA;--hair:#CDD1D2;
+  --ink:#15202A;--body:#3B4044;--meta:#565C61;--stone3:#A4A9AC;
+  --teal:#0F5468;--teal-h:#0B4050;--copper:#96502A;--sold:#B0602F;--focus:#2E8FB5;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --gutter:clamp(20px,3.4vw,56px);--col-gap:clamp(24px,3vw,56px);--row-gap:clamp(56px,5vw,88px);
+  --hang:0 1px 2px rgba(13,20,26,.06),0 18px 40px -18px rgba(13,20,26,.28);
+  --hang-deep:0 1px 2px rgba(13,20,26,.06),0 30px 60px -28px rgba(13,20,26,.4);
+  --overlay:0 24px 64px -24px rgba(13,20,26,.35);
+  --display:'Marcellus',Georgia,serif;--body-font:'Mulish',Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--gesso);color:#1F2A33;font-family:var(--body-font)}
+a{color:var(--teal)}a:hover{color:var(--copper)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+[hidden]{display:none!important}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.caps{font-family:var(--display);text-transform:uppercase}
+.shell-note{background:#1F2A33;color:#CDD1D2;font:12px/1.4 ui-monospace,Menlo,monospace;padding:8px var(--gutter)}
+
+main{max-width:1680px;margin:0 auto;padding:0 var(--gutter)}
+
+/* Intro */
+.intro{padding:clamp(56px,6vw,96px) 0 clamp(28px,3vw,40px);display:flex;justify-content:space-between;align-items:flex-end;gap:24px 48px;flex-wrap:wrap}
+.intro__l{display:grid;gap:14px}
+.eyebrow{font-size:12px;letter-spacing:.22em;color:var(--copper)}
+.intro h1{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(40px,4.4vw,64px);line-height:1.05;color:var(--ink)}
+.intro p{margin:0;font-size:18px;line-height:1.55;color:var(--body);max-width:30em}
+
+/* Series tabs (links to collections) */
+.tabs{display:flex;gap:8px 30px;flex-wrap:wrap;border-bottom:1px solid var(--hair);margin:0;padding:0;list-style:none}
+.tabs a{display:block;padding:14px 0;margin-bottom:-1px;border-bottom:1px solid transparent;font-family:var(--display);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--body);text-decoration:none;transition:color 160ms}
+.tabs a:hover{color:var(--copper)} /* NIJ: hover not in prototype */
+.tabs a[aria-current="page"]{color:var(--teal);border-bottom-color:var(--teal)}
+
+/* Toolbar */
+.toolbar{position:sticky;top:0;z-index:10;background:var(--gesso);display:flex;align-items:center;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;padding:16px 0}
+.toolbar__l{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.fs-btn{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 18px 0 14px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;font-family:var(--display);font-size:13px;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;transition:background 160ms,color 160ms}
+.fs-btn:hover{background:var(--ink);color:var(--gesso)}
+.badge{min-width:20px;height:20px;border-radius:999px;background:var(--copper);color:#fff;font:11px var(--body-font);letter-spacing:0;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+.chip{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 6px 0 12px;border:1px solid var(--hair);border-radius:2px;background:var(--gesso);font:15px var(--body-font);color:var(--ink)}
+.chip button{width:24px;height:24px;border:0;background:none;cursor:pointer;color:var(--meta);font-size:16px}
+.linkbtn{border:0;background:none;cursor:pointer;font:16px var(--body-font);color:var(--teal);text-decoration:underline;text-underline-offset:.22em;padding:8px}
+.linkbtn:hover{color:var(--copper)}
+.count{font-size:16px;color:var(--meta)}
+
+/* Gallery — exact V2 rule: ≤3 columns, ≥280px each, aligned rows, no dense packing */
+.gallery{padding:clamp(20px,2vw,32px) 0 clamp(96px,10vw,160px)}
+.grid{list-style:none;margin:0;padding:0;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(max(280px,calc((100% - 2 * var(--col-gap)) / 3)),1fr));
+  column-gap:var(--col-gap);row-gap:var(--row-gap);align-items:start}
+.grid > li{min-width:0}
+
+/* Card */
+.card{display:block;text-decoration:none;color:inherit}
+.plate{position:relative;aspect-ratio:4/5;background:var(--mat);overflow:hidden}
+.plate__art{position:absolute;inset:0;padding:10%;display:flex;align-items:center;justify-content:center;
+  transition:opacity 720ms var(--ease),transform 720ms var(--ease)}
+.plate__art img,.plate__art .ph{display:block;max-width:100%;max-height:100%;width:auto;height:auto;box-shadow:var(--hang)}
+.plate__room{position:absolute;inset:0;opacity:0;transition:opacity 720ms var(--ease);pointer-events:none}
+.plate__room img,.plate__room .ph{width:100%;height:100%;object-fit:cover;display:block} /* NIJ: cover for room photos */
+/* Desktop hover/focus: crossfade to room; no room → 4px lift */
+@media (hover:hover){
+  .card.has-room:hover .plate__art,.card.has-room:focus-visible .plate__art{opacity:0}
+  .card.has-room:hover .plate__room,.card.has-room:focus-visible .plate__room{opacity:1}
+  .card:not(.has-room):hover .plate__art,.card:not(.has-room):focus-visible .plate__art{transform:translateY(-4px)}
+  .card:hover .title,.card:focus-visible .title{color:var(--teal)}
+}
+.cap{padding-top:16px;display:grid;gap:5px}
+.cap .series{font-size:11px;letter-spacing:.22em;color:var(--copper)}
+.cap__row{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.title{margin:0;font-family:var(--display);font-weight:400;font-size:19px;line-height:1.25;color:var(--ink);transition:color 160ms}
+.price{font-size:17px;color:var(--ink);white-space:nowrap}
+.sold{display:inline-flex;align-items:center;gap:7px;font-family:var(--display);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);white-space:nowrap}
+.sold::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sold)}
+.meta{font-size:15px;line-height:1.45;color:var(--meta)}
+.meta--m{display:none}
+
+/* Placeholder "images" (stand-ins for Shopify media at true proportion) */
+.ph{background:linear-gradient(135deg,#C9D6DC,#8FA9B6);aspect-ratio:var(--r)}
+.plate__art .ph{width:auto;height:100%;max-width:100%}
+.ph.wide{width:100%;height:auto}
+.ph.dark{background:linear-gradient(135deg,#2B333A,#5E676E)}
+.ph.room{background:linear-gradient(#E3E7E7 0 70%,#CDD1D2 70%);position:relative}
+.ph.room::after{content:"room image";position:absolute;left:10px;top:10px;font:10px var(--display);letter-spacing:.2em;text-transform:uppercase;color:var(--meta);background:rgba(248,248,246,.9);padding:4px 7px}
+
+/* Editorial band — spans all columns, between rows */
+.band{grid-column:1/-1;display:flex;flex-wrap:wrap;background:var(--vaayu);margin:clamp(8px,2vw,32px) 0}
+.band__text{flex:5 1 340px;padding:clamp(36px,5vw,88px);display:grid;gap:22px;align-content:center}
+.band__eyebrow{font-size:12px;letter-spacing:.22em;color:var(--teal)}
+.band__text p{margin:0;font-size:clamp(20px,1.7vw,24px);line-height:1.55;color:var(--ink);max-width:32em}
+.band__img{flex:6 1 380px;display:flex;align-items:center;justify-content:center;padding:clamp(32px,4vw,72px);background:var(--mist)}
+.band__img .ph{width:min(100%,520px);height:auto;box-shadow:var(--hang-deep)}
+.label-link{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);text-decoration:none;padding-bottom:6px;border-bottom:1px solid var(--hair);transition:color 160ms,border-color 160ms;justify-self:start}
+.label-link::after{content:"→";transition:transform 320ms var(--ease)}
+.label-link:hover{color:var(--copper);border-color:var(--copper)}
+.label-link:hover::after{transform:translateX(4px)}
+
+/* Empty state */
+.empty{padding:96px 0;text-align:center;display:grid;gap:16px;justify-items:center}
+.empty p{margin:0;font-size:20px;color:var(--body)}
+.btn-sec{height:48px;padding:0 24px;border:1px solid var(--ink);background:transparent;color:var(--ink);font-family:var(--display);font-size:13px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+.btn-sec:hover{background:var(--ink);color:var(--gesso)}
+.btn-pri{height:48px;width:100%;border:1px solid var(--teal);background:var(--teal);color:#F8F8F6;font-family:var(--display);font-size:13px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+.btn-pri:hover{background:var(--teal-h)}
+
+/* Drawer (desktop: left) */
+.scrim{position:fixed;inset:0;background:rgba(13,20,26,.48);z-index:100;opacity:0;transition:opacity 320ms var(--ease)}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:min(440px,92vw);background:var(--gesso);z-index:101;display:flex;flex-direction:column;box-shadow:var(--overlay);transform:translateX(-100%);transition:transform 320ms var(--ease)} /* NIJ: animation */
+.is-open .scrim{opacity:1}.is-open .drawer{transform:none}
+.drawer[hidden],.scrim[hidden]{display:none}
+.drawer__h{display:flex;justify-content:space-between;align-items:center;padding:22px 28px;border-bottom:1px solid var(--hair)}
+.drawer__h h2{margin:0;font-family:var(--display);font-weight:400;font-size:26px;color:var(--ink)}
+.x{width:44px;height:44px;border:0;background:none;cursor:pointer;font-size:22px;color:var(--ink)}
+.drawer__b{flex:1;overflow-y:auto;padding:8px 28px 28px}
+fieldset{border:0;border-bottom:1px solid var(--hair);margin:0;padding:22px 0;display:grid;gap:14px}
+fieldset:last-child{border-bottom:0}
+legend{padding:0;float:left;width:100%;margin-bottom:14px;font-family:var(--display);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink)}
+.opt{display:flex;align-items:center;gap:12px;font-size:17px;color:var(--ink);cursor:pointer;min-height:26px}
+.opt input{width:18px;height:18px;accent-color:var(--ink);margin:0}
+.opt .chipopt{display:none}
+.drawer__f{display:flex;gap:16px;align-items:center;padding:18px 28px;border-top:1px solid var(--hair)}
+
+/* ---------- Mobile (<750px) ---------- */
+.m-bar{display:none}
+@media (max-width:749px){
+  main{padding:0}
+  .intro{padding:28px 20px 8px;gap:8px}
+  .intro__l{gap:8px}
+  .eyebrow{font-size:11px;letter-spacing:.2em}
+  .intro h1{font-size:36px;line-height:1.1}
+  .intro p{display:none} /* NIJ: prototype omits description on mobile */
+  .tabs{flex-wrap:nowrap;overflow-x:auto;gap:8px;border:0;padding:14px 20px 18px;scrollbar-width:none}
+  .tabs a{flex:none;height:40px;display:flex;align-items:center;padding:0 14px;margin:0;border:1px solid var(--hair);border-radius:2px;font:15px var(--body-font);letter-spacing:0;text-transform:none;color:var(--ink);white-space:nowrap}
+  .tabs a[aria-current="page"]{background:var(--ink);color:var(--gesso);border-color:var(--ink)}
+  .tabs .long{display:none}.tabs .short{display:inline!important}
+  .toolbar{display:none}
+  .gallery{padding:4px 20px 32px}
+  .grid{grid-template-columns:1fr;row-gap:44px}
+  /* Mobile card: two-panel swipe plate + caption link */
+  .card .plate{display:none}
+  .m-plate{position:relative}
+  .m-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;aspect-ratio:4/5;background:var(--mat)}
+  .m-track > div{flex:0 0 100%;scroll-snap-align:start;position:relative}
+  .m-track .plate__art{position:absolute;inset:0;opacity:1!important;transform:none!important}
+  .m-track .plate__room{opacity:1;position:absolute;inset:0}
+  .m-tag{position:absolute;right:10px;bottom:10px;display:flex;gap:6px;align-items:center;background:rgba(248,248,246,.92);padding:6px 8px;pointer-events:none}
+  .m-tag i{width:6px;height:6px;border-radius:50%;background:var(--stone3)}
+  .m-tag i.on{background:var(--ink)}
+  .m-tag span{font:10px var(--display);letter-spacing:.18em;text-transform:uppercase;color:var(--body);margin-left:4px}
+  .cap{padding-top:12px;gap:4px;min-height:44px}
+  .cap .series,.meta--d{display:none}
+  .meta--m{display:block;line-height:1.4}
+  .title{font-size:18px}
+  .sold::before{width:7px;height:7px}
+  .band{margin:0 -20px}
+  .band__text{padding:36px 24px;gap:16px}
+  .band__eyebrow{font-size:11px;letter-spacing:.2em}
+  .band__text p{font-size:18px}
+  .band__img{display:none}
+  .m-bar{display:flex;position:sticky;bottom:0;padding:12px 16px 22px;background:rgba(248,248,246,.96);border-top:1px solid var(--mist);z-index:20}
+  .m-bar button{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:50px;border:1px solid var(--ink);background:var(--ink);color:var(--gesso);font-family:var(--display);font-size:13px;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;cursor:pointer}
+  /* Drawer becomes bottom sheet with chips */
+  .drawer{top:auto;left:0;right:0;width:auto;height:560px;max-height:85vh;transform:translateY(100%);border-top:1px solid var(--hair);box-shadow:0 -24px 48px -24px rgba(13,20,26,.35)}
+  .drawer__h{padding:14px 12px 10px 20px;border:0}
+  .drawer__h h2{font-size:22px}
+  .drawer__b{padding:0 20px}
+  fieldset{border-bottom:0;border-top:1px solid var(--hair);padding:16px 0;display:flex;flex-wrap:wrap;gap:8px}
+  legend{font-size:11px;margin-bottom:12px}
+  .opt{min-height:0}
+  .opt input{position:absolute;opacity:0;pointer-events:none}
+  .opt .lbl{display:none}
+  .opt .chipopt{display:inline-flex;align-items:center;height:36px;padding:0 12px;border:1px solid var(--hair);border-radius:2px;font-size:15px}
+  .opt input:checked + .lbl + .chipopt{background:var(--ink);color:var(--gesso);border-color:var(--ink)}
+  .opt input:focus-visible + .lbl + .chipopt{outline:2px solid var(--focus);outline-offset:3px}
+  .drawer__f{padding:12px 16px 22px}
+}
+@media (min-width:750px){.m-plate{display:none}}
+.tabs .short{display:none}
+@media (prefers-reduced-motion:reduce){*,*::after{transition-duration:1ms!important}.plate__art{transform:none!important}}
+</style>
+</head>
+<body>
+<div class="shell-note">Reference only · existing header/announcement/footer omitted · placeholders stand in for Shopify media at true proportions. Toggle the band: <a href="?band=0" style="color:#CFE4E9">omit</a> · <a href="?band=1" style="color:#CFE4E9">after row 1</a> · <a href="?band=2" style="color:#CFE4E9">after row 2</a> · <a href="?band=end" style="color:#CFE4E9">end</a></div>
+
+<main>
+  <section class="intro" aria-labelledby="plp-h">
+    <div class="intro__l">
+      <div class="eyebrow caps">Zita’s Art Studio</div><!-- NIJ: eyebrow source -->
+      <h1 id="plp-h">Originals</h1><!-- collection.title -->
+    </div>
+    <p>Every original Ranjeeta has listed, including sold work, which stays here as part of the archive.</p><!-- collection.description -->
+  </section>
+
+  <nav aria-label="Series"><!-- Shopify menu → collection links -->
+    <ul class="tabs">
+      <li><a href="#" aria-current="page"><span class="long">All originals</span><span class="short">All</span></a></li>
+      <li><a href="#">Walking the Trail</a></li>
+      <li><a href="#">Elements</a></li>
+      <li><a href="#">Colored by Nature</a></li>
+      <li><a href="#">Earlier series</a></li>
+    </ul>
+  </nav>
+
+  <div class="toolbar">
+    <div class="toolbar__l">
+      <button class="fs-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="fs" data-open>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg>
+        Filter &amp; Sort<span class="badge" data-badge hidden></span>
+      </button>
+      <span data-chips style="display:contents"></span>
+      <button class="linkbtn" type="button" data-clear hidden>Clear all</button>
+    </div>
+    <span class="count" aria-live="polite" data-count></span>
+  </div>
+
+  <section class="gallery" aria-labelledby="art-h">
+    <h2 id="art-h" class="vh">Artworks</h2>
+    <div class="empty" data-empty hidden><p>No works match these filters.</p><button class="btn-sec" type="button" data-clear>Clear filters</button></div>
+    <ul class="grid" data-grid></ul>
+  </section>
+</main>
+
+<div class="m-bar"><button type="button" data-open aria-haspopup="dialog" aria-controls="fs">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg>
+  <span>Filter &amp; Sort · <span data-count-m></span></span></button></div>
+
+<div class="fs-wrap" data-wrap>
+  <div class="scrim" data-close hidden></div>
+  <form class="drawer" id="fs" role="dialog" aria-modal="true" aria-labelledby="fs-h" hidden data-drawer>
+    <div class="drawer__h"><h2 id="fs-h">Filter &amp; Sort</h2><button class="x" type="button" aria-label="Close filters" data-close>×</button></div>
+    <div class="drawer__b" data-groups></div>
+    <div class="drawer__f"><button class="linkbtn" type="button" data-clear>Clear all</button><div style="flex:1"><button class="btn-pri" type="button" data-close data-show></button></div></div>
+  </form>
+</div>
+
+<script>
+/* REFERENCE ONLY. In Shopify: products/filters come from Liquid + collection.filters; JS refreshes via Section Rendering API. */
+const WORKS = [ // r = width/height; room = has 2nd media
+  {t:'Vaayu – Air',s:'Elements',p:250,w:12,h:12,r:1,room:true,sold:false},
+  {t:'Un Colored by Nature',s:'Colored by Nature',p:550,w:12,h:16,r:.75,room:true,sold:false,dark:true},
+  {t:'Prithvi – Earth',s:'Elements',p:250,w:12,h:12,r:.805,room:true,sold:true},
+  {t:'Essence',s:'Walking the Trail',p:1500,w:20,h:40,r:.5,room:true,sold:false},
+  {t:'Moonlit Waves',s:'BlackWhiteandGrey',p:780,w:30,h:48,r:.627,room:true,sold:false,dark:true},
+  {t:'Colored by Nature – Blue',s:'Colored by Nature',p:475,w:12,h:16,r:.75,room:false,sold:true},
+  {t:'Jal – Water',s:'Elements',p:250,w:12,h:12,r:1,room:true,sold:false},
+  {t:'Horizon',s:'Walking the Trail',p:750,w:null,h:null,r:1.5,room:false,sold:false,orient:'Landscape'},
+  {t:'Longing for clouds',s:'Sand and Cloud',p:650,w:null,h:null,r:.486,room:true,sold:false,orient:'Portrait'},
+  {t:'A very long artwork title that wraps across two lines',s:'Sand and Cloud',p:null,w:24,h:8,r:3,room:false,sold:false},
+  {t:'Melting away',s:'Sand and Cloud',p:650,w:null,h:null,r:.643,room:true,sold:false,orient:'Portrait'}
+];
+WORKS.forEach(w => { w.orient = w.orient || (w.r > 1.05 ? 'Landscape' : w.r < .95 ? 'Portrait' : 'Square'); });
+const money = p => p == null ? 'Price on enquiry' : '$' + p.toLocaleString('en-US'); // NIJ: enquiry trigger
+const size = w => w.w ? w.w + ' × ' + w.h + ' in' : w.orient;
+const band = (() => { const v = new URLSearchParams(location.search).get('band'); return v === '0' ? null : v === 'end' ? 'end' : +(v || 1); })();
+const BAND = `<li class="band" style="list-style:none"><aside aria-label="About the Elements series" style="display:contents">
+  <div class="band__text"><div class="band__eyebrow caps">The series · Elements</div>
+  <p>Our body is made of the five elements from nature - Prithvi (Earth), Agni (fire), Jal (Water), Vaayu (Air) and Akaash (aether/sky). Realizing that body is made of these elements in nature and will return to the nature is the inspiration for these artworks.</p>
+  <a class="label-link" href="#">View the Elements series</a></div>
+  <a class="band__img" href="#" aria-label="Vaayu – Air"><div class="ph" style="--r:1"></div></a></aside></li>`;
+
+const GROUPS = [
+  {k:'avail',title:'Availability',opts:[['Available',w=>!w.sold],['Sold',w=>w.sold]]},
+  {k:'orient',title:'Orientation',opts:['Square','Portrait','Landscape'].map(o=>[o,w=>w.orient===o])},
+  {k:'price',title:'Price',opts:[['Under $300',w=>w.p!=null&&w.p<300],['$300 – $600',w=>w.p!=null&&w.p>=300&&w.p<=600],['Over $600',w=>w.p!=null&&w.p>600]]}, // NIJ: bands vs native range
+  {k:'series',title:'Series',opts:['Walking the Trail','Elements','Colored by Nature','Sand and Cloud','BlackWhiteandGrey'].map(s=>[s,w=>w.s===s])} // only on All originals; NIJ data source
+];
+const SORTS = [['manual','Ranjeeta’s order'],['price-ascending','Price, low to high'],['price-descending','Price, high to low']];
+const state = { f:{}, sort:'manual' };
+
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const grid = $('[data-grid]');
+
+function card(w, i) {
+  const ph = (cls, r) => `<div class="ph ${cls}" style="--r:${r}" role="img" aria-label="${w.t}"></div>`;
+  const art = `<div class="plate__art">${ph((w.dark?'dark ':'') + (w.r > .8 ? 'wide' : ''), w.r)}</div>`;
+  const room = w.room ? `<div class="plate__room" aria-hidden="true"><div class="ph room" style="--r:.8"></div></div>` : '';
+  const right = w.sold ? `<span class="sold">Sold</span>` : `<span class="price">${money(w.p)}</span>`;
+  const name = w.t + ', ' + (w.sold ? 'sold' : money(w.p));
+  return `<li>
+    <a class="card ${w.room ? 'has-room' : ''}" href="#pdp" aria-label="${name}">
+      <div class="plate">${art}${room}</div>
+      <div class="cap"><div class="series caps">${w.s}</div>
+        <div class="cap__row"><h3 class="title">${w.t}</h3>${right}</div>
+        <div class="meta meta--d">${size(w)}</div><div class="meta meta--m">${w.s} · ${size(w)}</div></div>
+    </a>
+    <div class="m-plate" ${w.room ? `role="region" aria-label="${w.t}: artwork and room view" tabindex="0"` : ''}>
+      <div class="m-track" data-mtrack><div>${art}</div>${w.room ? `<div><div class="plate__room">${ph('room',.8)}</div></div>` : ''}</div>
+      ${w.room ? `<div class="m-tag" aria-hidden="true"><i class="on"></i><i></i><span>Swipe · room</span></div>` : ''}
+    </div>
+  </li>`;
+}
+/* Mobile: the desktop plate is hidden; the swipe plate sits above and the caption link is the tap target. */
+
+function cols() { return getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length; }
+
+function render() {
+  let list = WORKS.filter(w => GROUPS.every(g => { const on = state.f[g.k] || []; return !on.length || g.opts.some(([l, fn]) => on.includes(l) && fn(w)); }));
+  if (state.sort === 'price-ascending') list = [...list].sort((a,b)=>(a.p??1e9)-(b.p??1e9));
+  if (state.sort === 'price-descending') list = [...list].sort((a,b)=>(b.p??-1)-(a.p??-1));
+  const active = Object.values(state.f).flat();
+  let html = list.map(card);
+  // Band: optional, deliberate position "after row N" of VISIBLE columns; hidden when filtering/sorting
+  if (band && !active.length && state.sort === 'manual') {
+    const at = band === 'end' ? html.length : Math.min(band * cols(), html.length);
+    html.splice(at, 0, BAND);
+  }
+  grid.innerHTML = html.join('');
+  // reorder mobile: plate before caption
+  $$('.grid > li').forEach(li => { const m = li.querySelector('.m-plate'); if (m) li.prepend(m); });
+  const n = list.length, label = n + (n === 1 ? ' work' : ' works');
+  $('[data-count]').textContent = label + ' · ' + SORTS.find(s => s[0] === state.sort)[1];
+  $('[data-count-m]').textContent = label;
+  $('[data-show]').textContent = 'Show ' + label;
+  $('[data-empty]').hidden = n > 0;
+  $('[data-badge]').hidden = !active.length; $('[data-badge]').textContent = active.length;
+  $$('[data-clear]').forEach(b => { if (b.closest('.toolbar')) b.hidden = !active.length; });
+  $('[data-chips]').innerHTML = active.map(v => `<span class="chip">${v}<button type="button" aria-label="Remove ${v}" data-rm="${v}">×</button></span>`).join('');
+  $$('[data-mtrack]').forEach(t => t.addEventListener('scroll', () => {
+    const i = Math.round(t.scrollLeft / t.clientWidth), tag = t.parentElement.querySelector('.m-tag'); if (!tag) return;
+    tag.querySelectorAll('i').forEach((d, k) => d.classList.toggle('on', k === i));
+    tag.querySelector('span').textContent = i ? 'Room view' : 'Swipe · room';
+  }, { passive:true }));
+}
+
+function buildForm() {
+  const all = WORKS;
+  $('[data-groups]').innerHTML = GROUPS.map(g => `<fieldset><legend>${g.title}</legend>${g.opts.map(([l, fn]) =>
+    `<label class="opt"><input type="checkbox" name="${g.k}" value="${l}"><span class="lbl">${l} (${all.filter(fn).length})</span><span class="chipopt">${l}</span></label>`).join('')}</fieldset>`).join('')
+    + `<fieldset><legend>Sort</legend>${SORTS.map(([v,l]) => `<label class="opt"><input type="radio" name="sort" value="${v}" ${v==='manual'?'checked':''}><span class="lbl">${l}</span><span class="chipopt">${l}</span></label>`).join('')}</fieldset>`;
+  // NIJ: prototype's mobile sheet has no Sort group — included here per recommendation §15
+}
+function readForm() {
+  const fd = new FormData($('[data-drawer]'));
+  state.f = {}; GROUPS.forEach(g => { state.f[g.k] = fd.getAll(g.k); });
+  state.sort = fd.get('sort') || 'manual';
+  render(); // live apply; in Shopify also history.replaceState with filter params
+}
+
+/* Drawer: focus trap, Esc, scrim, return focus, inert background, scroll lock */
+let lastTrigger = null;
+const wrap = $('[data-wrap]'), drawer = $('[data-drawer]'), scrim = $('.scrim');
+function open(e) {
+  lastTrigger = e.currentTarget; drawer.hidden = scrim.hidden = false;
+  requestAnimationFrame(() => wrap.classList.add('is-open'));
+  $$('main, .m-bar, .shell-note').forEach(el => el.inert = true);
+  document.body.style.overflow = 'hidden';
+  $$('[data-open]').forEach(b => b.setAttribute('aria-expanded', 'true'));
+  drawer.querySelector('.x').focus();
+}
+function close() {
+  wrap.classList.remove('is-open');
+  $$('main, .m-bar, .shell-note').forEach(el => el.inert = false);
+  document.body.style.overflow = '';
+  $$('[data-open]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+  setTimeout(() => { drawer.hidden = scrim.hidden = true; }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 320);
+  lastTrigger && lastTrigger.focus();
+}
+document.addEventListener('keydown', e => {
+  if (drawer.hidden) return;
+  if (e.key === 'Escape') { e.preventDefault(); close(); }
+  if (e.key === 'Tab') {
+    const f = [...drawer.querySelectorAll('button, input')].filter(el => el.offsetParent !== null || el.type === 'checkbox' || el.type === 'radio');
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+});
+$$('[data-open]').forEach(b => b.addEventListener('click', open));
+$$('[data-close]').forEach(b => b.addEventListener('click', close));
+drawer.addEventListener('change', readForm);
+document.addEventListener('click', e => {
+  const rm = e.target.closest('[data-rm]');
+  if (rm) { const inp = drawer.querySelector(`input[value="${CSS.escape(rm.dataset.rm)}"]`); if (inp) inp.checked = false; readForm(); }
+  if (e.target.closest('[data-clear]')) { drawer.querySelectorAll('input[type=checkbox]').forEach(i => i.checked = false); readForm(); }
+});
+let lastCols = 0;
+new ResizeObserver(() => { const c = cols(); if (c !== lastCols) { lastCols = c; render(); } }).observe(grid);
+buildForm(); render();
+</script>
+</body>
+</html>

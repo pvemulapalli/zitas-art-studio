@@ -8,8 +8,11 @@
   @param {image} [image] - The artwork image
   @param {image} [room_image] - Optional room/context photograph
   @param {boolean} [room_swipe] - On touch screens, lets the visitor swipe to the room view
+  @param {string} [region_label] - Accessible name for the swipe region, e.g. "Essence: artwork and room view"
+  @param {string} [alt] - Overrides the artwork image's alt text
   @param {string} [sizes] - sizes attribute for the artwork image
   @param {string} [loading] - 'lazy' (default) or 'eager'
+  @param {string} [fetchpriority] - 'high' for the first artwork on a page
   @param {string} [class] - Modifier classes
   @param {string} [placeholder] - Theme-editor-only text shown when there is no image
 
@@ -31,13 +34,20 @@
 -%}
 
 <div class="{{ plate_classes }}">
-  <plate-views class="artwork-plate__views">
+  <plate-views
+    class="artwork-plate__views"
+    {% if room_image and room_swipe and region_label != blank %}
+      data-region-label="{{ region_label | escape }}"
+    {% endif %}
+  >
     <div class="artwork-plate__frame">
       {%- if image -%}
         {%- render 'responsive-image',
           image: image,
+          alt: alt,
           sizes: sizes,
           loading: loading,
+          fetchpriority: fetchpriority,
           widths: '240, 360, 480, 640, 800, 1000, 1200',
           class: 'artwork-plate__image'
         -%}
