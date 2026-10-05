@@ -1,11 +1,12 @@
 # Zita's Art Studio — Shopify Implementation Plan
 
-**Status:** Approved implementation architecture — validate details during PoC
+**Status:** Authoritative architecture reference for `theme/` — refine as each page is built
 
-This document becomes authoritative only after review and commit. It maps approved **Design V2** to Shopify Online Store 2.0 structures on **Shopify Basic**, without prescribing final production schemas or Admin mutations.
+It maps approved **Design V2** to Shopify Online Store 2.0 structures on **Shopify Basic**. Progress and next steps are tracked only in [project-status.md](../project-status.md); this document records architecture decisions and how they were proven.
 
 **Related documents:**
 
+- [Project status](../project-status.md) — **canonical** progress, next steps and environment state
 - [Project brief](../project-brief.md)
 - [Zita design brief](../design/zita-design-brief.md)
 - [Ranjeeta preferences](../design/ranjeeta-preferences.md)
@@ -25,7 +26,7 @@ This document becomes authoritative only after review and commit. It maps approv
 | Area | Decision |
 |---|---|
 | **Production target** | Ranjeeta's **existing** Shopify store — legacy catalog/media, unpublished Zita V2 review theme, eventual V2 **Draft** catalog, and launch. Do **not** create a second client/production store. **Collaborator access.** |
-| **Partner dev store** | **Shopify Partner dev store** ( **Basic** plan to match Ranjeeta) — isolated data-model laboratory; **never** transferred or launched. Not populated with unrelated demo data unless later useful. |
+| **Partner dev store** | **Shopify Partner dev store** ( **Basic** plan to match Ranjeeta) — isolated data-model laboratory and page-build environment; **never** transferred or launched. Not populated with unrelated demo data unless later useful. Zita V2 may be **published** here for demos. |
 | **Hybrid model** | **Dev store** = Active PoC catalog, metafields, PLP/PDP proof, destructive experiments. **Merchant store** = Flora published; theme preview on **real** legacy data; V2 products stay **Draft** until controlled cutover. **One** `theme/` Git codebase for both. |
 | **Live theme (merchant)** | **Flora** remains **published** and **untouched** as V2 code target until launch. |
 | **V2 theme** | Custom **Zita V2** in `theme/` (standard directories: `assets`, `blocks`, `config`, `layout`, `locales`, `sections`, `snippets`, `templates`). |
@@ -46,9 +47,9 @@ Hybrid **Partner dev store** + **Ranjeeta merchant store**. Theme code is **one*
 ```
 PARTNER DEV STORE (Basic)
 ─────────────────────────
-Zita V2 theme (dev / CLI)
+Zita V2 theme (CLI; "Zita V2 — Development" published for demos)
 PoC catalog (Essence V2 + sold-state fixture, test collection)
-Provisional metafields & schema experiments
+Provisioned metafield definitions & schema experiments
 Active test products OK — isolated from zitasartstudio.com
 
             ↓ proven theme + schema (Git, explicit CLI --store)
@@ -75,9 +76,9 @@ Archive legacy after confidence period
 
 | Environment | Purpose |
 |---|---|
-| **Partner dev store** | **Essence** + **Colored by Nature-Blue** V2 fixtures; one clean test collection; category/custom metafield experiments; sold/available states; **PLP + PDP** proof; Search & Discovery; GraphQL/Admin API learning; resettable/destructive tests **before** touching merchant catalog |
+| **Partner dev store** `zitas-art-studio-development.myshopify.com` | **Essence** + **Colored by Nature-Blue** V2 fixtures; one clean test collection; category/custom metafield experiments; sold/available states; Homepage, **PLP + PDP** builds; Search & Discovery; GraphQL/Admin API learning; resettable/destructive tests **before** touching merchant catalog. Theme **Zita V2 — Development** is **published** here so the storefront can be demonstrated. |
 | **Ranjeeta — live** | Production traffic on **Flora**; legacy products remain source of truth for copy/media until V2 cutover |
-| **Ranjeeta — dev/review** | Unpublished **Zita V2** theme; validate shell/components against **real** legacy data; create V2 products as **Draft**; do **not** activate V2 products merely to test PLP on the live store (§3) |
+| **Ranjeeta — dev/review** (Phase B, future) | Unpublished **Zita V2** theme; validate shell/components against **real** legacy data; create V2 products as **Draft**; do **not** activate V2 products merely to test PLP on the live store (§3) |
 | **Launch** | Controlled V2 activation/publication; publish Zita V2; redirects; archive legacy (do not mass-delete immediately) |
 
 ### Theme workflow (one codebase, two stores)
@@ -168,7 +169,7 @@ Scale merchant-store V2 catalog creation only after Partner dev store PoC and Dr
 
 **Phase A product-data PoC (Partner dev store):** **Essence V2** and **Colored by Nature-Blue V2** are created with proven custom metafield definitions, category usage, and collection **`V2 PoC — Original Artworks`**. Sold-state behavior is proven via **Colored by Nature-Blue V2** (tracked inventory **0**, continue selling when out of stock **off**). Canonical detail: **[product-schema.md](product-schema.md)**.
 
-**Next before Zita-specific theme code:** PLP/PDP **theme** proof against this schema on the dev store (fixtures may remain **Draft** during data setup; use **Active** on dev store when storefront PLP/PDP testing requires it — §3).
+**Theme proof against this schema on the dev store:** PLP — **Done** (both fixtures **Active** on the dev store; they were **Draft** during data setup). PDP — **in progress**. See §28.
 
 **PoC location:** **Partner dev store first** — prove data model, then templates. **Merchant-store source products are read-only** during this phase.
 
@@ -361,7 +362,7 @@ Approved behavior (Design V2):
 - Phones (the image column is hidden below 750px) don't download it.
 - Details: [metafield-definitions.md](metafield-definitions.md) §3, Editorial image presentation.
 
-**Do not** hard-code series copy in Liquid. **Do not** require a separate collection template per series for text alone — one shared curated template (e.g. `collection.art-series.json`) with conditional editorial block.
+**Do not** hard-code series copy in Liquid. **Do not** require a separate collection template per series for text alone — one shared curated template (`collection.series.json`) with conditional editorial block.
 
 > **Why this belongs here:** Editorial band content varies **by series**; it belongs on **Collection**, not global theme settings.
 
@@ -380,6 +381,8 @@ Ranjeeta replaces/reorders active series via **Menus**.
 
 **Preview imagery:** Prefer linked **collection image** before duplicate Theme Editor settings. Exact mega-menu preview mechanism **deferred** to implementation (see design-v2-acceptance).
 
+**Partly implemented:** supporting mega-menu infrastructure exists in `sections/zita-header.liquid` and `assets/zita-header.js` (desktop `zita-mega-menu`, mobile `zita-mobile-menu`, both driven by the section's Shopify menu). The approved V2 collection-navigation dropdown behaviour and content are **not yet complete**; it is scheduled after the PDP ([project-status.md](../project-status.md)).
+
 Avoid duplicating collection ordering in unrelated theme settings unless architecture review shows clear benefit.
 
 > **Why this belongs here:** Merchants reorder navigation in **Menus**; the theme only presents structure accessibly.
@@ -388,11 +391,13 @@ Avoid duplicating collection ordering in unrelated theme settings unless archite
 
 ## 12. Homepage architecture
 
+**Implemented** on the dev store (`templates/index.json`): `zita-hero-carousel`, `zita-current-series`, `zita-point-of-view`, `zita-selected-works`, `zita-recognition`, `zita-living-with-work` and `zita-from-the-studio`. The global shell is `zita-announcement` + `zita-header` (header group) and `zita-footer` (footer group). Build spec: [homepage handoff](../../references/claude-design/handoff/homepage/homepage-implementation-handoff.md) (historical).
+
 Map V2 sections to Shopify ownership:
 
 ### Hero carousel
 
-- Custom OS 2.0 section (illustrative: `sections/zita-hero-carousel.liquid`)
+- Custom OS 2.0 section: `sections/zita-hero-carousel.liquid`
 - **Blocks** = slides: desktop image, optional mobile image, heading, supporting text, CTA label/link, alignment; live HTML text
 - **Section settings:** autoplay, interval, controls, layout constraints
 - Requirements: full width; manual controls; swipe; keyboard; pausable autoplay; `prefers-reduced-motion`; no carousel app; minimal JS
@@ -421,9 +426,11 @@ Visual reference: [V2 screenshots README](../../references/claude-design/screens
 
 ## 13. PLP / collection template architecture
 
-**Shared template (illustrative):** `templates/collection.art-series.json`
+**Shared series template:** `templates/collection.series.json`
 
 One template for artistic series unless behavior genuinely diverges.
+
+**Implemented** on the dev store: `templates/collection.json` (default) and `templates/collection.series.json` both use `sections/zita-collection-intro.liquid` + `sections/zita-collection-gallery.liquid`, with `snippets/collection-filters.liquid` (native storefront filtering via Shopify Search & Discovery, plus native sorting), `snippets/collection-editorial.liquid`, `snippets/pagination.liquid` and the shared `artwork-card` / `artwork-plate` snippets. Build spec: [PLP handoff](../../references/claude-design/handoff/plp/plp-implementation-handoff.md) (historical).
 
 Sections/snippets support:
 
@@ -475,6 +482,8 @@ This is a deliberate refinement based on live usability testing, **not an accide
 ---
 
 ## 14. PDP architecture
+
+**In progress:** the Claude Design PDP handoff is being prepared; `templates/product.json` is still the Skeleton default. Revise this section when the handoff and data assumptions are reviewed.
 
 Templates:
 
@@ -565,14 +574,14 @@ theme/
     metadata-row.liquid
   templates/
     index.json
-    collection.art-series.json
+    collection.series.json
     product.original.json
     product.print.json
     page.about.json
     ...
 ```
 
-Names are **illustrative**. Avoid JS frameworks and unnecessary third-party libraries.
+Names are **illustrative** for pages not yet built. As-built Homepage, shell and PLP filenames are listed in §12 and §13 (for example, `zita-collection-intro` rather than `zita-collection-hero`, and `collection.series.json` rather than `collection.art-series.json`). Avoid JS frameworks and unnecessary third-party libraries.
 
 ---
 
@@ -683,7 +692,7 @@ Review against [Design V2 acceptance](../design/design-v2-acceptance.md) and V2 
 
 | Phase | Where | Scope |
 |---|---|---|
-| **A — Isolated proof** | **Partner dev store** | Skeleton in `theme/`; **Essence V2** + **Colored by Nature-Blue V2** + **`V2 PoC — Original Artworks`**; **proven custom metafields** + **[product-schema.md](product-schema.md)**; sold/available data rules proven; **theme** PLP/PDP proof next. **Later:** reproducible metafield-definition provisioning script, merchant catalog workbook, dev-store-tested migration/import |
+| **A — Isolated proof** | **Partner dev store** | Skeleton in `theme/`; **Essence V2** + **Colored by Nature-Blue V2** + **`V2 PoC — Original Artworks`**; **proven custom metafields** + **[product-schema.md](product-schema.md)**; sold/available data rules proven — **Done**. Reproducible metafield-definition provisioning, including Admin order — **Done** on the dev store ([metafield-definitions.md](metafield-definitions.md)). **Later:** merchant catalog workbook, dev-store-tested migration/import |
 | **B — Merchant theme foundation** | **Ranjeeta's store** | Same theme repo (`--store` verified); development/unpublished Zita V2; global shell & components against **legacy real data**; **Flora untouched** |
 | **C — Commerce templates** | Dev → merchant | Originals + prints PLP/PDP (catalog behavior proven on dev store first) |
 | **D — Editorial pages** | Dev → merchant | About, Exhibitions, News, Contact, Commissions, policies |
@@ -692,6 +701,19 @@ Review against [Design V2 acceptance](../design/design-v2-acceptance.md) and V2 
 | **G — Cutover** | **Merchant store** | Activate/publish V2 catalog as required; menus; **publish Zita V2 theme**; production verification |
 | **H — Post-launch** | **Merchant store** | Archive legacy after confidence period; monitor redirects/indexing; delete only intentionally later |
 
+### Actual build sequence
+
+The phases above define scope, not strict order. In practice the commerce-page work of Phase C has been built on the **Partner dev store first**, and merchant-store integration (Phase B) follows once the core pages are proven:
+
+1. Global shell + Homepage (dev store) — **Done**
+2. PLP / collection gallery (dev store) — **Done**
+3. Original-artwork PDP (dev store) — **in progress**
+4. Header collection-navigation dropdown (dev store)
+5. Cross-page polish and QA (dev store)
+6. **Phase B** — merchant-store integration on an unpublished Zita V2 theme
+
+Current position in this sequence: [project-status.md](../project-status.md).
+
 ---
 
 ## 25. Development safety rules
@@ -699,7 +721,7 @@ Review against [Design V2 acceptance](../design/design-v2-acceptance.md) and V2 
 Until explicit cutover:
 
 - **Never** edit **Flora** theme code for V2 work
-- **Never** publish V2 theme accidentally
+- **Never** publish Zita V2 on **Ranjeeta's production store** before cutover. Publishing Zita V2 on the **Partner dev store** for demos is allowed.
 - **Never** bulk-delete legacy content
 - **Never** change legacy product prices/inventory/status casually
 - **Never** treat Claude prototype/screenshot data as authoritative
@@ -743,7 +765,7 @@ Keep experiments documented in the learning log as PoC proceeds.
 Not finalized in this plan:
 
 - Additional custom metafields beyond [product-schema.md](product-schema.md) §4 PROVEN set
-- Metafield-definition provisioning on Ranjeeta's store. Definitions are provisioned on the dev store; Admin display-order reconciliation is implemented but not yet applied ([metafield-definitions.md](metafield-definitions.md)). Open questions are in its §9.
+- Metafield-definition provisioning on Ranjeeta's store (Phase B). Dev-store state and open questions: [metafield-definitions.md](metafield-definitions.md).
 - Merchant catalog workbook + import pipeline (FUTURE)
 - Exhibition metaobject schema and Basic storefront exposure
 - Final V2 active series list (~2–3 foregrounded)
@@ -754,7 +776,7 @@ Not finalized in this plan:
 - Newsletter value proposition / copy
 - Font loading/licensing details
 - Exact redirect map at cutover
-- Final theme section filenames
+- Final theme section filenames for pages not yet built (PDP onward)
 - Shopify Canvas usage, if any
 - Pending series descriptions (Colored by Nature, BlackWhiteandGrey, Walking the Trail)
 - Merchant-store publication/channel checklist at cutover (not routine dev Active products)
@@ -769,10 +791,10 @@ Not finalized in this plan:
 2. Initialize `theme/` from **Skeleton** against **dev store**. — **Done**
 3. Create **Essence V2** + **Colored by Nature-Blue V2** + **`V2 PoC — Original Artworks`** from validated legacy Admin (read-only). — **Done**
 4. Define and populate **proven custom metafields**; prove sold/available data model. — **Done** → **[product-schema.md](product-schema.md)**
-5. **Next:** PLP/PDP **theme** proof on dev store (no Zita-specific theme code until schema frozen in docs). Then commit `theme/` baseline as appropriate.
-6. **Later deliverables:** reproducible metafield-definition provisioning (**definitions provisioned on the dev store; Admin order reconciliation implemented, not yet applied**; see [metafield-definitions.md](metafield-definitions.md)); **`Zita V2 Artwork Catalog.xlsx`** (or equivalent); dev-store-tested migration/import workflow.
+5. PLP/PDP **theme** proof on dev store (no Zita-specific theme code until schema frozen in docs). Then commit `theme/` baseline as appropriate. — **PLP Done** (global shell and Homepage also built and committed); **PDP in progress**.
+6. Reproducible metafield-definition provisioning — **Done** on the dev store, including Admin order ([metafield-definitions.md](metafield-definitions.md)). **Later deliverables:** **`Zita V2 Artwork Catalog.xlsx`** (or equivalent); dev-store-tested migration/import workflow.
 
-### B — Ranjeeta's merchant store (integration)
+### B — Ranjeeta's merchant store (integration) — future; begins after dev-store PDP, header navigation and cross-page QA (§24, Actual build sequence)
 
 7. Connect same repo to **Ranjeeta's store** (verify **`--store`**); upload **unpublished** Zita V2; **Flora** stays published.
 8. Validate shell/PLP/PDP components against **legacy Active** products on unpublished theme.
@@ -789,12 +811,12 @@ Not finalized in this plan:
 
 | Item | Value |
 |---|---|
-| **Status** | **Approved implementation architecture** — validate details during PoC |
+| **Status** | **Authoritative architecture reference** — refine as each page is built |
 | **Design baseline** | Design V2 (October 2026) |
 | **Visual reference** | `references/claude-design/screenshots/v2/` |
 | **Authoritative product facts** | Live Shopify Admin + content inventory — not Claude prototypes |
 | **Product schema** | [product-schema.md](product-schema.md) — Phase A data PoC |
 | **Metafield definitions** | [metafield-definitions.md](metafield-definitions.md): registry plus `scripts/metafields/` provisioning |
-| **Next action** | PLP/PDP theme proof on Partner dev store using proven schema; then §28 Phase B |
+| **Progress / next action** | [project-status.md](../project-status.md) |
 
-After commit, treat this file as the working architecture reference for `theme/`, updating when PoC or stakeholder decisions change deferred items.
+Treat this file as the working architecture reference for `theme/`, updating it when page builds or stakeholder decisions change deferred items.

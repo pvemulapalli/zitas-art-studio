@@ -96,28 +96,26 @@ Do not reproduce copyrighted artwork, photography, written content, branding or 
 
 ---
 
-## Current Emerging Direction
+## Approved Design Direction
 
-Not yet final or approved.
+**Claude Design V2** was approved by Ranjeeta in October 2026. In summary:
 
-Potential ingredients include:
+- primary emotion: **Inspired**
+- nature-derived, artwork-derived palette with a teal family and editorial tones; restrained copper accents
+- **Marcellus** (display) + **Mulish** (body/UI)
+- tracked-capitals wordmark `ZITA'S | ART STUDIO`
+- **Gesso / light neutral** artwork ground; no automatic per-artwork backgrounds
+- aligned artwork grids; artwork never cropped; artwork → room image interaction
+- full-width homepage carousel; approximately 2–3 active series foregrounded
+- artwork-first collection pages with on-demand Filter & Sort and an optional editorial band
+- gallery-like product pages; clear but visually subordinate commerce
 
-- simple typographic wordmark
-- palette derived directly from Ranjeeta's artwork
-- blue family as an important visual ingredient
-- cool neutrals with selective warm copper/gold/sand counterpoints
-- candidate typography including Tenor Sans and Alegreya
-- generous whitespace
-- oversized artwork presentation
-- artwork image → room/interior image interaction
-- series-oriented navigation
-- editorial collection pages
-- immersive About storytelling
-- structured Exhibitions experience
-- News / Press using native Shopify publishing
-- clear but visually subordinate commerce controls
+Earlier exploration (Tenor Sans + Alegreya typography, a blue-led palette, asymmetric and staggered layouts) was superseded by Design V2.
 
-Final decisions will be made in the Zita Design Brief and prototype phase.
+The authoritative design documents are:
+
+- [docs/design/zita-design-brief.md](design/zita-design-brief.md) — approved experience and visual direction
+- [docs/design/design-v2-acceptance.md](design/design-v2-acceptance.md) — design approval record
 
 ---
 
@@ -247,9 +245,7 @@ Potential future organization:
 - Past
 - Awards & Recognition
 
-The eventual implementation may use Shopify metaobjects or another Basic-compatible structured-content solution.
-
-Final architecture has not yet been selected.
+The leading architecture is an **Exhibition metaobject** referenced by the Exhibitions page and by products. It is provisional: the schema is not finalized and nothing has been implemented yet. See [implementation plan §15](architecture/shopify-implementation-plan.md#15-metaobject-policy).
 
 ---
 
@@ -322,23 +318,13 @@ Final approval question:
 
 ---
 
-## Current Project Phase
+## Project Status and Related Documents
 
-Completed:
+This brief is the project charter. It does not track progress.
 
-- Dimitra Milan reference audit
-- Rinske Douna reference audit
-- Ranjeeta preferences
-- Zita content and brand inventory
-
-Next:
-
-1. Complete Ranjeeta's Priority 1 design/content questions
-2. Create `docs/design/zita-design-brief.md`
-3. Develop brand standards and clickable prototype
-4. Review with Ranjeeta
-5. Finalize Shopify architecture
-6. Begin implementation
+- **Current status:** [docs/project-status.md](project-status.md)
+- **Design:** [design brief](design/zita-design-brief.md) · [Design V2 acceptance](design/design-v2-acceptance.md) · [Ranjeeta's preferences](design/ranjeeta-preferences.md)
+- **Architecture:** [Shopify implementation plan](architecture/shopify-implementation-plan.md) · [product schema](architecture/product-schema.md) · [metafield definitions](architecture/metafield-definitions.md)
 
 ---
 

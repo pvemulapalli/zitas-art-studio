@@ -1,9 +1,14 @@
 # Zita V2 — Metafield Definitions
 
-**Status:**
-- All 12 definitions are provisioned on the Partner dev store; the final `verify` showed 12 exists-compatible, 0 missing, 0 conflict.
-- Admin display-order reconciliation is implemented but **not yet run** against any store.
-- Nothing has been provisioned on Ranjeeta's store.
+**Status:** this section is the canonical record of metafield provisioning state.
+
+| Store | State |
+|---|---|
+| **Partner dev store** `zitas-art-studio-development.myshopify.com` | All 12 definitions provisioned. Admin display order applied with `apply` and verified live: both owner types match the schema order (§7). Final `verify`: **12 expected · 0 missing · 12 exists-compatible · 0 conflict · 0 owner type(s) with Admin order differences**. |
+| **Ranjeeta's production store** | Nothing provisioned. Planned for Phase B (§8, steps 4–6). |
+
+- Provisioning and reordering are resumable and idempotent: creation recovered from intermittent Shopify CLI request aborts by re-reading the store (§7, Partial failure and resume), and re-running `verify` after reordering reports no differences.
+- `definitions.json` carries the newer merchant-friendly descriptions. Some definitions on the dev store keep their earlier wording; `verify` reports these as compatible notes, not conflicts (§3, Admin descriptions on existing stores).
 
 **Machine source:** [`scripts/metafields/definitions.json`](../../scripts/metafields/definitions.json)
 **Tooling:** [`scripts/metafields/provision.mjs`](../../scripts/metafields/provision.mjs) (Node 22, no dependencies)
@@ -249,6 +254,8 @@ Shopify's reference pages do not state outright that the admin shows the highest
 
 **Before the first `apply` on any store,** compare the CURRENT list that `verify` prints with the product and collection edit pages in the admin. If they disagree, the direction is wrong: stop and fix `adminDisplay` before applying.
 
+On the Partner dev store, `apply` reordered both owner types and the live result matched the schema order below, consistent with this rule. Repeat the comparison on Ranjeeta's store before its first `apply`.
+
 ### How `verify` detects drift
 
 For each owner type, `verify`:
@@ -295,6 +302,7 @@ This is what happened during the first dev-store provisioning:
 2. The script stopped at each aborted request instead of continuing.
 3. The next `verify` / `apply` read the store, found the definitions that had already been created, and created only the remaining ones.
 4. The final `verify` reported 12 expected, 0 missing, 12 exists-compatible, 0 conflict.
+5. A later `apply` reconciled the Admin order for both owner types. The final `verify` reported 0 owner type(s) with Admin order differences.
 
 Ordering follows the same rule: **the store is the only record of progress**.
 - `apply` never trusts a previous run. It re-reads the current state and plans from that.
@@ -350,4 +358,5 @@ Creating a definition makes Shopify validate any existing **unstructured** metaf
 - **Phase A product definitions.** Description notes are expected. Decide whether to align the wording in the admin by hand; the script will not touch them.
 - **Storefront access.** `PUBLIC_READ` matches Phase A. Switch the default to `NONE` if Storefront API exposure is not wanted. Existing definitions are not changed by the script.
 - **Category scoping** of product definitions stays an open Phase A question ([product-schema §10](product-schema.md#10-future-schema-questions)). The schema creates unscoped definitions.
-- **Admin order direction.** Confirm once on the dev store, using the comparison in §7, that the admin shows the highest `pinnedPosition` first.
+
+**Closed:** Admin order direction. The dev-store `apply` produced the schema order on both owner types, confirming that the admin shows the highest `pinnedPosition` first (§7).

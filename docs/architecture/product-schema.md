@@ -35,7 +35,7 @@ This document is the **canonical registry** for the V2 product data model proven
 | **Essence V2** | Available original artwork |
 | **Colored by Nature-Blue V2** | Sold original (commerce-derived sold state) |
 
-Both are assigned to the development collection **`V2 PoC — Original Artworks`** (not production taxonomy).
+Both are assigned to the development collection **`V2 PoC — Original Artworks`** (not production taxonomy). Both were **Draft** during data setup and are now **Active** on the Partner dev store, where they back the PLP (and upcoming PDP) theme work.
 
 **Not in scope yet:** print products, exhibition metaobjects, merchant-store V2 catalog migration. Collection editorial-band metafields are defined in [metafield-definitions.md](metafield-definitions.md) §3.
 
@@ -53,7 +53,7 @@ Both are assigned to the development collection **`V2 PoC — Original Artworks`
 | **Inventory tracking** | Product / variant inventory | Sold vs available | **PROVEN** | Required for one-of-one originals PoC |
 | **Available / on hand** | Inventory levels | Derive purchasability | **PROVEN** | See §6 |
 | **Continue selling when out of stock** | Inventory policy | Must be **off** for sold-state PoC | **PROVEN** | Both fixtures: **off** |
-| **Product status** | `ACTIVE` / `DRAFT` / etc. | Publication | **PROVEN** | Fixtures were **Draft** during data setup |
+| **Product status** | `ACTIVE` / `DRAFT` / etc. | Publication | **PROVEN** | Fixtures were **Draft** during data setup; now **Active** on the dev store |
 | **Collections** | Collection membership | Series / grouping | **PROVEN** | Production: real artistic series only; PoC collection is dev-only |
 | **Variants** | Product variants | Size/color options for prints; originals usually single SKU | **PROVEN** | No meaningful variants on PoC originals |
 | **Vendor** | `vendor` | Operational only if meaningful | PoC populated | Do not blindly copy legacy `ZitasArt` |
@@ -142,6 +142,7 @@ The implementation plan may still list **PROVISIONAL** candidates (year, shippin
 |---|---|---|
 | Role | Available original | Sold original |
 | Status during data setup | **Draft** | **Draft** |
+| Current status (dev store) | **Active** | **Active** |
 | Price | **$1,500** | **$475** |
 | Inventory tracked | Yes | Yes |
 | Available / on hand | **1** / **1** | **0** / **0** |
@@ -196,11 +197,11 @@ Derive **sold** state from Shopify commerce truth where possible. **No `custom.s
 
 ## 8. Migration and workbook strategy
 
-Operational model. **A** is implemented and has provisioned the dev store's definitions; **B** is FUTURE.
+Operational model. **A** is implemented; **B** is FUTURE.
 
 ### A. Version-controlled schema provisioning
 
-**Implemented; definitions provisioned on the dev store, Admin order not yet applied.**
+**Implemented.** Current provisioning state per store is recorded only in [metafield-definitions.md](metafield-definitions.md) (Status).
 - `scripts/metafields/provision.mjs` reads `scripts/metafields/definitions.json` and verifies each definition against a store via Admin GraphQL (through Shopify CLI).
 - It creates only missing definitions, and pins or unpins them so the Admin field order matches the schema's array order.
 - It never updates, deletes or recreates a definition, never writes values, and stops on conflicts.
