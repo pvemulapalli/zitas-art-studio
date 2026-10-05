@@ -1,0 +1,110 @@
+{
+  "$comment": "Source of truth for Zita V2 merchant-owned metafield definitions. Documented in docs/architecture/metafield-definitions.md. Checked and provisioned by scripts/metafields/provision.mjs, which only creates missing definitions and pins/unpins them to reach the Admin display order. The order of each owner type's array IS the Admin display order, top to bottom.",
+  "apiVersion": "2026-10",
+  "namespace": "custom",
+  "defaults": {
+    "storefrontAccess": "PUBLIC_READ",
+    "pin": true
+  },
+  "owners": {
+    "PRODUCT": [
+      {
+        "key": "artwork_width",
+        "name": "Artwork width",
+        "type": "dimension",
+        "description": "Width of the artwork itself, not the frame or packaging. Shown with the height, e.g. 12 × 16 in."
+      },
+      {
+        "key": "artwork_height",
+        "name": "Artwork height",
+        "type": "dimension",
+        "description": "Height of the artwork itself, not the frame or packaging. Shown with the width, e.g. 12 × 16 in."
+      },
+      {
+        "key": "ready_to_hang",
+        "name": "Ready to hang",
+        "type": "boolean",
+        "description": "Turn on when the artwork arrives ready to hang."
+      },
+      {
+        "key": "certificate_notes",
+        "name": "Certificate notes",
+        "type": "single_line_text_field",
+        "description": "Certificate of authenticity note, e.g. Certificate of authenticity included."
+      },
+      {
+        "key": "artwork_story",
+        "name": "Artwork story",
+        "type": "rich_text_field",
+        "description": "The story behind this artwork, shown on the artwork page."
+      }
+    ],
+    "COLLECTION": [
+      {
+        "key": "editorial_eyebrow",
+        "name": "Editorial eyebrow",
+        "type": "single_line_text_field",
+        "description": "Small label shown above the editorial statement, for example “From the Studio”."
+      },
+      {
+        "key": "editorial_text",
+        "name": "Editorial text",
+        "type": "multi_line_text_field",
+        "description": "Main editorial text for this collection. Adding text enables the editorial band."
+      },
+      {
+        "key": "editorial_image",
+        "name": "Editorial image",
+        "type": "file_reference",
+        "description": "Optional studio, process, context, or featured image shown in the editorial band.",
+        "validations": {
+          "file_type_options": ["Image"]
+        }
+      },
+      {
+        "key": "editorial_link_label",
+        "name": "Editorial link label",
+        "type": "single_line_text_field",
+        "description": "Optional call-to-action text, for example “About Ranjeeta” or “Explore the Series”."
+      },
+      {
+        "key": "editorial_link",
+        "name": "Editorial link",
+        "type": "single_line_text_field",
+        "description": "Destination for the editorial text link. Use a relative storefront path such as /pages/about or a full external URL."
+      },
+      {
+        "key": "editorial_product",
+        "name": "Editorial product",
+        "type": "product_reference",
+        "description": "Optional featured artwork. When selected, the editorial image links to this product."
+      },
+      {
+        "key": "editorial_position",
+        "name": "Editorial position",
+        "type": "single_line_text_field",
+        "description": "Choose where the editorial band appears in the collection sequence.",
+        "validations": {
+          "choices": ["after_row_1", "after_row_2", "end"]
+        }
+      }
+    ]
+  },
+  "excluded": [
+    {
+      "ownerType": "PRODUCT",
+      "key": "sold",
+      "reason": "Sold state is derived from inventory and availability, never a manual flag."
+    },
+    {
+      "ownerType": "COLLECTION",
+      "key": "editorial_enabled",
+      "reason": "custom.editorial_text is the presence trigger for the band."
+    },
+    {
+      "ownerType": "COLLECTION",
+      "key": "editorial_variant",
+      "reason": "Only one approved band treatment exists. The snippet has a variant parameter for later."
+    }
+  ]
+}

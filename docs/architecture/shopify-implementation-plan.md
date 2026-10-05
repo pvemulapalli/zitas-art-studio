@@ -333,12 +333,10 @@ V2 collections = real artistic bodies of work.
 
 - title, handle, image, product membership, description (evaluate as series statement before duplicating), SEO
 
-**Proposed collection metafields (PROVISIONAL):**
+**Collection metafields:**
 
-- optional short series statement (if description insufficient)
-- PLP editorial band: enabled flag, title, copy, image, CTA, placement hint
-
-Exact keys/types **not** finalized. Consider standard collection **description** as the series statement first.
+- PLP editorial band: **defined**. `custom.editorial_text` (presence trigger, no separate enabled flag), `editorial_eyebrow`, `editorial_image`, `editorial_link_label`, `editorial_link`, `editorial_product`, `editorial_position`. Keys, types and validations are in [metafield-definitions.md](metafield-definitions.md) §3.
+- Optional short series statement (if the description is insufficient): **PROVISIONAL**, not defined. Consider the standard collection **description** as the series statement first.
 
 ---
 
@@ -352,6 +350,16 @@ Approved behavior (Design V2):
 - May hide during filter/sort if cleaner UX
 
 **Architecture preference:** Collection fields + collection metafields (and/or one referenced structured object if justified later).
+
+**Implemented:** `snippets/collection-editorial.liquid`, placed by `sections/zita-collection-gallery.liquid`. Its metafield definitions are in [metafield-definitions.md](metafield-definitions.md) §3.
+
+**Editorial image: theme-constrained for owner safety.** There are no merchant width or height settings.
+
+- The image is always shown whole and uncropped, capped at `max-width: min(100%, 520px)` and `max-height: min(64vh, 520px)`.
+- Unusually tall images become narrower within the cap rather than making the band taller. The band is never taller than with a square image.
+- Image requests are sized to the rendered slot. Portrait images advertise `520 × aspect ratio` px, so they download smaller Shopify CDN variants. The original upload is never requested.
+- Phones (the image column is hidden below 750px) don't download it.
+- Details: [metafield-definitions.md](metafield-definitions.md) §3, Editorial image presentation.
 
 **Do not** hard-code series copy in Liquid. **Do not** require a separate collection template per series for text alone — one shared curated template (e.g. `collection.art-series.json`) with conditional editorial block.
 
@@ -428,6 +436,41 @@ Sections/snippets support:
 - Aligned rows
 
 Reusable **artwork-card** snippet/block; no third-party filter app unless native filtering proves insufficient.
+
+### Collection grid sizing — intentional refinement of the handoff
+
+The approved Claude V2 PLP handoff specifies **4:5** artwork plates for every grid. Live Shopify QA on the dev store (`/collections/v2-poc-original-artworks`) showed that 4:5 plates produced too much vertical scrolling on desktop collection pages. A row took roughly three-quarters of the viewport height, about 1.2 rows per screen at 1440 × 900.
+
+**Implemented** in `assets/zita-collection.css`:
+
+- **Collection-grid plates at `min-width: 750px` use 8:9**, via `.collection-grid .artwork-plate { aspect-ratio: 8 / 9; }`. The base `artwork-plate` component is unchanged.
+- **Mobile (below 750px) keeps 4:5**, with its 44px row gap.
+- **Homepage plates are unchanged.** Current Series, Selected Works and the header preview do not render inside `.collection-grid`.
+- **Primary artwork stays fully contained and uncropped:** the same 10% mat and contain sizing, and no `object-fit: cover`.
+- **Collection row gap** reduced from `clamp(56px, 5vw, 88px)` to `clamp(48px, 4vw, 72px)`.
+
+**Result in testing:**
+
+| Viewport | Plate before (4:5) | Plate after (8:9) | Row before | Row after |
+|---|---|---|---|---|
+| 1440 × 900 | 419 × 523px | 419 × 471px | 662px | 595px |
+| 1920 × 1080 | 523 × 653px | 523 × 588px | 808px | 727px |
+
+Rows here are plate + caption + row gap. The desktop row footprint fell by about 10%.
+
+- Essence V2 (1:2) and Colored by Nature-Blue V2 remain fully visible at their true proportions.
+- Very tall works lose about 12% of their displayed size; square and landscape works keep theirs.
+- Aligned rows, the 3 / 2 / 1 column behaviour, captions, sold state, Filter & Sort and the editorial band are unchanged.
+- The approved gallery character is preserved: one shared portrait field per row, a generous mat, and no cropping.
+
+This is a deliberate refinement based on live usability testing, **not an accidental deviation** from the design handoff. The handoff files under `references/` are left as the historical record.
+
+**Collection intro and toolbar spacing: reviewed and intentionally unchanged for now.**
+
+- The space between the header and the first artwork row is about 329px at 1440: intro 224px, toolbar 76px and grid top padding 29px.
+- It is a one-time page-entry cost (about half a row) and does not affect row-to-row scrolling.
+- It still matches the approved composition.
+- Revisit it only if the first screen needs more artwork above the fold. At 1440 × 900 the first row's captions currently sit just below the fold.
 
 ---
 
@@ -700,7 +743,7 @@ Keep experiments documented in the learning log as PoC proceeds.
 Not finalized in this plan:
 
 - Additional custom metafields beyond [product-schema.md](product-schema.md) §4 PROVEN set
-- Reproducible Admin GraphQL metafield-definition provisioning (FUTURE)
+- Metafield-definition provisioning on Ranjeeta's store. Definitions are provisioned on the dev store; Admin display-order reconciliation is implemented but not yet applied ([metafield-definitions.md](metafield-definitions.md)). Open questions are in its §9.
 - Merchant catalog workbook + import pipeline (FUTURE)
 - Exhibition metaobject schema and Basic storefront exposure
 - Final V2 active series list (~2–3 foregrounded)
@@ -727,7 +770,7 @@ Not finalized in this plan:
 3. Create **Essence V2** + **Colored by Nature-Blue V2** + **`V2 PoC — Original Artworks`** from validated legacy Admin (read-only). — **Done**
 4. Define and populate **proven custom metafields**; prove sold/available data model. — **Done** → **[product-schema.md](product-schema.md)**
 5. **Next:** PLP/PDP **theme** proof on dev store (no Zita-specific theme code until schema frozen in docs). Then commit `theme/` baseline as appropriate.
-6. **Later deliverables:** reproducible metafield-definition provisioning; **`Zita V2 Artwork Catalog.xlsx`** (or equivalent); dev-store-tested migration/import workflow.
+6. **Later deliverables:** reproducible metafield-definition provisioning (**definitions provisioned on the dev store; Admin order reconciliation implemented, not yet applied**; see [metafield-definitions.md](metafield-definitions.md)); **`Zita V2 Artwork Catalog.xlsx`** (or equivalent); dev-store-tested migration/import workflow.
 
 ### B — Ranjeeta's merchant store (integration)
 
@@ -751,6 +794,7 @@ Not finalized in this plan:
 | **Visual reference** | `references/claude-design/screenshots/v2/` |
 | **Authoritative product facts** | Live Shopify Admin + content inventory — not Claude prototypes |
 | **Product schema** | [product-schema.md](product-schema.md) — Phase A data PoC |
+| **Metafield definitions** | [metafield-definitions.md](metafield-definitions.md): registry plus `scripts/metafields/` provisioning |
 | **Next action** | PLP/PDP theme proof on Partner dev store using proven schema; then §28 Phase B |
 
 After commit, treat this file as the working architecture reference for `theme/`, updating when PoC or stakeholder decisions change deferred items.

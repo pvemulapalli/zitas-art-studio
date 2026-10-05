@@ -2,7 +2,7 @@
 
 **Status:** Phase A Partner dev-store product-data PoC — **PROVEN** for original artworks
 **Scope:** Original artwork products only. Print-specific schema is **FUTURE** — not assumed.
-**Companion:** [Shopify implementation plan](shopify-implementation-plan.md)
+**Companions:** [Shopify implementation plan](shopify-implementation-plan.md) · [Metafield definitions](metafield-definitions.md) (version-controlled definition registry and provisioning)
 
 ### Label key
 
@@ -37,7 +37,7 @@ This document is the **canonical registry** for the V2 product data model proven
 
 Both are assigned to the development collection **`V2 PoC — Original Artworks`** (not production taxonomy).
 
-**Not in scope yet:** print products, collection editorial metafields, exhibition metaobjects, merchant-store V2 catalog migration.
+**Not in scope yet:** print products, exhibition metaobjects, merchant-store V2 catalog migration. Collection editorial-band metafields are defined in [metafield-definitions.md](metafield-definitions.md) §3.
 
 ---
 
@@ -120,6 +120,8 @@ Definitions were created **without category scoping** during PoC. **Storefront A
 
 **Do not** create duplicate custom fields for medium, orientation, authenticity/original, frame style, or signature presence — represented via **category metafields** where used.
 
+These five definitions are also recorded in `scripts/metafields/definitions.json` for reproducible provisioning. Theme consumers and provisioning rules: [metafield-definitions.md](metafield-definitions.md) §2.
+
 | Display name | Namespace.key | Shopify type | Cardinality | Required? | Purpose | Example | Proven on | Storefront / notes |
 |---|---|---|---|---|---|---|---|---|
 | Artwork width | `custom.artwork_width` | Measurement (dimension) | One | No | Structured width for display/metadata | Essence: **20 in**; Colored by Nature-Blue: **12 in** | Both fixtures | Prefer over parsing description |
@@ -194,11 +196,15 @@ Derive **sold** state from Shopify commerce truth where possible. **No `custom.s
 
 ## 8. Migration and workbook strategy
 
-**FUTURE** operational model (not implemented in repo yet):
+Operational model. **A** is implemented and has provisioned the dev store's definitions; **B** is FUTURE.
 
 ### A. Version-controlled schema provisioning
 
-After schema freeze, add a reviewed **Shopify Admin GraphQL** script to recreate custom metafield **definitions** in Ranjeeta's store — deterministic, repeatable, reviewable (not conversational/manual-only recreation).
+**Implemented; definitions provisioned on the dev store, Admin order not yet applied.**
+- `scripts/metafields/provision.mjs` reads `scripts/metafields/definitions.json` and verifies each definition against a store via Admin GraphQL (through Shopify CLI).
+- It creates only missing definitions, and pins or unpins them so the Admin field order matches the schema's array order.
+- It never updates, deletes or recreates a definition, never writes values, and stops on conflicts.
+- Workflow and rules: [metafield-definitions.md](metafield-definitions.md) §6–§8.
 
 ### B. Merchant-friendly catalog workbook
 
