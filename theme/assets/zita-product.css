@@ -1,0 +1,668 @@
+/* Zita V2 — original artwork PDP (sections/zita-product-artwork.liquid and its snippets). */
+
+.pdp {
+  display: block;
+}
+
+.pdp [hidden] {
+  display: none !important;
+}
+
+.pdp__inner {
+  padding-block-end: var(--space-section);
+}
+
+/* Breadcrumb */
+.pdp-crumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-block-start: 22px;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--color-text-meta);
+}
+
+.pdp-crumb li + li::before {
+  content: '/';
+  margin-inline-end: 8px;
+}
+
+.pdp-crumb a {
+  display: inline-block;
+  margin-block: -12px;
+  padding-block: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.pdp-crumb a:hover {
+  color: var(--color-copper);
+}
+
+.pdp-crumb [aria-current] {
+  color: var(--color-ink);
+}
+
+/* Main composition: artwork 7, label column 5, capped */
+.pdp__main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: clamp(32px, 5vw, 96px);
+  padding-block-start: 20px;
+}
+
+.pdp-info {
+  position: sticky;
+  top: 24px;
+  display: grid;
+  flex: 5 1 360px;
+  gap: 28px;
+  min-width: 0;
+  max-width: 560px;
+}
+
+/* Media gallery */
+.pdp-media {
+  position: relative;
+  display: block;
+  flex: 7 1 520px;
+  min-width: 0;
+}
+
+.pdp-media__stage {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  background: var(--color-gesso);
+}
+
+.pdp-media__stage::-webkit-scrollbar {
+  display: none;
+}
+
+.pdp-media__panel {
+  position: relative;
+  display: flex;
+  flex: 0 0 100%;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  background: var(--color-gesso);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.pdp-media__image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.pdp-media__panel--art .pdp-media__image {
+  box-shadow: var(--shadow-hang-deep);
+}
+
+.pdp-media__rail,
+.pdp-media__caption,
+.pdp-media__tag {
+  display: none;
+}
+
+@media (min-width: 750px) {
+  .pdp-media {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 14px 18px;
+  }
+
+  .pdp-media--single {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pdp-media__stage {
+    grid-row: 1;
+    grid-column: -2;
+    aspect-ratio: 1;
+  }
+
+  .pdp-media__panel--art {
+    padding: 6% 14%;
+  }
+
+  /* The rail scrolls within the stage's height rather than growing the row. */
+  .pdp-media__rail {
+    position: relative;
+    display: block;
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .pdp-media__thumbs {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .pdp-media__thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 88px;
+    padding: 6px;
+    border: 1px solid transparent;
+    border-radius: 0;
+    background: var(--color-mat);
+    cursor: pointer;
+    transition: border-color var(--duration-fast) var(--ease-pour);
+  }
+
+  .pdp-media__thumb:hover {
+    border-color: var(--color-stone-300);
+  }
+
+  .pdp-media__thumb[aria-current] {
+    border-color: var(--color-ink);
+  }
+
+  .pdp-media__thumb:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .pdp-media__thumb-image {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .pdp-media__caption {
+    display: flex;
+    grid-row: 2;
+    grid-column: 2;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--color-text-meta);
+  }
+
+  /* Enhanced by zita-product.js: panels stack and cross-fade instead of scrolling. */
+  .pdp-media.is-enhanced .pdp-media__stage {
+    position: relative;
+    display: block;
+    overflow: hidden;
+  }
+
+  .pdp-media.is-enhanced .pdp-media__panel {
+    position: absolute;
+    inset: 0;
+    display: none;
+  }
+
+  .pdp-media.is-enhanced .pdp-media__panel.is-active,
+  .pdp-media.is-enhanced .pdp-media__panel.is-previous {
+    display: flex;
+  }
+
+  .pdp-media.is-enhanced .pdp-media__panel.is-active {
+    z-index: 1;
+  }
+
+  .pdp-media.has-swapped .pdp-media__panel.is-active {
+    opacity: 1;
+    transition: opacity var(--duration-base) var(--ease-pour);
+  }
+
+  @starting-style {
+    .pdp-media.has-swapped .pdp-media__panel.is-active {
+      opacity: 0;
+    }
+  }
+}
+
+/* Label */
+.pdp-label {
+  display: grid;
+  gap: 12px;
+}
+
+.pdp-label__series {
+  position: relative;
+  justify-self: start;
+  text-decoration: none;
+}
+
+.pdp-label__series::after {
+  content: '';
+  position: absolute;
+  inset: -14px -4px;
+}
+
+.pdp-label__series:hover {
+  color: var(--color-ink);
+}
+
+.pdp-label__title {
+  margin: 0;
+  font-size: clamp(40px, 4vw, 60px);
+  line-height: 1.05;
+}
+
+.pdp-label__subtitle,
+.pdp-label__note {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+/* Purchase */
+.pdp-buy,
+.pdp-buy__form {
+  display: grid;
+  gap: 18px;
+}
+
+.pdp-buy {
+  padding-block-start: 24px;
+  border-top: 1px solid var(--color-stone-200);
+}
+
+.pdp-buy .button {
+  width: 100%;
+  padding-block: 10px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.pdp-buy__row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px 16px;
+}
+
+.pdp-price {
+  font-size: 30px;
+  line-height: 1.2;
+  color: var(--color-ink);
+  font-variant-numeric: lining-nums;
+}
+
+.pdp-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-available);
+}
+
+/* Confirmation, styled as a state label like Sold, so it never reads as a disabled button. */
+.pdp-in-bag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 1.4;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+
+.pdp-in-bag .icon {
+  box-sizing: content-box;
+  padding: 4px;
+  border-radius: 50%;
+  background: var(--color-available);
+  color: var(--color-gesso);
+  stroke-width: 2.5;
+}
+
+.pdp-variant {
+  display: grid;
+  gap: 8px;
+}
+
+.pdp-variant__label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+}
+
+.pdp-variant__select {
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--color-stone-200);
+  border-radius: 2px;
+  background: var(--color-gesso);
+  font-size: 17px;
+  color: var(--color-ink);
+}
+
+.pdp-sold {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 1.4;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+
+.pdp-sold::before {
+  content: '';
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-sold);
+}
+
+.pdp-note {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.pdp-inline-link {
+  justify-self: start;
+  padding-block: 10px;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+/* Facts */
+.pdp-facts {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px 28px;
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.pdp-facts dt {
+  padding-block-start: 4px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+}
+
+.pdp-facts dd {
+  margin: 0;
+  color: var(--color-ink);
+}
+
+/* Practical details */
+.pdp-details {
+  border-top: 1px solid var(--color-stone-200);
+  interpolate-size: allow-keywords;
+}
+
+.pdp-details__item {
+  border-bottom: 1px solid var(--color-stone-200);
+}
+
+.pdp-details__summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  min-height: 44px;
+  padding-block: 18px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  line-height: 1.3;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  cursor: pointer;
+  list-style: none;
+}
+
+.pdp-details__summary::-webkit-details-marker {
+  display: none;
+}
+
+.pdp-details__icon {
+  position: relative;
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.pdp-details__icon::before,
+.pdp-details__icon::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0;
+  width: 16px;
+  height: 1px;
+  background: currentColor;
+  transition: transform var(--duration-base) var(--ease-pour);
+}
+
+.pdp-details__icon::after {
+  transform: rotate(90deg);
+}
+
+.pdp-details__item[open] .pdp-details__icon::after {
+  transform: rotate(0deg);
+}
+
+.pdp-details__item::details-content {
+  block-size: 0;
+  overflow: clip;
+  transition:
+    block-size var(--duration-base) var(--ease-pour),
+    content-visibility var(--duration-base) allow-discrete;
+}
+
+.pdp-details__item[open]::details-content {
+  block-size: auto;
+}
+
+.pdp-details__body {
+  padding-block-end: 20px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.pdp-details__body > * {
+  margin: 0;
+}
+
+.pdp-details__body > * + * {
+  margin-block-start: 0.8em;
+}
+
+/* Breakpoint-specific pieces */
+.pdp-mobile-only,
+.pdp-bar {
+  display: none;
+}
+
+@media (max-width: 749px) {
+  .pdp-desktop-only,
+  .pdp-crumb,
+  .pdp-buy {
+    display: none;
+  }
+
+  .pdp-mobile-only {
+    display: block;
+  }
+
+  .pdp__inner {
+    padding-inline: 0;
+    padding-block-end: 48px;
+  }
+
+  .pdp__main {
+    display: block;
+    padding-block-start: 0;
+  }
+
+  .pdp-media__stage {
+    aspect-ratio: 4 / 5;
+  }
+
+  .pdp-media__panel--art {
+    padding: 9% 14%;
+  }
+
+  .pdp-media__panel--art .pdp-media__image {
+    box-shadow: 0 24px 40px -20px rgb(13 20 26 / 0.45);
+  }
+
+  .pdp-media__panel--room .pdp-media__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focal-mobile, 50% 50%);
+  }
+
+  .pdp-media__tag {
+    position: absolute;
+    inset-block-end: 12px;
+    inset-inline-end: 12px;
+    display: block;
+    padding: 5px 9px;
+    background: rgb(248 248 246 / 0.92);
+    font-family: var(--font-display);
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    pointer-events: none;
+  }
+
+  .pdp-info {
+    position: static;
+    display: block;
+    max-width: none;
+  }
+
+  .pdp-label {
+    gap: 10px;
+    padding: 26px 20px 8px;
+  }
+
+  .pdp-label__title {
+    font-size: 34px;
+    line-height: 1.1;
+  }
+
+  .pdp-label__subtitle,
+  .pdp-label__note {
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .pdp-facts {
+    padding: 16px 20px 0;
+    font-size: 16px;
+  }
+
+  .pdp-secondary .label-link {
+    margin: 22px 20px 0;
+  }
+
+  .pdp-details {
+    margin: 32px 20px 0;
+  }
+
+  /* Sticky purchase bar: always reachable, never covering the footer or focused content. */
+  html:has(.pdp-bar) {
+    scroll-padding-block-end: calc(99px + env(safe-area-inset-bottom));
+  }
+
+  body:has(.pdp-bar) {
+    padding-block-end: calc(83px + env(safe-area-inset-bottom));
+  }
+
+  .pdp-bar {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px calc(22px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--color-stone-200);
+    background: rgb(248 248 246 / 0.97);
+  }
+
+  .pdp-bar__price {
+    min-width: 64px;
+    font-size: 22px;
+    line-height: 1.2;
+    color: var(--color-ink);
+    font-variant-numeric: lining-nums;
+  }
+
+  .pdp-bar__action {
+    flex: 1;
+    min-height: 48px;
+    padding: 0 16px;
+  }
+
+  .pdp-sold--compact {
+    gap: 8px;
+    min-width: 74px;
+    font-size: 12px;
+  }
+
+  .pdp-sold--compact::before {
+    width: 8px;
+    height: 8px;
+  }
+
+  .pdp-label .pdp-in-bag {
+    font-size: 13px;
+  }
+
+  .pdp-in-bag--compact {
+    gap: 8px;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+  }
+
+  .pdp-in-bag--compact .icon {
+    padding: 3px;
+  }
+}

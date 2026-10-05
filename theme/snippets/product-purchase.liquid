@@ -1,0 +1,101 @@
+{% doc %}
+  Renders the original-artwork purchase block shown from 750px.
+
+  Available (product.available): price, Available · one of one, the page's only product form
+  (quantity fixed at 1, no variant UI for a default variant) and the optional Ask Ranjeeta link.
+  Once the painting is in the cart, the Add button gives way to an "In your bag" label and View bag.
+  Sold (anything else): the Sold label, the sold note and the onward links. No price, no
+  disabled button. On phones this block is hidden and the sticky bar submits the same form.
+
+  @param {product} product - Artwork product
+  @param {variant} variant - Selected or first available variant
+  @param {string} form_id - id of the product form, shared with the sticky bar
+  @param {boolean} in_bag - The variant is already in the cart
+  @param {string} [ask_url] - mailto: link; the button is omitted when blank
+  @param {string} [ask_label] - Ask button text
+  @param {string} [sold_note] - First sold sentence
+  @param {string} [sold_series_note] - Series sentence, already resolved, or blank
+  @param {string} available_url - See available works destination
+  @param {string} [available_label] - See available works text
+  @param {string} [commission_url] - Commission link; omitted when blank
+  @param {string} [commission_label] - Commission link text
+
+  @example
+  {% render 'product-purchase', product: product, variant: current_variant, form_id: form_id, in_bag: in_bag, available_url: available_url %}
+{% enddoc %}
+
+{%- if product.available -%}
+  {%- form 'product', product, id: form_id, class: 'pdp-buy__form', novalidate: 'novalidate', data-product-form: '' -%}
+    <div class="pdp-buy__row">
+      <span class="pdp-price" data-price>{{ variant.price | money_without_trailing_zeros }}</span>
+      <span class="pdp-status">
+        {%- render 'icon', name: 'check', size: 16 -%}
+        {{- 'product.available' | t }} · {{ 'product.one_of_one' | t -}}
+      </span>
+    </div>
+
+    {%- if product.has_only_default_variant -%}
+      <input type="hidden" name="id" value="{{ variant.id }}">
+    {%- else -%}
+      <div class="pdp-variant">
+        <label class="pdp-variant__label" for="{{ form_id }}-variant">{{ product.options | join: ' / ' | escape }}</label>
+        <select id="{{ form_id }}-variant" class="pdp-variant__select" name="id" data-variant-select>
+          {%- for option_variant in product.variants -%}
+            <option
+              value="{{ option_variant.id }}"
+              data-price="{{ option_variant.price | money_without_trailing_zeros | escape }}"
+              {% if option_variant.id == variant.id %}
+                selected
+              {% endif %}
+              {% unless option_variant.available %}
+                disabled
+              {% endunless %}
+            >
+              {{- option_variant.title | escape -}}
+            </option>
+          {%- endfor -%}
+        </select>
+      </div>
+    {%- endif -%}
+
+    <input type="hidden" name="quantity" value="1">
+
+    {%- if in_bag -%}
+      <p class="pdp-in-bag">
+        {%- render 'icon', name: 'check', size: 14 -%}
+        {{- 'product.in_your_bag' | t -}}
+      </p>
+      <a class="button button--large pdp-buy__view-bag" href="{{ routes.cart_url }}" data-view-bag>
+        {{- 'product.view_bag' | t -}}
+        {%- render 'icon', name: 'arrow-right', size: 16, class: 'button__arrow' -%}
+      </a>
+    {%- else -%}
+      <button type="submit" class="button button--large pdp-buy__add">{{ 'product.add_to_bag' | t }}</button>
+    {%- endif -%}
+  {%- endform -%}
+
+  {%- if ask_url != blank and ask_label != blank -%}
+    <a class="button button--large button--secondary pdp-buy__ask" href="{{ ask_url | escape }}">
+      {%- render 'icon', name: 'mail', size: 19 -%}
+      {{- ask_label | escape -}}
+    </a>
+  {%- endif -%}
+{%- else -%}
+  <p class="pdp-sold">{{ 'product.sold' | t }}</p>
+
+  {%- if sold_note != blank or sold_series_note != blank -%}
+    <p class="pdp-note">
+      {{- sold_note | escape -}}
+      {%- if sold_note != blank and sold_series_note != blank %} {% endif -%}
+      {{- sold_series_note | escape -}}
+    </p>
+  {%- endif -%}
+
+  {%- if available_label != blank -%}
+    <a class="button button--large button--secondary" href="{{ available_url }}">{{ available_label | escape }}</a>
+  {%- endif -%}
+
+  {%- if commission_url != blank and commission_label != blank -%}
+    <a class="pdp-inline-link" href="{{ commission_url }}">{{ commission_label | escape }}</a>
+  {%- endif -%}
+{%- endif -%}

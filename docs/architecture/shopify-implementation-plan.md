@@ -483,25 +483,63 @@ This is a deliberate refinement based on live usability testing, **not an accide
 
 ## 14. PDP architecture
 
-**In progress:** the Claude Design PDP handoff is being prepared; `templates/product.json` is still the Skeleton default. Revise this section when the handoff and data assumptions are reviewed.
+Source: the Claude PDP handoff (`references/claude-design/handoff/pdp/`), interpreted against real Shopify data. The handoff stays as the historical record; deliberate deviations are listed below.
 
-Templates:
+### Templates and the originals boundary
 
-- `product.original.json`
-- `product.print.json`
+- **`templates/product.original.json` is the semantic boundary for one-of-one originals.** Copy such as "Original painting" and "one of one", and the rule "unavailable means sold", are valid only inside this template. Products opt in through their theme template assignment (`templateSuffix: original`), not through Product Type, tags or titles. Both PoC products are assigned on the dev store.
+- `templates/product.json` stays the Skeleton default for anything not yet classified. `product.print.json` is future work (§8) and must not inherit the originals rules.
 
-Original PDP components (sections/snippets):
+### As-built files
 
-- Media gallery (native product media)
-- Title, series (collection link)
-- Price / sold state / purchase / enquiry
-- Metadata rows (category + custom metafields)
-- Story
-- Room/scale imagery from media gallery
-- Shipping, certificate, exhibition references
-- Related works; print relationship
+| File | Role |
+|---|---|
+| `sections/zita-product-artwork.liquid` | Main section: breadcrumb, media, label, purchase, facts, details accordion, mobile purchase bar. Computes state once and passes it to snippets. |
+| `snippets/product-media-gallery.liquid` | Native product images. Desktop: vertical thumbnail rail + 1:1 gesso stage + caption/counter. Mobile: native scroll-snap strip with a "Swipe · N views" tag. |
+| `snippets/product-purchase.liquid` | Available branch (the single product form, price, status, Add to bag / In your bag, Ask Ranjeeta) and sold branch (SOLD, note, See available works, optional commission link). |
+| `sections/zita-artwork-story.liquid` | Ink story band from `custom.artwork_story`; omitted when blank. |
+| `sections/zita-related-works.liquid` | "More originals" from Shopify product recommendations (`intent=related`), reusing `artwork-card`; hidden when empty. |
+| `assets/zita-product.css`, `assets/zita-product.js` | PDP styles; three small custom elements (`product-gallery`, `product-artwork`, `product-recommendations`). No libraries. |
 
-**Gesso/light neutral ground:** Theme **CSS/presentation only** — **not** per-product data; **no** automatic background selection by product/tags/artwork colors (approved V2 rule).
+Shared additions: `check` and `mail` icons in `snippets/icon.liquid`, the `--color-available` token in `zita-base.css`, and a `product` locale namespace.
+
+### Data rules
+
+| Item | Rule |
+|---|---|
+| Sold / available | `product.available` only, inside `product.original` (§7). No `custom.sold`. Sold shows full-strength art with no grey-out, no overlay, no disabled button and no historical price. |
+| Series | No `custom.series`. The series eyebrow, collection breadcrumb and series sentence in the sold note appear only with real collection context (`collection` set and not the originals collection). Never inferred from tags, product type, titles or arbitrary collection membership. Artwork cards and direct links use `/products/…`, so this context is usually absent. That is an **accepted, deferred data/navigation decision**, not a defect: revisit only with a deliberate series data model or collection-scoped product URLs. |
+| Room photography | A media item is a room view when its **alt text starts with "Room"** (case-insensitive). Position in the gallery means nothing. Room views get no hang shadow or padding and may crop to fill on mobile; artwork views are always contained. |
+| Image alt text | Shopify falls back to the product title when alt is blank; the gallery treats alt equal to the title as blank and labels images "Title, image N". |
+| Medium | Shopify taxonomy `shopify.painting-medium` labels. The row is omitted when unset. |
+| Ready to hang | `custom.ready_to_hang`: true prints "Ready to hang", false prints "Not ready to hang", unset omits the row. |
+| Dimensions, certificate | Existing `artwork-dimensions` snippet; `custom.certificate_notes`. Rows render only with data. |
+| Variants | None shown for a default-variant product; quantity is fixed at 1. A product with real variants gets a plain native select. |
+| Ask Ranjeeta | `mailto:` the global `settings.contact_email` with the product title as subject; the section toggle can hide it, and it is hidden when the email is blank. |
+
+### Commerce behaviour
+
+- Exactly one `{% form 'product' %}`. The mobile bar's button submits it through `form="…"`. Without JavaScript the form posts natively to `/cart/add`.
+- With JavaScript, the add is a **JSON `items` request** to `/cart/add.js` with bundled section rendering for the PDP and header. Live testing showed Shopify enforces the inventory ceiling for JSON `items` adds but lets form-encoded adds exceed it, so a form-encoded AJAX add could put a one-of-one in the bag twice.
+- Success: live announcement, purchase regions re-rendered from the server, header bag count updated, focus moved to View bag. The Add button gives way to a non-interactive **"In your bag"** state label (display caps with a round green check, the counterpart of the Sold label) and a primary **View bag** button; the mobile title line and sticky bar show the same label with View bag. A 422 (already in a bag, or sold meanwhile) re-renders from the server and announces the real state. No cart drawer.
+- A product already in the cart renders "In your bag" server-side.
+
+### Theme Editor settings
+
+Main section: Originals collection (breadcrumb + default "available works" destination), Ask toggle and label, sold note, sold series sentence (`[series]` placeholder), available-works label and collection, commission label and URL (link hidden when the URL is blank), and **detail** blocks (title + rich text) for the accordion. A detail row renders only when both title and content are set. The template ships a "Shipping & packing" block with **no content**, so the row stays hidden until Ranjeeta's approved copy is entered; no policy wording is invented or hard-coded. Story: eyebrow and sub-label. Related: heading, link label, link collection.
+
+### Deliberate deviations from the handoff
+
+- **Deferred:** the Scale section, print relationship, year, exhibitions, signature, framing, series quote, zoom/lightbox, video/3D and notify-me. Each needs real data or a later decision; nothing is rendered from prototype content.
+- The certificate appears in the facts list only (no separate accordion item).
+- On mobile the details accordion sits before the story band, following the reference HTML rather than the handoff prose.
+- A mobile "Available · one of one" status line is shown under the title so the state is in text before the sticky bar.
+- Stories longer than about 60 words use smaller roman type instead of the display italic, so long narratives stay readable. Both PoC stories are long.
+- From 750px up to roughly 1000px, the media and info columns stack; the brief has no tablet layout.
+- Related-work plates use the PLP's 8:9 desktop refinement (§13).
+- Related Works stays hidden when Shopify returns no recommendations (nothing is hard-coded to fill it). In that case the ink story band is followed by a band of gesso space (`clamp(48px, 6vw, 96px)`) so it does not merge into the ink footer.
+
+**Gesso/light neutral ground:** theme **CSS/presentation only**, **not** per-product data; **no** automatic background selection by product, tags or artwork colours (approved V2 rule).
 
 Use **native product media**; do not duplicate images into metafields unless a documented exception appears.
 
@@ -581,7 +619,7 @@ theme/
     ...
 ```
 
-Names are **illustrative** for pages not yet built. As-built Homepage, shell and PLP filenames are listed in §12 and §13 (for example, `zita-collection-intro` rather than `zita-collection-hero`, and `collection.series.json` rather than `collection.art-series.json`). Avoid JS frameworks and unnecessary third-party libraries.
+Names are **illustrative** for pages not yet built. As-built Homepage, shell, PLP and PDP filenames are listed in §12, §13 and §14 (for example, `zita-collection-intro` rather than `zita-collection-hero`, `collection.series.json` rather than `collection.art-series.json`, and `zita-product-artwork` + `product-media-gallery` rather than `zita-product-gallery`). Avoid JS frameworks and unnecessary third-party libraries.
 
 ---
 
@@ -771,12 +809,14 @@ Not finalized in this plan:
 - Final V2 active series list (~2–3 foregrounded)
 - Collection description vs custom field for series statement
 - Sold-state rules for all legacy inventory edge cases
-- Print fulfillment/process and original↔print linking field
+- Print fulfillment/process and original↔print linking field (no relationship field exists yet; the PDP renders none)
+- `custom.series` metafield: not created; the PDP uses real collection context only (§14)
+- PDP Scale section (person-to-painting comparison): deferred; the PDP is modular so it can be added as its own section
 - Mega-menu preview-image behavior beyond collection image
 - Newsletter value proposition / copy
 - Font loading/licensing details
 - Exact redirect map at cutover
-- Final theme section filenames for pages not yet built (PDP onward)
+- Final theme section filenames for pages not yet built (About, News, Contact, Commissions)
 - Shopify Canvas usage, if any
 - Pending series descriptions (Colored by Nature, BlackWhiteandGrey, Walking the Trail)
 - Merchant-store publication/channel checklist at cutover (not routine dev Active products)

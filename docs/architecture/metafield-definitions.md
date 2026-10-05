@@ -37,11 +37,11 @@ Rows are in Admin display order, top to bottom.
 
 | Namespace.key | Shopify type | Validation | Required? | Purpose | Theme consumer | Notes |
 |---|---|---|---|---|---|---|
-| `custom.artwork_width` | `dimension` | none | Optional; needs height | Width of the artwork itself | `snippets/artwork-dimensions.liquid`, rendered by `artwork-card` and `zita-hero-carousel` | Prints "12 × 16 in". Renders nothing unless width and height are both set. The snippet abbreviates inches, centimeters, millimeters and feet; other units print as Shopify names them. |
+| `custom.artwork_width` | `dimension` | none | Optional; needs height | Width of the artwork itself | `snippets/artwork-dimensions.liquid`, rendered by `artwork-card`, `zita-hero-carousel` and the PDP facts list (`zita-product-artwork`) | Prints "12 × 16 in". Renders nothing unless width and height are both set. The snippet abbreviates inches, centimeters, millimeters and feet; other units print as Shopify names them. |
 | `custom.artwork_height` | `dimension` | none | Optional; needs width | Height of the artwork itself | Same as width | Same as width |
-| `custom.ready_to_hang` | `boolean` | none | Optional | Ready-to-hang fact | None yet (PDP) | |
-| `custom.certificate_notes` | `single_line_text_field` | none | Optional | Certificate of authenticity note | None yet (PDP) | Phase A open question: may evolve beyond single-line text |
-| `custom.artwork_story` | `rich_text_field` | none | Optional | Artist narrative for the PDP story module | None yet (PDP) | The product description stays a migration reference. See [product-schema §7](product-schema.md#7-artwork-story-vs-product-description-rule). |
+| `custom.ready_to_hang` | `boolean` | none | Optional | Ready-to-hang fact | PDP facts list (`zita-product-artwork`) | `true` prints "Ready to hang", `false` prints "Not ready to hang", unset omits the row |
+| `custom.certificate_notes` | `single_line_text_field` | none | Optional | Certificate of authenticity note | PDP facts list (`zita-product-artwork`) | Phase A open question: may evolve beyond single-line text |
+| `custom.artwork_story` | `rich_text_field` | none | Optional | Artist narrative for the PDP story module | `sections/zita-artwork-story.liquid` | Band is omitted when blank. The product description stays a migration reference. See [product-schema §7](product-schema.md#7-artwork-story-vs-product-description-rule). |
 
 All five were **proven** on the Partner dev store in Phase A ([product-schema §4](product-schema.md#4-zita-custom-product-metafields--proven)). They were created by hand in the admin, so `verify` reports them as EXISTS-COMPATIBLE with notes about description wording.
 

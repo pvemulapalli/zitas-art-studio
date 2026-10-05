@@ -1,6 +1,6 @@
 # Zita's Art Studio — Project Status
 
-**Last updated:** 5 October 2026 (after commit `d00ba52` "Build V2 collection gallery")
+**Last updated:** 5 October 2026 (original-artwork PDP implemented and live-QA'd on the dev preview theme; not committed, not deployed to the published demo theme)
 
 This is the **only** canonical record of project progress, current work, next steps and environment state. Other documents link here rather than tracking status themselves.
 
@@ -23,21 +23,33 @@ This is the **only** canonical record of project progress, current work, next st
 
 ## In progress
 
-- **PDP design handoff** is being created in Claude Design. It will be stored under `references/claude-design/handoff/pdp/`.
+- **Original-artwork PDP** (`product.original.json`). The Claude handoff is stored under `references/claude-design/handoff/pdp/`, and the build and its decisions are recorded in [implementation plan §14](architecture/shopify-implementation-plan.md#14-pdp-architecture).
+
+  | Stage | State |
+  |---|---|
+  | Implemented | **Yes**, in the local `theme/` working tree, including the correction pass (blank shipping row hidden, "In your bag" state label, story-to-footer spacing). |
+  | Live QA | **Passed** on the development preview theme (`shopify theme dev` against the Partner dev store) at 1440, 1024, 834 and 390px for Essence V2 (available) and Colored by Nature-Blue V2 (sold). Theme Check is clean. |
+  | Product template assignment | **Done**: both PoC products use the `original` template on the Partner dev store. |
+  | Committed to Git | **No** |
+  | Deployed to the published **Zita V2 — Development** theme (the normal demo storefront) | **No.** Until it is pushed, that theme has no `product.original` template, so the demo storefront renders both PoC products with the default Skeleton product template. |
 
 ## Next
 
-1. Review the PDP handoff against Shopify data and the [product schema](architecture/product-schema.md).
-2. Implement the original-artwork PDP (`product.original.json`), available and sold states.
-3. Implement / finish the approved **header collection-navigation dropdown**. Supporting mega-menu infrastructure exists in the theme (`zita-header.liquid`, `zita-header.js`), but the approved Claude V2 collection-navigation dropdown behaviour and content are not yet complete in the storefront.
-4. Cross-page polish and QA ([implementation plan §23](architecture/shopify-implementation-plan.md#23-qa-requirements)).
-5. Prepare **Phase B** — merchant-store integration ([implementation plan §24](architecture/shopify-implementation-plan.md#24-cutover--launch-strategy)).
+1. Review and commit the PDP.
+2. Push the PDP to the published **Zita V2 — Development** theme on the Partner dev store, then re-check both products on the demo storefront.
+3. PDP content in the dev-store Admin (content tasks, not theme work):
+   - add alt text beginning "Room view: …" to Essence V2's four room photographs (images 2–5);
+   - Related Works ("More originals") stays hidden until Shopify returns recommendations; related products can be set in Search & Discovery later if wanted;
+   - add shipping/packing copy (the accordion row is hidden until then) and a commission URL once Ranjeeta provides them.
+4. Implement / finish the approved **header collection-navigation dropdown**. Supporting mega-menu infrastructure exists in the theme (`zita-header.liquid`, `zita-header.js`), but the approved Claude V2 collection-navigation dropdown behaviour and content are not yet complete in the storefront.
+5. Cross-page polish and QA ([implementation plan §23](architecture/shopify-implementation-plan.md#23-qa-requirements)).
+6. Prepare **Phase B** — merchant-store integration ([implementation plan §24](architecture/shopify-implementation-plan.md#24-cutover--launch-strategy)).
 
 ## Environments
 
 | Store | State |
 |---|---|
-| **Partner dev store** `zitas-art-studio-development.myshopify.com` | All V2 work happens here. Theme **Zita V2 — Development** is **published** so the storefront can be demonstrated. Both V2 PoC products are **Active**. Metafield definitions: see [provisioning state](architecture/metafield-definitions.md). |
+| **Partner dev store** `zitas-art-studio-development.myshopify.com` | All V2 work happens here. Theme **Zita V2 — Development** is **published** so the storefront can be demonstrated. Both V2 PoC products are **Active** and assigned to the `original` product template. Metafield definitions: see [provisioning state](architecture/metafield-definitions.md). |
 | **Ranjeeta's production store** | **Not modified** by V2 work. Flora remains published. No Zita V2 theme uploaded. No V2 products or metafield definitions created. Phase B is future work. |
 
 ## Open inputs from Ranjeeta
@@ -54,8 +66,7 @@ Not blocking current dev-store work unless noted.
 
 ## Current blockers
 
-- **PDP implementation** waits on the Claude Design PDP handoff.
-- No other blockers.
+- No blockers. The PDP Shipping & packing row stays hidden until Ranjeeta provides approved copy.
 
 ---
 

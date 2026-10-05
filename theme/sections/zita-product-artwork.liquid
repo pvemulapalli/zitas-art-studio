@@ -1,0 +1,342 @@
+{{ 'zita-product.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'zita-product.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign form_id = 'ProductForm-' | append: section.id
+  assign price = current_variant.price | money_without_trailing_zeros
+
+  assign originals = section.settings.originals_collection
+  if originals != blank
+    assign originals_url = originals.url
+    assign originals_label = originals.title
+  else
+    assign originals_url = routes.all_products_collection_url
+    assign originals_label = 'product.all_works' | t
+  endif
+
+  comment
+    A series exists only when the visitor arrived through a collection URL, and the Originals collection is not a series.
+  endcomment
+  assign series = nil
+  if collection and collection.handle != originals.handle
+    assign series = collection
+  endif
+
+  assign available_collection = section.settings.available_collection | default: originals
+  if available_collection != blank
+    assign available_url = available_collection.url
+  else
+    assign available_url = routes.all_products_collection_url
+  endif
+  assign available_url = available_url | append: '?filter.v.availability=1'
+
+  capture dimensions
+    render 'artwork-dimensions', product: product
+  endcapture
+  assign dimensions = dimensions | strip
+
+  assign medium = ''
+  for medium_value in product.metafields.shopify['painting-medium'].value
+    assign medium_label = medium_value.label.value | default: medium_value.label
+    if medium_label != blank
+      if medium != blank
+        assign medium = medium | append: ', '
+      endif
+      assign medium = medium | append: medium_label
+    endif
+  endfor
+
+  comment
+    A missing ready_to_hang metafield has no type; an unchecked one is boolean false.
+  endcomment
+  assign hang_field = product.metafields.custom.ready_to_hang
+  assign hanging = ''
+  if hang_field.type == 'boolean'
+    if hang_field.value
+      assign hanging = 'product.ready_to_hang' | t
+    else
+      assign hanging = 'product.not_ready_to_hang' | t
+    endif
+  endif
+
+  assign certificate = product.metafields.custom.certificate_notes.value
+
+  assign in_bag = false
+  for item in cart.items
+    if item.variant_id == current_variant.id
+      assign in_bag = true
+      break
+    endif
+  endfor
+
+  assign ask_url = ''
+  assign ask_email = settings.contact_email | strip
+  if section.settings.show_ask and ask_email != blank
+    assign ask_subject = product.title | url_encode | replace: '+', '%20'
+    assign ask_url = 'mailto:' | append: ask_email | append: '?subject=' | append: ask_subject
+  endif
+
+  assign sold_series_note = ''
+  if series and section.settings.sold_series_note != blank
+    assign sold_series_note = section.settings.sold_series_note | replace: '[series]', series.title
+  endif
+
+  assign mobile_subtitle = medium
+  if dimensions != blank
+    if mobile_subtitle != blank
+      assign mobile_subtitle = mobile_subtitle | append: ' · '
+    endif
+    assign mobile_subtitle = mobile_subtitle | append: dimensions
+  endif
+-%}
+
+<product-artwork
+  class="pdp full-width"
+  data-section-id="{{ section.id }}"
+  data-cart-add-url="{{ routes.cart_add_url }}"
+  data-added-message="{{ 'product.added_to_bag' | t: title: product.title | escape }}"
+  data-in-bag-message="{{ 'product.already_in_bag' | t: title: product.title | escape }}"
+  data-sold-message="{{ 'product.just_collected' | t }}"
+>
+  <div class="pdp__inner page-width page-width--wide">
+    <nav class="pdp-crumb" aria-label="{{ 'product.breadcrumb' | t }}">
+      <ol class="list-unstyled">
+        <li><a href="{{ originals_url }}">{{ originals_label | escape }}</a></li>
+        {%- if series -%}
+          <li><a href="{{ series.url }}">{{ series.title | escape }}</a></li>
+        {%- endif -%}
+        <li><span aria-current="page">{{ product.title | escape }}</span></li>
+      </ol>
+    </nav>
+
+    <div class="pdp__main">
+      {%- render 'product-media-gallery', product: product -%}
+
+      <div class="pdp-info">
+        <div class="pdp-label">
+          {%- if series -%}
+            <a class="eyebrow pdp-label__series" href="{{ series.url }}">{{ series.title | escape }}</a>
+          {%- endif -%}
+          <h1 class="pdp-label__title">{{ product.title | escape }}</h1>
+          <p class="pdp-label__subtitle pdp-desktop-only">
+            {{- 'product.original_painting' | t -}}
+            {%- if medium != blank %} · {{ medium | escape }}{% endif -%}
+          </p>
+          {%- if mobile_subtitle != blank -%}
+            <p class="pdp-label__subtitle pdp-mobile-only">{{ mobile_subtitle | escape }}</p>
+          {%- endif -%}
+          <div class="pdp-mobile-only" data-pdp-region="state">
+            {%- if product.available and in_bag -%}
+              <p class="pdp-in-bag">
+                {%- render 'icon', name: 'check', size: 14 -%}
+                {{- 'product.in_your_bag' | t -}}
+              </p>
+            {%- elsif product.available -%}
+              <p class="pdp-status">
+                {%- render 'icon', name: 'check', size: 16 -%}
+                {{- 'product.available' | t }} · {{ 'product.one_of_one' | t -}}
+              </p>
+            {%- elsif section.settings.sold_note != blank -%}
+              <p class="pdp-label__note">{{ section.settings.sold_note | escape }}</p>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <div class="pdp-buy" data-pdp-region="buy">
+          {%- render 'product-purchase',
+            product: product,
+            variant: current_variant,
+            form_id: form_id,
+            in_bag: in_bag,
+            ask_url: ask_url,
+            ask_label: section.settings.ask_label,
+            sold_note: section.settings.sold_note,
+            sold_series_note: sold_series_note,
+            available_url: available_url,
+            available_label: section.settings.available_label,
+            commission_url: section.settings.commission_url,
+            commission_label: section.settings.commission_label
+          -%}
+        </div>
+
+        {%- if dimensions != blank or medium != blank or hanging != blank or certificate != blank -%}
+          <dl class="pdp-facts">
+            {%- if dimensions != blank -%}
+              <dt>{{ 'product.size' | t }}</dt>
+              <dd>{{ dimensions }}</dd>
+            {%- endif -%}
+            {%- if medium != blank -%}
+              <dt>{{ 'product.medium' | t }}</dt>
+              <dd>{{ medium | escape }}</dd>
+            {%- endif -%}
+            {%- if hanging != blank -%}
+              <dt>{{ 'product.hanging' | t }}</dt>
+              <dd>{{ hanging }}</dd>
+            {%- endif -%}
+            {%- if certificate != blank -%}
+              <dt>{{ 'product.certificate' | t }}</dt>
+              <dd>{{ certificate | escape }}</dd>
+            {%- endif -%}
+          </dl>
+        {%- endif -%}
+
+        <div class="pdp-secondary pdp-mobile-only" data-pdp-region="secondary">
+          {%- if product.available -%}
+            {%- if ask_url != blank -%}
+              {%- render 'label-link', url: ask_url, label: section.settings.ask_label -%}
+            {%- endif -%}
+          {%- else -%}
+            {%- render 'label-link', url: section.settings.commission_url, label: section.settings.commission_label -%}
+          {%- endif -%}
+        </div>
+
+        {%- liquid
+          assign detail_count = 0
+          for block in section.blocks
+            if block.settings.title != blank and block.settings.content != blank
+              assign detail_count = detail_count | plus: 1
+            endif
+          endfor
+        -%}
+        {%- if detail_count > 0 -%}
+          <div class="pdp-details">
+            {%- for block in section.blocks -%}
+              {%- if block.settings.title != blank and block.settings.content != blank -%}
+                <details class="pdp-details__item" {{ block.shopify_attributes }}>
+                  <summary class="pdp-details__summary">
+                    {{- block.settings.title | escape -}}
+                    <span class="pdp-details__icon" aria-hidden="true"></span>
+                  </summary>
+                  <div class="pdp-details__body">{{ block.settings.content }}</div>
+                </details>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <div class="pdp-bar" role="region" aria-label="{{ 'product.purchase' | t }}" data-pdp-region="bar">
+    {%- if product.available and in_bag -%}
+      <span class="pdp-in-bag pdp-in-bag--compact">
+        {%- render 'icon', name: 'check', size: 12 -%}
+        {{- 'product.in_your_bag' | t -}}
+      </span>
+      <a class="button pdp-bar__action" href="{{ routes.cart_url }}" data-view-bag>{{ 'product.view_bag' | t }}</a>
+    {%- elsif product.available -%}
+      <span class="pdp-bar__price" data-price>{{ price }}</span>
+      <button type="submit" form="{{ form_id }}" class="button pdp-bar__action">{{ 'product.add_to_bag' | t }}</button>
+    {%- else -%}
+      <span class="pdp-sold pdp-sold--compact">{{ 'product.sold' | t }}</span>
+      {%- if section.settings.available_label != blank -%}
+        <a class="button button--secondary pdp-bar__action" href="{{ available_url }}">
+          {{- section.settings.available_label | escape -}}
+        </a>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+
+  <p class="visually-hidden" aria-live="polite" data-pdp-live></p>
+</product-artwork>
+
+{% schema %}
+{
+  "name": "Original artwork",
+  "class": "section-product-artwork",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Presents a one-of-one original painting. Use it only in the original artwork template (product.original). Available or sold comes from Shopify inventory."
+    },
+    {
+      "type": "collection",
+      "id": "originals_collection",
+      "label": "Originals collection",
+      "info": "The first breadcrumb link. Without one, the breadcrumb links to all products."
+    },
+    {
+      "type": "header",
+      "content": "Available painting"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ask",
+      "label": "Show “Ask Ranjeeta”",
+      "default": true,
+      "info": "Opens an email with the artwork title as the subject, sent to the public email in Theme settings › Contact and social. Hidden when that email is empty."
+    },
+    {
+      "type": "text",
+      "id": "ask_label",
+      "label": "“Ask Ranjeeta” label",
+      "default": "Ask Ranjeeta about this painting"
+    },
+    {
+      "type": "header",
+      "content": "Sold painting"
+    },
+    {
+      "type": "text",
+      "id": "sold_note",
+      "label": "Sold note",
+      "default": "This painting has been collected."
+    },
+    {
+      "type": "text",
+      "id": "sold_series_note",
+      "label": "Series sentence",
+      "default": "It stays here as part of the [series] series.",
+      "info": "Added after the sold note only when the visitor arrived from a series collection. [series] becomes the collection name."
+    },
+    {
+      "type": "text",
+      "id": "available_label",
+      "label": "Available works button",
+      "default": "See available works"
+    },
+    {
+      "type": "collection",
+      "id": "available_collection",
+      "label": "Available works collection",
+      "info": "Opens filtered to available works. Defaults to the Originals collection."
+    },
+    {
+      "type": "text",
+      "id": "commission_label",
+      "label": "Commission link label",
+      "default": "Commission a painting in this spirit"
+    },
+    {
+      "type": "url",
+      "id": "commission_url",
+      "label": "Commission link",
+      "info": "Hidden when empty."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "detail",
+      "name": "Practical detail",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Shipping & packing"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "info": "Shared by every original. The row stays hidden until content is added."
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

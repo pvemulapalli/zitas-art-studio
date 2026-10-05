@@ -133,6 +133,35 @@
   "selected_works": {
     "swipe": "Swipe"
   },
+  "product": {
+    "breadcrumb": "Breadcrumb",
+    "all_works": "Works",
+    "original_painting": "Original painting",
+    "available": "Available",
+    "one_of_one": "one of one",
+    "sold": "Sold",
+    "add_to_bag": "Add to bag",
+    "in_your_bag": "In your bag",
+    "view_bag": "View bag",
+    "added_to_bag": "{{ title }} added to your bag.",
+    "already_in_bag": "{{ title }} is in your bag.",
+    "just_collected": "This painting has just been collected.",
+    "purchase": "Purchase",
+    "images": "Artwork images",
+    "images_region": "{{ title }}: {{ count }} images",
+    "image_label": "{{ title }}, image {{ index }}",
+    "view_image": "View image {{ index }} of {{ count }}: {{ label }}",
+    "image_position": "{{ index }} / {{ count }}",
+    "image_announcement": "Image {{ index }} of {{ count }}",
+    "swipe_views": "Swipe · {{ count }} views",
+    "size": "Size",
+    "medium": "Medium",
+    "hanging": "Hanging",
+    "ready_to_hang": "Ready to hang",
+    "not_ready_to_hang": "Not ready to hang",
+    "certificate": "Certificate",
+    "story": "The story"
+  },
   "footer": {
     "email_label": "Email address",
     "email_placeholder": "Your email address",
@@ -145,6 +174,7 @@
     "choose_collection": "Choose a collection for this series",
     "choose_products": "Choose up to four artworks",
     "add_portrait": "Add a portrait of Ranjeeta",
-    "add_image": "Add an image"
+    "add_image": "Add an image",
+    "add_product_images": "Add images to this product"
   }
 }

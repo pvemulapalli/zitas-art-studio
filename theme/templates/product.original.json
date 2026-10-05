@@ -1,0 +1,43 @@
+{
+  "sections": {
+    "main": {
+      "type": "zita-product-artwork",
+      "blocks": {
+        "shipping": {
+          "type": "detail",
+          "settings": {
+            "title": "Shipping & packing"
+          }
+        }
+      },
+      "block_order": ["shipping"],
+      "settings": {
+        "originals_collection": "v2-poc-original-artworks",
+        "show_ask": true,
+        "ask_label": "Ask Ranjeeta about this painting",
+        "sold_note": "This painting has been collected.",
+        "sold_series_note": "It stays here as part of the [series] series.",
+        "available_label": "See available works",
+        "available_collection": "",
+        "commission_label": "Commission a painting in this spirit",
+        "commission_url": ""
+      }
+    },
+    "story": {
+      "type": "zita-artwork-story",
+      "settings": {
+        "eyebrow": "The story",
+        "sub_label": "In Ranjeeta’s words"
+      }
+    },
+    "related": {
+      "type": "zita-related-works",
+      "settings": {
+        "heading": "More originals",
+        "link_label": "All originals",
+        "link_collection": "v2-poc-original-artworks"
+      }
+    }
+  },
+  "order": ["main", "story", "related"]
+}

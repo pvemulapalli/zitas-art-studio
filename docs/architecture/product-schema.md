@@ -241,7 +241,7 @@ merchant workbook → review/validation → transform → Shopify import/API
 **FUTURE** — do not resolve prematurely:
 
 - Final role of **Product description** vs `custom.artwork_story`
-- Whether **media roles** need metafields after real PDP implementation
+- Whether **media roles** need metafields. The PDP currently identifies room views by alt text starting with "Room" ([implementation plan §14](shopify-implementation-plan.md#14-pdp-architecture)); revisit only if that convention proves insufficient
 - **Print-specific** schema and templates
 - **Shipping / packing** structured data
 - **Scale / presentation** notes

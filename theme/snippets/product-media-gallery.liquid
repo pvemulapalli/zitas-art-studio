@@ -1,0 +1,136 @@
+{% doc %}
+  Renders the original-artwork gallery from the product's image media (video and 3D are skipped).
+
+  One set of panels serves every breakpoint. Phones, and any screen without JavaScript, get a
+  native scroll-snap strip. From 750px, zita-product.js turns the strip into a stage that
+  cross-fades between panels, driven by a vertical thumbnail rail.
+
+  Artwork images are padded on gesso with the hang shadow and never cropped. An image whose
+  alt text begins with "Room" is treated as room photography: no padding or shadow, and
+  cover-fit on phones. Media position alone never makes an image a room photograph.
+
+  @param {product} product - Artwork product
+
+  @example
+  {% render 'product-media-gallery', product: product %}
+{% enddoc %}
+
+{%- liquid
+  assign images = product.media | where: 'media_type', 'image'
+  assign image_count = images.size
+  assign art_sizes = '(min-width: 1800px) 610px, (min-width: 1000px) 38vw, 72vw'
+  assign room_sizes = '(min-width: 1800px) 840px, (min-width: 1000px) 48vw, 100vw'
+-%}
+
+<product-gallery
+  class="pdp-media{% if image_count < 2 %} pdp-media--single{% endif %}"
+  data-position="{{ 'product.image_position' | t: index: '[index]', count: '[count]' }}"
+  data-announcement="{{ 'product.image_announcement' | t: index: '[index]', count: '[count]' }}"
+>
+  {%- if image_count > 1 -%}
+    <div class="pdp-media__rail">
+      <div class="pdp-media__thumbs" role="group" aria-label="{{ 'product.images' | t }}">
+        {%- for media in images -%}
+          {%- liquid
+            assign media_alt = media.alt | strip
+            if media_alt == product.title
+              assign media_alt = ''
+            endif
+            if forloop.first
+              assign media_label = product.title
+            else
+              assign fallback_label = 'product.image_label' | t: title: product.title, index: forloop.index
+              assign media_label = media_alt | default: fallback_label
+            endif
+            assign thumb_label = 'product.view_image' | t: index: forloop.index, count: image_count, label: media_label
+          -%}
+          <button
+            type="button"
+            class="pdp-media__thumb"
+            aria-label="{{ thumb_label | escape }}"
+            {% if forloop.first %}
+              aria-current="true"
+            {% endif %}
+          >
+            {%- render 'responsive-image',
+              image: media.preview_image,
+              widths: '80, 160',
+              sizes: '60px',
+              decorative: true,
+              class: 'pdp-media__thumb-image'
+            -%}
+          </button>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div
+    class="pdp-media__stage"
+    {% if image_count > 1 %}
+      role="region"
+      aria-label="{{ 'product.images_region' | t: title: product.title, count: image_count | escape }}"
+      tabindex="0"
+    {% endif %}
+  >
+    {%- for media in images -%}
+      {%- liquid
+        assign media_alt = media.alt | strip
+        if media_alt == product.title
+          assign media_alt = ''
+        endif
+        assign alt_prefix = media_alt | downcase | slice: 0, 4
+        assign is_room = false
+        if alt_prefix == 'room'
+          assign is_room = true
+        endif
+
+        if forloop.first
+          assign media_label = product.title
+          assign image_alt = media_alt | default: product.title
+          assign image_loading = 'eager'
+          assign image_priority = 'high'
+        else
+          assign fallback_label = 'product.image_label' | t: title: product.title, index: forloop.index
+          assign media_label = media_alt | default: fallback_label
+          assign image_alt = media_label
+          assign image_loading = 'lazy'
+          assign image_priority = nil
+        endif
+
+        if is_room
+          assign image_sizes = room_sizes
+        else
+          assign image_sizes = art_sizes
+        endif
+      -%}
+      <div
+        class="pdp-media__panel pdp-media__panel--{% if is_room %}room{% else %}art{% endif %}{% if forloop.first %} is-active{% endif %}"
+        data-label="{{ media_label | escape }}"
+      >
+        {%- render 'responsive-image',
+          image: media.preview_image,
+          alt: image_alt,
+          sizes: image_sizes,
+          loading: image_loading,
+          fetchpriority: image_priority,
+          class: 'pdp-media__image'
+        -%}
+      </div>
+    {%- else -%}
+      <div class="pdp-media__panel pdp-media__panel--art is-active">
+        {%- if request.design_mode -%}
+          <span class="editor-placeholder">{{ 'editor.add_product_images' | t }}</span>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if image_count > 1 -%}
+    <p class="pdp-media__caption">
+      <span data-caption-label>{{ product.title | escape }}</span>
+      <span data-caption-count>{{ 'product.image_position' | t: index: 1, count: image_count }}</span>
+    </p>
+    <span class="pdp-media__tag" aria-hidden="true" data-tag>{{ 'product.swipe_views' | t: count: image_count }}</span>
+  {%- endif -%}
+</product-gallery>

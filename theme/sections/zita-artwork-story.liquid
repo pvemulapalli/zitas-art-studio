@@ -1,0 +1,151 @@
+{%- liquid
+  assign story = product.metafields.custom.artwork_story
+  assign story_text = story | metafield_text | strip
+
+  comment
+    The large italic suits about 60 words; longer stories switch to the roman reading size.
+  endcomment
+  assign story_words = story_text | split: ' ' | size
+  assign heading_id = 'ArtworkStory-' | append: section.id
+-%}
+
+{%- if story_text != blank -%}
+  <section
+    class="artwork-story full-width{% if story_words > 60 %} artwork-story--long{% endif %}"
+    {% if section.settings.eyebrow != blank %}
+      aria-labelledby="{{ heading_id }}"
+    {% else %}
+      aria-label="{{ 'product.story' | t }}"
+    {% endif %}
+  >
+    <div class="artwork-story__inner page-width">
+      <div class="artwork-story__side">
+        {%- if section.settings.eyebrow != blank -%}
+          <h2 class="eyebrow artwork-story__eyebrow" id="{{ heading_id }}">{{ section.settings.eyebrow | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.sub_label != blank -%}
+          <p class="artwork-story__sub">{{ section.settings.sub_label | escape }}</p>
+        {%- endif -%}
+      </div>
+      <blockquote class="artwork-story__text">{{ story | metafield_tag }}</blockquote>
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+  .artwork-story {
+    --eyebrow-color: var(--color-gold);
+    background: var(--color-ink);
+    color: var(--color-gesso);
+  }
+
+  /* With no related works below, the ink band would run straight into the ink footer. */
+  main:not(:has(.related-works__inner)) .artwork-story {
+    margin-block-end: clamp(48px, 6vw, 96px);
+  }
+
+  .artwork-story__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(32px, 6vw, 112px);
+    padding-block: clamp(88px, 10vw, 168px);
+  }
+
+  .artwork-story__side {
+    display: grid;
+    flex: 3 1 220px;
+    align-content: start;
+    gap: 14px;
+  }
+
+  .artwork-story__sub {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--color-stone-300);
+  }
+
+  .artwork-story__text {
+    flex: 9 1 520px;
+    max-width: 900px;
+    margin: 0;
+    font-size: clamp(26px, 2.5vw, 36px);
+    font-style: italic;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .artwork-story--long .artwork-story__text {
+    max-width: 34em;
+    font-size: 22px;
+    font-style: normal;
+    line-height: 1.6;
+    color: var(--color-stone-mist);
+  }
+
+  .artwork-story__text :is(p, ul, ol, h1, h2, h3, h4, h5, h6) {
+    margin: 0;
+    font: inherit;
+    color: inherit;
+  }
+
+  .artwork-story__text :is(p, ul, ol, h1, h2, h3, h4, h5, h6) + :is(p, ul, ol, h1, h2, h3, h4, h5, h6) {
+    margin-block-start: 1em;
+  }
+
+  .artwork-story__text :is(ul, ol) {
+    padding-inline-start: 1.2em;
+  }
+
+  .artwork-story__text a {
+    color: inherit;
+  }
+
+  @media (max-width: 749px) {
+    .artwork-story__inner {
+      display: grid;
+      gap: 14px;
+      padding: 40px 20px;
+    }
+
+    .artwork-story__sub {
+      display: none;
+    }
+
+    .artwork-story__text {
+      font-size: 21px;
+    }
+
+    .artwork-story--long .artwork-story__text {
+      font-size: 18px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Artwork story",
+  "class": "section-artwork-story",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Shows the product’s Artwork story metafield on an ink band. Hidden when the story is empty."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Heading",
+      "default": "The story"
+    },
+    {
+      "type": "text",
+      "id": "sub_label",
+      "label": "Sub-label",
+      "default": "In Ranjeeta’s words"
+    }
+  ]
+}
+{% endschema %}
