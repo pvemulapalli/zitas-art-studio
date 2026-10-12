@@ -3,15 +3,21 @@
   assign story_text = story | metafield_text | strip
 
   comment
-    The large italic suits about 60 words; longer stories switch to the roman reading size.
+    The pull-quote italic steps down a size for longer stories so they stay readable, but never becomes body copy.
   endcomment
   assign story_words = story_text | split: ' ' | size
+  assign story_length = ''
+  if story_words > 110
+    assign story_length = ' artwork-story--long'
+  elsif story_words > 50
+    assign story_length = ' artwork-story--medium'
+  endif
   assign heading_id = 'ArtworkStory-' | append: section.id
 -%}
 
 {%- if story_text != blank -%}
   <section
-    class="artwork-story full-width{% if story_words > 60 %} artwork-story--long{% endif %}"
+    class="artwork-story full-width{{ story_length }}"
     {% if section.settings.eyebrow != blank %}
       aria-labelledby="{{ heading_id }}"
     {% else %}
@@ -67,26 +73,41 @@
 
   .artwork-story__text {
     flex: 9 1 520px;
-    max-width: 900px;
+    max-width: 22em;
     margin: 0;
-    font-size: clamp(26px, 2.5vw, 36px);
+    font-size: clamp(30px, 3.2vw, 46px);
     font-style: italic;
-    line-height: 1.45;
+    line-height: 1.32;
     text-wrap: pretty;
+    quotes: '\201C' '\201D' '\2018' '\2019';
+  }
+
+  .artwork-story--medium .artwork-story__text {
+    max-width: 25em;
+    font-size: clamp(26px, 2.6vw, 38px);
+    line-height: 1.38;
   }
 
   .artwork-story--long .artwork-story__text {
-    max-width: 34em;
-    font-size: 22px;
-    font-style: normal;
-    line-height: 1.6;
-    color: var(--color-stone-mist);
+    max-width: 30em;
+    font-size: clamp(22px, 2vw, 30px);
+    line-height: 1.45;
   }
 
   .artwork-story__text :is(p, ul, ol, h1, h2, h3, h4, h5, h6) {
     margin: 0;
     font: inherit;
     color: inherit;
+  }
+
+  /* Quotation marks are presentation only, never part of the story text. The opening mark hangs. */
+  .artwork-story__text > div > :first-child::before {
+    content: open-quote;
+    margin-inline-start: -0.42em;
+  }
+
+  .artwork-story__text > div > :last-child::after {
+    content: close-quote;
   }
 
   .artwork-story__text :is(p, ul, ol, h1, h2, h3, h4, h5, h6) + :is(p, ul, ol, h1, h2, h3, h4, h5, h6) {
@@ -104,8 +125,8 @@
   @media (max-width: 749px) {
     .artwork-story__inner {
       display: grid;
-      gap: 14px;
-      padding: 40px 20px;
+      gap: 18px;
+      padding: 56px 20px;
     }
 
     .artwork-story__sub {
@@ -113,11 +134,16 @@
     }
 
     .artwork-story__text {
-      font-size: 21px;
+      padding-inline-start: 0.42em;
+      font-size: 26px;
+    }
+
+    .artwork-story--medium .artwork-story__text {
+      font-size: 23px;
     }
 
     .artwork-story--long .artwork-story__text {
-      font-size: 18px;
+      font-size: 21px;
     }
   }
 {% endstylesheet %}

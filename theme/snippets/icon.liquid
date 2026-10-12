@@ -1,7 +1,7 @@
 {% doc %}
   Renders a decorative outline icon (1.25px stroke). Icon geometry is from Lucide (ISC licence).
 
-  @param {string} name - search | instagram | shopping-bag | chevron-down | arrow-right | arrow-left | pause | play | sliders-horizontal | x | check | mail
+  @param {string} name - search | instagram | shopping-bag | chevron-down | arrow-right | arrow-left | pause | play | sliders-horizontal | x | check | mail | maximize | zoom-in | zoom-out
   @param {number} [size] - Rendered width and height in pixels (default 20)
   @param {string} [class] - Extra class names
 
@@ -48,5 +48,11 @@
       <path d="M20 6 9 17l-5-5"/>
     {%- when 'mail' -%}
       <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+    {%- when 'maximize' -%}
+      <path d="M15 3h6v6"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/><path d="M9 21H3v-6"/>
+    {%- when 'zoom-in' -%}
+      <circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/><line x1="11" x2="11" y1="8" y2="14"/><line x1="8" x2="14" y1="11" y2="11"/>
+    {%- when 'zoom-out' -%}
+      <circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/><line x1="8" x2="14" y1="11" y2="11"/>
   {%- endcase -%}
 </svg>

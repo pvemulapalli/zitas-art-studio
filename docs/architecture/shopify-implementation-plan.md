@@ -495,13 +495,13 @@ Source: the Claude PDP handoff (`references/claude-design/handoff/pdp/`), interp
 | File | Role |
 |---|---|
 | `sections/zita-product-artwork.liquid` | Main section: breadcrumb, media, label, purchase, facts, details accordion, mobile purchase bar. Computes state once and passes it to snippets. |
-| `snippets/product-media-gallery.liquid` | Native product images. Desktop: vertical thumbnail rail + 1:1 gesso stage + caption/counter. Mobile: native scroll-snap strip with a "Swipe · N views" tag. |
+| `snippets/product-media-gallery.liquid` | Native product images. Desktop: vertical thumbnail rail + 1:1 gesso stage + caption/counter. Mobile: native scroll-snap strip with a "Swipe · N views" tag. Every panel opens the full-screen image viewer (below). |
 | `snippets/product-purchase.liquid` | Available branch (the single product form, price, status, Add to bag / In your bag, Ask Ranjeeta) and sold branch (SOLD, note, See available works, optional commission link). |
-| `sections/zita-artwork-story.liquid` | Ink story band from `custom.artwork_story`; omitted when blank. |
+| `sections/zita-artwork-story.liquid` | Ink story band from `custom.artwork_story`; omitted when blank. Editorial pull-quote: display italic with typographic quotation marks added by CSS. |
 | `sections/zita-related-works.liquid` | "More originals" from Shopify product recommendations (`intent=related`), reusing `artwork-card`; hidden when empty. |
 | `assets/zita-product.css`, `assets/zita-product.js` | PDP styles; three small custom elements (`product-gallery`, `product-artwork`, `product-recommendations`). No libraries. |
 
-Shared additions: `check` and `mail` icons in `snippets/icon.liquid`, the `--color-available` token in `zita-base.css`, and a `product` locale namespace.
+Shared additions: `check`, `mail`, `maximize`, `zoom-in` and `zoom-out` icons in `snippets/icon.liquid`, the `--color-available` token in `zita-base.css`, and a `product` locale namespace.
 
 ### Data rules
 
@@ -510,7 +510,8 @@ Shared additions: `check` and `mail` icons in `snippets/icon.liquid`, the `--col
 | Sold / available | `product.available` only, inside `product.original` (§7). No `custom.sold`. Sold shows full-strength art with no grey-out, no overlay, no disabled button and no historical price. |
 | Series | No `custom.series`. The series eyebrow, collection breadcrumb and series sentence in the sold note appear only with real collection context (`collection` set and not the originals collection). Never inferred from tags, product type, titles or arbitrary collection membership. Artwork cards and direct links use `/products/…`, so this context is usually absent. That is an **accepted, deferred data/navigation decision**, not a defect: revisit only with a deliberate series data model or collection-scoped product URLs. |
 | Room photography | A media item is a room view when its **alt text starts with "Room"** (case-insensitive). Position in the gallery means nothing. Room views get no hang shadow or padding and may crop to fill on mobile; artwork views are always contained. |
-| Image alt text | Shopify falls back to the product title when alt is blank; the gallery treats alt equal to the title as blank and labels images "Title, image N". |
+| Image alt text | Native per-media alt text is the only, merchant-editable source; there is no caption metafield. Shopify falls back to the product title when alt is blank, so alt equal to the title counts as blank. Blank alt on the first image becomes the title; on later images it becomes "Title, image N". Alt and that fallback are **for assistive technology only**: image `alt`, thumbnail and "View larger" button labels, and the viewer's announcement. |
+| Visible image caption | The artwork title for artwork views and "Room view" for room views, on the desktop gallery caption and in the viewer. Raw alt text and the numbered fallback are never shown as visible text. |
 | Medium | Shopify taxonomy `shopify.painting-medium` labels. The row is omitted when unset. |
 | Ready to hang | `custom.ready_to_hang`: true prints "Ready to hang", false prints "Not ready to hang", unset omits the row. |
 | Dimensions, certificate | Existing `artwork-dimensions` snippet; `custom.certificate_notes`. Rows render only with data. |
@@ -524,17 +525,28 @@ Shared additions: `check` and `mail` icons in `snippets/icon.liquid`, the `--col
 - Success: live announcement, purchase regions re-rendered from the server, header bag count updated, focus moved to View bag. The Add button gives way to a non-interactive **"In your bag"** state label (display caps with a round green check, the counterpart of the Sold label) and a primary **View bag** button; the mobile title line and sticky bar show the same label with View bag. A 422 (already in a bag, or sold meanwhile) re-renders from the server and announces the real state. No cart drawer.
 - A product already in the cart renders "In your bag" server-side.
 
+### Image viewer
+
+- A native modal `<dialog>` (`showModal()`) inside `product-gallery`, with no library. Every gallery panel carries a full-panel "View larger" button with a corner expand icon. The button is hidden until JavaScript runs, so nothing inert is offered without it.
+- The modal makes the page behind inert and closes on Escape. Focus starts on Close. On close, the gallery moves to the image last viewed and focus returns to that image's button. Page scroll is locked while it is open.
+- Images are always contained, never cropped, and never upscaled beyond their source. The fitted size is computed from the stage. A larger rendition (`image_url` widths up to the source, capped at 3200px) is requested only when the viewer opens or zooms; the gallery's primary image keeps `loading="eager"` and `fetchpriority="high"`.
+- Zoom (a toggle button, or click/tap on the image) is offered only when the source is at least 1.25× the fitted width. It shows the largest rendition at 1:1 and pans by scrolling (touch, mouse wheel or arrow keys).
+- With more than one image: Previous/Next buttons, Left/Right arrow keys and a horizontal touch swipe. Video and 3D media are not included. Room views keep their distinction in the viewer (no hang shadow, "Room view" caption).
+- The open transition is a short opacity fade; the global reduced-motion rule makes it effectively instant.
+
 ### Theme Editor settings
 
 Main section: Originals collection (breadcrumb + default "available works" destination), Ask toggle and label, sold note, sold series sentence (`[series]` placeholder), available-works label and collection, commission label and URL (link hidden when the URL is blank), and **detail** blocks (title + rich text) for the accordion. A detail row renders only when both title and content are set. The template ships a "Shipping & packing" block with **no content**, so the row stays hidden until Ranjeeta's approved copy is entered; no policy wording is invented or hard-coded. Story: eyebrow and sub-label. Related: heading, link label, link collection.
 
 ### Deliberate deviations from the handoff
 
-- **Deferred:** the Scale section, print relationship, year, exhibitions, signature, framing, series quote, zoom/lightbox, video/3D and notify-me. Each needs real data or a later decision; nothing is rendered from prototype content.
+- **Deferred:** the Scale section, print relationship, year, exhibitions, signature, framing, series quote, video/3D and notify-me. Each needs real data or a later decision; nothing is rendered from prototype content.
+- **Added:** the full-screen image viewer with zoom (above). The handoff deferred zoom; it was added in the PDP refinement pass.
 - The certificate appears in the facts list only (no separate accordion item).
 - On mobile the details accordion sits before the story band, following the reference HTML rather than the handoff prose.
 - A mobile "Available · one of one" status line is shown under the title so the state is in text before the sticky bar.
-- Stories longer than about 60 words use smaller roman type instead of the display italic, so long narratives stay readable. Both PoC stories are long.
+- The story follows the approved V2 screenshots rather than the handoff's long-story rule: it is always the display italic in gesso, with opening and closing quotation marks added by CSS (the opening mark hangs). Ranjeeta's text is never altered. Size steps down by word count (up to 50, 51–110, over 110) with a matching maximum line length, and never drops to body-copy size.
+- The divider and "From the series" row from the V2 screenshots are omitted: there is no safe series source (no `custom.series`, nothing inferred).
 - From 750px up to roughly 1000px, the media and info columns stack; the brief has no tablet layout.
 - Related-work plates use the PLP's 8:9 desktop refinement (§13).
 - Related Works stays hidden when Shopify returns no recommendations (nothing is hard-coded to fill it). In that case the ink story band is followed by a band of gesso space (`clamp(48px, 6vw, 96px)`) so it does not merge into the ink footer.

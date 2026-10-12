@@ -9,6 +9,12 @@
   alt text begins with "Room" is treated as room photography: no padding or shadow, and
   cover-fit on phones. Media position alone never makes an image a room photograph.
 
+  Native media alt text (or a numbered fallback) is for assistive technology only. The visible
+  caption is the artwork title, or "Room view" for room photography.
+
+  Every panel opens a full-screen viewer (a native modal dialog) that loads a larger rendition
+  on demand, never crops, and offers zoom only when the source is genuinely larger than the fit.
+
   @param {product} product - Artwork product
 
   @example
@@ -20,6 +26,8 @@
   assign image_count = images.size
   assign art_sizes = '(min-width: 1800px) 610px, (min-width: 1000px) 38vw, 72vw'
   assign room_sizes = '(min-width: 1800px) 840px, (min-width: 1000px) 48vw, 100vw'
+  assign viewer_widths = '720, 1200, 1800, 2400' | split: ', '
+  assign room_view_label = 'product.room_view' | t
 -%}
 
 <product-gallery
@@ -100,22 +108,55 @@
 
         if is_room
           assign image_sizes = room_sizes
+          assign caption_label = room_view_label
         else
           assign image_sizes = art_sizes
+          assign caption_label = product.title
+        endif
+
+        assign viewer_image = media.preview_image
+        assign viewer_width = viewer_image.width | at_most: 3200
+        assign viewer_height = viewer_image.height | times: viewer_width | divided_by: viewer_image.width
+        assign viewer_srcset = ''
+        for candidate in viewer_widths
+          assign w = candidate | plus: 0
+          if w < viewer_width
+            assign entry = viewer_image | image_url: width: w | append: ' ' | append: w | append: 'w, '
+            assign viewer_srcset = viewer_srcset | append: entry
+          endif
+        endfor
+        assign entry = viewer_image | image_url: width: viewer_width | append: ' ' | append: viewer_width | append: 'w'
+        assign viewer_srcset = viewer_srcset | append: entry
+        assign open_label = 'product.view_larger' | t: label: media_label
+        if forloop.first
+          assign first_caption = caption_label
         endif
       -%}
       <div
         class="pdp-media__panel pdp-media__panel--{% if is_room %}room{% else %}art{% endif %}{% if forloop.first %} is-active{% endif %}"
-        data-label="{{ media_label | escape }}"
+        data-label="{{ caption_label | escape }}"
       >
         {%- render 'responsive-image',
-          image: media.preview_image,
+          image: viewer_image,
           alt: image_alt,
           sizes: image_sizes,
           loading: image_loading,
           fetchpriority: image_priority,
           class: 'pdp-media__image'
         -%}
+        <button
+          type="button"
+          class="pdp-media__open"
+          aria-label="{{ open_label | escape }}"
+          aria-haspopup="dialog"
+          data-viewer-open
+          data-srcset="{{ viewer_srcset }}"
+          data-width="{{ viewer_width }}"
+          data-height="{{ viewer_height }}"
+          data-alt="{{ image_alt | escape }}"
+        >
+          <span class="pdp-media__open-icon">{% render 'icon', name: 'maximize', size: 20 %}</span>
+        </button>
       </div>
     {%- else -%}
       <div class="pdp-media__panel pdp-media__panel--art is-active">
@@ -128,9 +169,69 @@
 
   {%- if image_count > 1 -%}
     <p class="pdp-media__caption">
-      <span data-caption-label>{{ product.title | escape }}</span>
+      <span data-caption-label>{{ first_caption | escape }}</span>
       <span data-caption-count>{{ 'product.image_position' | t: index: 1, count: image_count }}</span>
     </p>
     <span class="pdp-media__tag" aria-hidden="true" data-tag>{{ 'product.swipe_views' | t: count: image_count }}</span>
+  {%- endif -%}
+
+  {%- if image_count > 0 -%}
+    <dialog class="pdp-viewer" aria-label="{{ 'product.viewer' | t: title: product.title | escape }}" data-viewer>
+      <div class="pdp-viewer__bar">
+        <button type="button" class="pdp-viewer__button" aria-pressed="false" hidden data-viewer-zoom>
+          {%- render 'icon', name: 'zoom-in', size: 22 -%}
+          {%- render 'icon', name: 'zoom-out', size: 22 -%}
+          <span class="visually-hidden">{{ 'product.zoom' | t }}</span>
+        </button>
+        <button
+          type="button"
+          class="pdp-viewer__button"
+          aria-label="{{ 'product.close_viewer' | t | escape }}"
+          autofocus
+          data-viewer-close
+        >
+          {%- render 'icon', name: 'x', size: 24 -%}
+        </button>
+      </div>
+      <div class="pdp-viewer__stage" data-viewer-stage>
+        <img
+          class="pdp-viewer__image"
+          width="{{ images.first.preview_image.width }}"
+          height="{{ images.first.preview_image.height }}"
+          alt=""
+          decoding="async"
+          data-viewer-image
+        >
+      </div>
+      <div class="pdp-viewer__foot">
+        {%- if image_count > 1 -%}
+          <button
+            type="button"
+            class="pdp-viewer__button"
+            aria-label="{{ 'product.previous_image' | t | escape }}"
+            data-viewer-step="-1"
+          >
+            {%- render 'icon', name: 'arrow-left', size: 22 -%}
+          </button>
+        {%- endif -%}
+        <p class="pdp-viewer__caption">
+          <span data-viewer-label></span>
+          {%- if image_count > 1 -%}
+            <span data-viewer-count></span>
+          {%- endif -%}
+        </p>
+        {%- if image_count > 1 -%}
+          <button
+            type="button"
+            class="pdp-viewer__button"
+            aria-label="{{ 'product.next_image' | t | escape }}"
+            data-viewer-step="1"
+          >
+            {%- render 'icon', name: 'arrow-right', size: 22 -%}
+          </button>
+        {%- endif -%}
+      </div>
+      <p class="visually-hidden" aria-live="polite" data-viewer-live></p>
+    </dialog>
   {%- endif -%}
 </product-gallery>

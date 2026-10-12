@@ -1,6 +1,6 @@
 # Zita's Art Studio — Project Status
 
-**Last updated:** 5 October 2026 (original-artwork PDP implemented and live-QA'd on the dev preview theme; not committed, not deployed to the published demo theme)
+**Last updated:** 12 October 2026 (PDP refinement pass — story treatment, image viewer, caption/alt rule — implemented and live-QA'd on the dev preview theme; not committed, not deployed to the published demo theme)
 
 This is the **only** canonical record of project progress, current work, next steps and environment state. Other documents link here rather than tracking status themselves.
 
@@ -27,18 +27,20 @@ This is the **only** canonical record of project progress, current work, next st
 
   | Stage | State |
   |---|---|
-  | Implemented | **Yes**, in the local `theme/` working tree, including the correction pass (blank shipping row hidden, "In your bag" state label, story-to-footer spacing). |
-  | Live QA | **Passed** on the development preview theme (`shopify theme dev` against the Partner dev store) at 1440, 1024, 834 and 390px for Essence V2 (available) and Colored by Nature-Blue V2 (sold). Theme Check is clean. |
+  | Implemented | **Yes.** The PDP build and its correction pass are committed (`f713471`). A refinement pass is implemented in the local `theme/` working tree: editorial story pull-quote, full-screen image viewer with zoom, and visible captions separated from alt text. |
+  | Live QA | **Passed** for the refinement pass on the development preview theme (`shopify theme dev` against the Partner dev store) at 1440, 1024, 834 and 390px for Essence V2 (available) and Colored by Nature-Blue V2 (sold). Theme Check is clean. Viewer keyboard handling was exercised with script-dispatched events; a manual pass with a real keyboard and screen reader is still to do. |
   | Product template assignment | **Done**: both PoC products use the `original` template on the Partner dev store. |
-  | Committed to Git | **No** |
+  | Committed to Git | PDP build **yes** (`f713471`, pushed to `origin/main`); refinement pass **no** |
   | Deployed to the published **Zita V2 — Development** theme (the normal demo storefront) | **No.** Until it is pushed, that theme has no `product.original` template, so the demo storefront renders both PoC products with the default Skeleton product template. |
 
 ## Next
 
-1. Review and commit the PDP.
+1. Review and commit the PDP refinement pass; check the viewer once with a real keyboard and a screen reader (VoiceOver).
 2. Push the PDP to the published **Zita V2 — Development** theme on the Partner dev store, then re-check both products on the demo storefront.
 3. PDP content in the dev-store Admin (content tasks, not theme work):
    - add alt text beginning "Room view: …" to Essence V2's four room photographs (images 2–5);
+   - replace Essence V2's 420 × 840px primary image with a higher-resolution file (the viewer cannot offer zoom on it);
+   - optionally tidy the stories' own quotation marks so they sit well inside the pull-quote marks (Essence's straight `"Essence"`; Colored by Nature-Blue's unmatched `”` after "Colored by Nature") — wording is Ranjeeta's to approve;
    - Related Works ("More originals") stays hidden until Shopify returns recommendations; related products can be set in Search & Discovery later if wanted;
    - add shipping/packing copy (the accordion row is hidden until then) and a commission URL once Ranjeeta provides them.
 4. Implement / finish the approved **header collection-navigation dropdown**. Supporting mega-menu infrastructure exists in the theme (`zita-header.liquid`, `zita-header.js`), but the approved Claude V2 collection-navigation dropdown behaviour and content are not yet complete in the storefront.
