@@ -379,11 +379,71 @@ Approved behavior (Design V2):
 
 Ranjeeta replaces/reorders active series via **Menus**.
 
-**Preview imagery:** Prefer linked **collection image** before duplicate Theme Editor settings. Exact mega-menu preview mechanism **deferred** to implementation (see design-v2-acceptance).
-
-**Partly implemented:** supporting mega-menu infrastructure exists in `sections/zita-header.liquid` and `assets/zita-header.js` (desktop `zita-mega-menu`, mobile `zita-mobile-menu`, both driven by the section's Shopify menu). The approved V2 collection-navigation dropdown behaviour and content are **not yet complete**; it is scheduled after the PDP ([project-status.md](../project-status.md)).
+**Preview imagery:** the linked collection's native `featured_image` (the collection image, else Shopify's first-product image). No Theme Editor image settings, metafields or metaobjects.
 
 Avoid duplicating collection ordering in unrelated theme settings unless architecture review shows clear benefit.
+
+### Header architecture (as built)
+
+The design reference is the Claude handoff in `references/claude-design/handoff/header/`. The build refactors the existing header rather than replacing it:
+
+- `sections/zita-header.liquid` holds the markup, CSS and schema.
+- `assets/zita-header.js` defines two custom elements: `<zita-mega-menu>` on desktop and `<zita-mobile-menu>` below 1000px.
+- The header stays static, not sticky (handoff H9).
+
+**Menu interpretation.** The header reads the menu structurally and never matches names. Section setting `menu` defaults to `main-menu`.
+
+| Menu shape | Rendering |
+|---|---|
+| The first level-1 item that has a level-2 item with children (otherwise, the first level-1 item with children) | The Originals dropdown. The item's own URL drives the active state, the mobile combined row and the desktop fallback "All originals" link |
+| The first level-2 item with children inside the dropdown | The **series group**. Its title is the eyebrow; its children are the series rows, in menu order |
+| Other level-2 items, including any further nested groups | Utility links, in menu order. A nested group shows as a link to its own URL |
+| Any other level-1 item, with or without children | A plain link to its own URL. More dropdown designs are deferred (handoff H8) |
+
+**Series data.** All series data comes from native objects:
+
+- **Count:** `link.object.products_count`, which includes sold work, shown as "{n} originals". The line is omitted for non-collection links and for empty collections.
+- **Image:** `link.object.featured_image`. With no image, the desktop preview shows the series name on the mat (H7), and the mobile thumbnail shows an empty mat.
+
+**Active states.**
+
+- **Originals is current** on:
+  - its own collection;
+  - any linked series or utility URL;
+  - any PDP that uses the `original` template or belongs to the parent collection.
+- **Current series:** the row gets `aria-current` and teal text, and is the default preview. On a PDP, the default preview is the first series collection that contains the product.
+
+**Mobile, below 1000px.** The overlay contains, in order:
+
+1. a Search row linking to `/search` (H4);
+2. series rows with 64px thumbnails;
+3. one combined row linking to the dropdown's **parent collection URL**, labelled by the `mobile_originals_label` setting (H5);
+4. the remaining utility links and other top-level links, de-duplicated by URL. A utility link that points at the parent URL is dropped, because the combined row covers it;
+5. Instagram and email from the existing theme settings. Either one is hidden when blank.
+
+If the parent item isn't a collection link, the combined row is omitted and its utility links stay as ordinary rows.
+
+**Overlay behaviour.** While the overlay is open:
+
+- every sibling of the header section (announcement, `main`, footer) is `inert`;
+- `critical.css` locks scroll through `details[scroll-lock]`;
+- focus moves to the first series;
+- Escape, link taps and resizing to desktop width close the overlay and restore everything.
+
+The header's `z-index` rises above the collection toolbar and filter drawer while the overlay is open. The announcement band is hidden below 1000px.
+
+**Theme Editor.** The settings are `menu` and `mobile_originals_label`. The old position-based `series_count` and `series_heading` settings were removed, and `header-group.json` was migrated.
+
+**Deliberate deviations from the handoff**
+
+| Handoff | As built | Why |
+|---|---|---|
+| `<button aria-expanded aria-controls>` disclosure (§2.6) | Native `<details>/<summary>` for both menus | `summary` exposes its expanded state natively and works without JavaScript. It reuses the theme's `scroll-lock` hook, and the hover intent, fade and Escape handling sit on top of it |
+| One header markup tree for both layouts (§5) | Separate desktop and mobile trees, with the inactive one set to `display:none` | The mobile composition (Search row, combined row, merged rows) differs too much to share. Only one tree is ever exposed to assistive technology |
+| Click on the trigger always toggles (§2.4) | A click shortly after a hover-open keeps the panel open | With the 80ms hover intent, a toggle would shut the panel the pointer has just opened |
+| Combined mobile row generated from the first utility link (§3.2) | Generated from the dropdown's parent collection URL | Approved decision H5: the row must not depend on menu position |
+| Bag badge in teal (reference HTML) | Copper | Keeps the shipped and approved homepage treatment |
+| Focus trapped by a Tab-cycling script (§3.4) | Background `inert` (the same pattern as the collection filter drawer) | Confines Tab to the header bar and the overlay without a custom key handler |
 
 > **Why this belongs here:** Merchants reorder navigation in **Menus**; the theme only presents structure accessibly.
 

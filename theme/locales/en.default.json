@@ -67,6 +67,7 @@
       "one": "{{ count }} original",
       "other": "{{ count }} originals"
     },
+    "all_originals": "All originals",
     "menu": "Menu",
     "close": "Close",
     "follow_instagram": "Follow on Instagram"

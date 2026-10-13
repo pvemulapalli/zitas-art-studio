@@ -1,0 +1,262 @@
+<!doctype html>
+<!-- REFERENCE ONLY — Cursor must translate this into Shopify Liquid/sections/snippets.
+     Rendered from a mock of Shopify's main-menu (3 levels) + collection data, per handoff §4.1.
+     Resize below 1000px for the mobile header. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Header navigation — reference</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Mulish:wght@400&display=swap">
+<style>
+:root{--gesso:#F8F8F6;--mat:#F0F2F1;--mist:#E3E7E7;--ink:#15202A;--body:#3B4044;--meta:#565C61;--s3:#A4A9AC;--s5:#767C80;
+  --teal:#0F5468;--copper:#96502A;--focus:#2E8FB5;--ease:cubic-bezier(.22,.61,.36,1);--gutter:clamp(20px,3.4vw,56px);
+  --display:'Marcellus',Georgia,serif;--text:'Mulish',Arial,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--gesso);color:#1F2A33;font-family:var(--text)}
+a{color:var(--teal)}a:hover{color:var(--copper)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+[hidden]{display:none!important}
+ul{list-style:none;margin:0;padding:0}
+svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+.ann{background:#0B4050;color:var(--gesso);text-align:center;padding:10px 24px;font:12px var(--display);letter-spacing:.16em;text-transform:uppercase}
+.ann a{color:#CFE4E9;text-underline-offset:.35em}
+.hdr{display:block;position:relative;z-index:30;background:var(--gesso);border-bottom:1px solid var(--mist)}
+.bar{max-width:1560px;margin:0 auto;padding:0 var(--gutter);min-height:84px;display:flex;align-items:center;gap:56px}
+.wm{display:flex;align-items:center;gap:14px;flex:none;padding:14px 0;color:var(--ink);text-decoration:none;white-space:nowrap}
+.wm:hover{color:var(--ink)}
+.wm b{font:400 21px/1 var(--display);letter-spacing:.2em}
+.wm i{width:1px;height:20px;background:var(--s3)}
+.wm span{font:11px/1 var(--display);letter-spacing:.32em;color:var(--body)}
+.nav{flex:1;min-width:0}
+.nav>ul{display:flex;align-items:center;gap:34px}
+.top{display:inline-flex;align-items:center;gap:6px;padding:10px 0;border:0;border-bottom:1px solid transparent;background:none;cursor:pointer;
+  font:13px var(--display);letter-spacing:.16em;text-transform:uppercase;color:var(--ink);text-decoration:none;white-space:nowrap;transition:color 160ms}
+.top:hover{color:var(--copper)}
+.top[aria-current="page"],.top.is-current{color:var(--teal);border-bottom-color:var(--teal)}
+.top[aria-expanded="true"]{color:var(--teal)}
+.top svg{font-size:14px;transition:transform 160ms var(--ease)}
+.top[aria-expanded="true"] svg{transform:rotate(180deg)}
+.icons{display:flex;gap:2px;flex:none}
+.ib{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:0;background:none;color:var(--ink);cursor:pointer;font-size:20px;text-decoration:none}
+.ib:hover{color:var(--copper)}
+.badge{position:absolute;top:6px;right:4px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--teal);color:var(--gesso);font:10px/16px var(--text);text-align:center}
+
+/* Desktop dropdown */
+.panel{position:absolute;left:0;right:0;top:100%;background:var(--gesso);border-top:1px solid var(--mist);box-shadow:0 24px 64px -24px rgba(13,20,26,.35);
+  max-height:calc(100vh - 100%);overflow-y:auto;animation:fade 160ms var(--ease)}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.panel-in{max-width:1560px;margin:0 auto;padding:40px var(--gutter) 48px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,.9fr);gap:clamp(24px,4vw,64px)}
+.eb{font:11px var(--display);letter-spacing:.22em;text-transform:uppercase;color:var(--copper);margin:0 0 12px}
+.series{display:grid;gap:4px;align-content:start}
+.series a{display:grid;gap:2px;padding:12px 0;border-bottom:1px solid var(--mist);text-decoration:none;color:var(--ink)}
+.series a .n{font:24px/1.2 var(--display);color:var(--ink);transition:color 160ms}
+.series a.pv .n,.series a[aria-current] .n{color:var(--teal)}
+.series a .c{font-size:15px;color:var(--meta)}
+.util{display:grid;gap:14px;align-content:start;padding-top:30px}
+.util a{font-size:19px;color:var(--ink);text-decoration:none;transition:color 160ms}
+.util a:hover{color:var(--copper)}
+.pvw{position:relative;aspect-ratio:1/1;background:var(--mat)}
+.pvw figure{position:absolute;inset:0;margin:0;padding:12%;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 160ms var(--ease)}
+.pvw figure.on{opacity:1}
+.pvw img{max-width:100%;max-height:100%;box-shadow:0 1px 2px rgba(13,20,26,.06),0 18px 40px -18px rgba(13,20,26,.28)}
+.pvw .empty{font:20px var(--display);color:var(--s5);text-align:center}
+
+/* Mobile */
+.mbtn,.mmenu{display:none}
+@media (max-width:999px){
+  .ann{display:none}
+  .bar{min-height:58px;padding:0 8px 0 20px;gap:12px;justify-content:space-between}
+  .wm{gap:10px;padding:0;min-height:44px}.wm b{font-size:17px}.wm i{height:16px}.wm span{font-size:10px;letter-spacing:.3em}
+  .nav,.panel,.ib.search,.ib.ig{display:none!important}
+  .icons{align-items:center}
+  .mbtn{display:block;height:44px;min-width:64px;padding:0 12px;border:0;background:none;cursor:pointer;font:12px var(--display);letter-spacing:.2em;text-transform:uppercase;color:var(--ink)}
+  .mmenu:not([hidden]){display:flex;position:fixed;left:0;right:0;bottom:0;top:var(--hdr-b,58px);z-index:29;background:var(--gesso);overflow-y:auto;overscroll-behavior:contain;
+    flex-direction:column;gap:28px;padding:24px 20px calc(36px + env(safe-area-inset-bottom));animation:fade 160ms var(--ease)}
+  .m-search{display:flex;align-items:center;gap:12px;min-height:52px;border-bottom:1px solid var(--mist);font:19px var(--display);color:var(--ink);text-decoration:none;margin-bottom:-8px}
+  .m-search svg{font-size:18px}
+  .m-series a{display:flex;align-items:center;gap:16px;padding:10px 0;min-height:64px;border-bottom:1px solid var(--mist);text-decoration:none;color:var(--ink)}
+  .m-series a[aria-current] .n{color:var(--teal)}
+  .thumb{width:64px;height:64px;flex:none;background:var(--mat);padding:8px;display:flex;align-items:center;justify-content:center}
+  .thumb img{max-width:100%;max-height:100%}
+  .m-series .n{display:block;font:22px/1.2 var(--display)}
+  .m-series .c{display:block;font-size:15px;color:var(--meta)}
+  .m-eb{font:11px var(--display);letter-spacing:.22em;text-transform:uppercase;color:var(--copper);margin:0 0 8px}
+  .m-all{display:flex;align-items:center;justify-content:space-between;min-height:52px;font:13px var(--display);letter-spacing:.16em;text-transform:uppercase;color:var(--teal);text-decoration:none}
+  .m-all svg{font-size:16px}
+  .m-pages a{display:flex;align-items:center;min-height:52px;border-top:1px solid var(--mist);font:19px var(--display);color:var(--ink);text-decoration:none}
+  .m-pages a[aria-current]{color:var(--teal)}
+  .m-contact{margin-top:auto;display:grid;gap:10px;font-size:16px}
+  .m-contact a{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--ink);text-decoration:none}
+  .m-contact a+a{color:var(--meta)}
+  .m-contact svg{font-size:18px}
+  html.menu-open{overflow:hidden}
+}
+@media (min-width:1000px) and (max-width:1279px){.nav>ul{gap:22px}}
+@media (min-width:1000px) and (max-width:1179px){.bar{gap:28px}.ib.ig{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:1ms!important}}
+
+.page{max-width:1560px;margin:0 auto;padding:64px var(--gutter);display:grid;gap:18px;font-size:17px;line-height:1.6;color:var(--body)}
+.page h1{margin:0;font:400 40px/1.1 var(--display);color:var(--ink)}
+.ref{font:12px ui-monospace,Menlo,monospace;color:var(--meta)}
+</style>
+</head>
+<body>
+<div class="ann">Curator’s Choice · Le Gateau Gallery, France <a href="#">Exhibitions</a></div>
+<site-header class="hdr" id="hdr"></site-header>
+<main class="page" id="main">
+  <p class="ref">REFERENCE · current page = the “Elements” collection (Originals active, Elements row marked current). Hover or click Originals; try Tab, Esc, and click outside. Below 1000px: MENU.</p>
+  <h1>Elements</h1>
+  <p>Page content stand-in. The dropdown overlays this without a scrim or layout shift.</p>
+  <div style="height:120vh"></div>
+</main>
+
+<script>
+/* Mock of Shopify data the Liquid would output. Names are fixtures, not code constants. */
+const MENU = [
+  { title: 'Originals', url: '/collections/originals', active: false, child_active: true, links: [
+    { title: 'Current series', url: '#', links: [
+      { title: 'Walking the Trail', url: '#wtt', object: { featured_image: null, products_count: 4 } },
+      { title: 'Elements', url: '#elements', current: true, object: { featured_image: '../../../art/jal-water-c.png', products_count: 6 } },
+      { title: 'Colored by Nature', url: '#cbn', object: { featured_image: '../../../art/colored-by-nature-purple.jpg', products_count: 5 } }
+    ]},
+    { title: 'All originals', url: '#all', links: [] },
+    { title: 'Earlier series & sold work', url: '#earlier', links: [] },
+    { title: 'Commission a painting', url: '#commission', links: [] }
+  ]},
+  { title: 'Prints', url: '#prints', links: [] },
+  { title: 'Exhibitions', url: '#exhibitions', links: [] },
+  { title: 'About', url: '#about', links: [] },
+  { title: 'News', url: '#news', links: [] },
+  { title: 'Contact', url: '#contact', links: [] }
+];
+const SETTINGS = { mobile_originals_label: 'All originals, earlier series & sold work', instagram: '#ig', email: 'studio@example.com', bag: 1 };
+const I = {
+  chev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>',
+  search: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+  bag: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>',
+  ig: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>',
+  arrow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>'
+};
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/* Rendering rule §4.1: level-2 WITH children = series group; level-2 WITHOUT = utility links. */
+function split(item) {
+  const group = item.links.find((l) => l.links && l.links.length);
+  return { group, series: group ? group.links : [], util: item.links.filter((l) => !l.links || !l.links.length) };
+}
+
+class SiteHeader extends HTMLElement {
+  connectedCallback() {
+    const drop = MENU.find((m) => m.links.length);
+    const { group, series, util } = split(drop);
+    const cur = Math.max(0, series.findIndex((s) => s.current));
+    const count = (s) => s.object && s.object.products_count != null ? `<span class="c">${s.object.products_count} originals</span>` : '';
+    this.innerHTML = `
+    <div class="bar">
+      <a class="wm" href="/" aria-label="Zita’s Art Studio, home"><b>ZITA’S</b><i></i><span>ART STUDIO</span></a>
+      <nav class="nav" aria-label="Main"><ul>
+        ${MENU.map((m) => m.links.length ? `
+          <li data-drop>
+            <button type="button" class="top ${m.active || m.child_active ? 'is-current' : ''}" aria-expanded="false" aria-controls="nav-dd">${esc(m.title)}${I.chev}</button>
+            <div class="panel" id="nav-dd" hidden><div class="panel-in">
+              ${group ? `<div><p class="eb" id="dd-eb">${esc(group.title)}</p><ul class="series" aria-labelledby="dd-eb">
+                ${series.map((s, i) => `<li><a href="${s.url}" data-i="${i}" ${s.current ? 'aria-current="page"' : ''} class="${i === cur ? 'pv' : ''}"><span class="n">${esc(s.title)}</span>${count(s)}</a></li>`).join('')}
+              </ul></div>` : ''}
+              <ul class="util">${util.map((u) => `<li><a href="${u.url}">${esc(u.title)}</a></li>`).join('')}</ul>
+              <div class="pvw" aria-hidden="true">${series.map((s, i) => `<figure class="${i === cur ? 'on' : ''}">${s.object && s.object.featured_image ? `<img src="${s.object.featured_image}" alt="" loading="lazy">` : `<span class="empty">${esc(s.title)}</span>`}</figure>`).join('')}</div>
+            </div></div>
+          </li>` : `<li><a class="top" href="${m.url}" ${m.active ? 'aria-current="page"' : ''}>${esc(m.title)}</a></li>`).join('')}
+      </ul></nav>
+      <div class="icons">
+        <a class="ib search" href="/search" aria-label="Search">${I.search}</a>
+        <a class="ib ig" href="${SETTINGS.instagram}" aria-label="Instagram">${I.ig}</a>
+        <a class="ib" href="/cart" aria-label="Bag, ${SETTINGS.bag} item${SETTINGS.bag === 1 ? '' : 's'}">${I.bag}${SETTINGS.bag ? `<span class="badge" aria-hidden="true">${SETTINGS.bag}</span>` : ''}</a>
+        <button type="button" class="mbtn" aria-expanded="false" aria-controls="m-menu">Menu</button>
+      </div>
+    </div>
+    <nav class="mmenu" id="m-menu" aria-label="Menu" hidden>
+      <a class="m-search" href="/search">${I.search}Search</a>
+      <div class="m-series">
+        <p class="m-eb">${esc(drop.title)} · ${esc(group ? group.title : '')}</p>
+        <ul>${series.map((s) => `<li><a href="${s.url}" ${s.current ? 'aria-current="page"' : ''}>
+          <span class="thumb">${s.object && s.object.featured_image ? `<img src="${s.object.featured_image}" alt="" loading="lazy">` : ''}</span>
+          <span><span class="n">${esc(s.title)}</span>${count(s)}</span></a></li>`).join('')}</ul>
+        ${util[0] ? `<a class="m-all" href="${util[0].url}">${esc(SETTINGS.mobile_originals_label)}${I.arrow}</a>` : ''}
+      </div>
+      <ul class="m-pages">
+        ${util.slice(1).map((u) => `<li><a href="${u.url}">${esc(u.title)}</a></li>`).join('')}
+        ${MENU.filter((m) => !m.links.length).map((m) => `<li><a href="${m.url}" ${m.active ? 'aria-current="page"' : ''}>${esc(m.title)}</a></li>`).join('')}
+      </ul>
+      <div class="m-contact"><a href="${SETTINGS.instagram}">${I.ig}Follow on Instagram</a><a href="mailto:${SETTINGS.email}">${SETTINGS.email}</a></div>
+    </nav>`;
+    this.wireDesktop(cur);
+    this.wireMobile();
+  }
+
+  wireDesktop(cur) {
+    const li = this.querySelector('[data-drop]'); if (!li) return;
+    const btn = li.querySelector('button'), panel = li.querySelector('.panel');
+    const rows = [...panel.querySelectorAll('.series a')], figs = [...panel.querySelectorAll('.pvw figure')];
+    let openT, closeT;
+    const isOpen = () => !panel.hidden;
+    const open = () => { clearTimeout(closeT); panel.hidden = false; btn.setAttribute('aria-expanded', 'true'); };
+    const close = (refocus) => {
+      clearTimeout(openT); clearTimeout(closeT);
+      if (!isOpen()) return;
+      if (refocus && panel.contains(document.activeElement)) btn.focus();
+      panel.hidden = true; btn.setAttribute('aria-expanded', 'false');
+      preview(cur);
+    };
+    const preview = (i) => { rows.forEach((r, n) => r.classList.toggle('pv', n === i)); figs.forEach((f, n) => f.classList.toggle('on', n === i)); };
+
+    btn.addEventListener('click', () => (isOpen() ? close() : open()));
+    rows.forEach((r, i) => { r.addEventListener('mouseenter', () => preview(i)); r.addEventListener('focus', () => preview(i)); });
+
+    // Hover only for fine pointers (§2.4). 80ms intent to open, 120ms grace to close.
+    if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
+      btn.addEventListener('mouseenter', () => { clearTimeout(closeT); openT = setTimeout(open, 80); });
+      btn.addEventListener('mouseleave', () => clearTimeout(openT));
+      this.querySelectorAll('.nav .top:not(button)').forEach((a) => a.addEventListener('mouseenter', () => close()));
+      this.addEventListener('mouseleave', () => { clearTimeout(openT); closeT = setTimeout(() => close(), 120); });
+      this.addEventListener('mouseenter', () => clearTimeout(closeT));
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen()) close(true); });
+    li.addEventListener('focusout', (e) => { if (e.relatedTarget && !li.contains(e.relatedTarget)) close(); });
+    document.addEventListener('click', (e) => { if (isOpen() && !this.contains(e.target)) close(); });
+  }
+
+  wireMobile() {
+    const btn = this.querySelector('.mbtn'), menu = this.querySelector('.mmenu');
+    const bg = [document.getElementById('main'), document.querySelector('.ann')];
+    const focusables = () => [...this.querySelectorAll('.bar a, .bar button, .mmenu a')].filter((el) => el.offsetParent !== null);
+    const set = (open) => {
+      menu.hidden = !open;
+      btn.setAttribute('aria-expanded', String(open));
+      btn.textContent = open ? 'Close' : 'Menu';
+      document.documentElement.classList.toggle('menu-open', open);
+      bg.forEach((el) => el && (el.inert = open));
+      if (open) {
+        this.style.setProperty('--hdr-b', this.getBoundingClientRect().bottom + 'px');
+        menu.style.setProperty('--hdr-b', this.getBoundingClientRect().bottom + 'px');
+        const first = menu.querySelector('.m-series a') || menu.querySelector('a'); first && first.focus();
+      } else btn.focus({ preventScroll: true });
+    };
+    btn.addEventListener('click', () => set(menu.hidden));
+    menu.addEventListener('click', (e) => { if (e.target.closest('a')) set(false); });
+    this.addEventListener('keydown', (e) => {
+      if (menu.hidden) return;
+      if (e.key === 'Escape') { set(false); return; }
+      if (e.key !== 'Tab') return;
+      const f = focusables(), first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+    matchMedia('(min-width:1000px)').addEventListener('change', (e) => { if (e.matches && !menu.hidden) set(false); });
+  }
+}
+customElements.define('site-header', SiteHeader);
+</script>
+</body>
+</html>

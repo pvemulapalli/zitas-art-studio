@@ -1,6 +1,6 @@
 # Zita's Art Studio — Project Status
 
-**Last updated:** 12 October 2026 (PDP refinement pass — story treatment, image viewer, caption/alt rule — implemented and live-QA'd on the dev preview theme; not committed, not deployed to the published demo theme)
+**Last updated:** 12 October 2026 (header navigation implemented and QA'd on the dev preview theme; not committed and not deployed. The PDP refinement pass is committed as `7a435c8` but not deployed to the published demo theme.)
 
 This is the **only** canonical record of project progress, current work, next steps and environment state. Other documents link here rather than tracking status themselves.
 
@@ -27,15 +27,25 @@ This is the **only** canonical record of project progress, current work, next st
 
   | Stage | State |
   |---|---|
-  | Implemented | **Yes.** The PDP build and its correction pass are committed (`f713471`). A refinement pass is implemented in the local `theme/` working tree: editorial story pull-quote, full-screen image viewer with zoom, and visible captions separated from alt text. |
+  | Implemented | **Yes.** Build and correction pass (`f713471`); refinement pass (`7a435c8`): editorial story pull-quote, full-screen image viewer with zoom, and visible captions separated from alt text. |
   | Live QA | **Passed** for the refinement pass on the development preview theme (`shopify theme dev` against the Partner dev store) at 1440, 1024, 834 and 390px for Essence V2 (available) and Colored by Nature-Blue V2 (sold). Theme Check is clean. Viewer keyboard handling was exercised with script-dispatched events; a manual pass with a real keyboard and screen reader is still to do. |
   | Product template assignment | **Done**: both PoC products use the `original` template on the Partner dev store. |
-  | Committed to Git | PDP build **yes** (`f713471`, pushed to `origin/main`); refinement pass **no** |
+  | Committed to Git | **Yes** (`f713471`, `7a435c8`), pushed to `origin/main` |
   | Deployed to the published **Zita V2 — Development** theme (the normal demo storefront) | **No.** Until it is pushed, that theme has no `product.original` template, so the demo storefront renders both PoC products with the default Skeleton product template. |
+
+- **Header navigation** (Originals dropdown and mobile menu). The Claude handoff is stored under `references/claude-design/handoff/header/`, and the build, menu rules and deliberate deviations are recorded in [implementation plan §11](architecture/shopify-implementation-plan.md#11-navigation--mega-menu).
+
+  | Stage | State |
+  |---|---|
+  | Implemented | **Yes**, in the local `theme/` working tree: `zita-header.liquid`, `zita-header.js`, `zita-announcement.liquid`, `header-group.json`, `en.default.json` |
+  | Dev-store menu | `main-menu` is Originals › Current Series (Colored by Nature, Walking the Trail) plus All originals, and Contact. This was verified on the rendered storefront. Walking the Trail is empty, so it exercises the no-image and no-count fallbacks. |
+  | Live QA | **Passed** on the development preview theme (hosted preview; the dev store is now password-protected) at 1440, 1180, 1000, 999, 834, 390 and 360px. Pages: home, Originals, Colored by Nature, Walking the Trail, Essence V2, Colored by Nature-Blue V2, Search and Contact. Theme Check is clean. Keyboard behaviour was exercised with script-dispatched events and emulated focus; a manual pass with a real keyboard and VoiceOver is still to do. |
+  | Committed to Git | **No** |
+  | Deployed to the published demo theme | **No** |
 
 ## Next
 
-1. Review and commit the PDP refinement pass; check the viewer once with a real keyboard and a screen reader (VoiceOver).
+1. Check the PDP viewer once with a real keyboard and a screen reader (VoiceOver).
 2. Push the PDP to the published **Zita V2 — Development** theme on the Partner dev store, then re-check both products on the demo storefront.
 3. PDP content in the dev-store Admin (content tasks, not theme work):
    - add alt text beginning "Room view: …" to Essence V2's four room photographs (images 2–5);
@@ -43,15 +53,23 @@ This is the **only** canonical record of project progress, current work, next st
    - optionally tidy the stories' own quotation marks so they sit well inside the pull-quote marks (Essence's straight `"Essence"`; Colored by Nature-Blue's unmatched `”` after "Colored by Nature") — wording is Ranjeeta's to approve;
    - Related Works ("More originals") stays hidden until Shopify returns recommendations; related products can be set in Search & Discovery later if wanted;
    - add shipping/packing copy (the accordion row is hidden until then) and a commission URL once Ranjeeta provides them.
-4. Implement / finish the approved **header collection-navigation dropdown**. Supporting mega-menu infrastructure exists in the theme (`zita-header.liquid`, `zita-header.js`), but the approved Claude V2 collection-navigation dropdown behaviour and content are not yet complete in the storefront.
-5. Cross-page polish and QA ([implementation plan §23](architecture/shopify-implementation-plan.md#23-qa-requirements)).
-6. Prepare **Phase B** — merchant-store integration ([implementation plan §24](architecture/shopify-implementation-plan.md#24-cutover--launch-strategy)).
+4. Review and commit the **header navigation**. Before committing:
+   - check it once with a real keyboard (Tab order through the dropdown, Enter/Space on Originals) and with VoiceOver on macOS and iOS;
+   - check it on a real iPhone (safe-area padding, scroll lock).
+
+   Then push it to the published demo theme together with the PDP.
+5. Header content in the dev-store Admin and theme settings (content tasks):
+   - add the Instagram profile URL (blank now, so the header icon and the mobile "Follow on Instagram" row are hidden);
+   - optionally give Colored by Nature and Walking the Trail their own collection images, which the previews use ahead of the first product's image;
+   - the Originals parent link points at the PoC collection `v2-poc-original-artworks`; repoint it when the final Originals collection exists.
+6. Cross-page polish and QA ([implementation plan §23](architecture/shopify-implementation-plan.md#23-qa-requirements)).
+7. Prepare **Phase B** — merchant-store integration ([implementation plan §24](architecture/shopify-implementation-plan.md#24-cutover--launch-strategy)).
 
 ## Environments
 
 | Store | State |
 |---|---|
-| **Partner dev store** `zitas-art-studio-development.myshopify.com` | All V2 work happens here. Theme **Zita V2 — Development** is **published** so the storefront can be demonstrated. Both V2 PoC products are **Active** and assigned to the `original` product template. Metafield definitions: see [provisioning state](architecture/metafield-definitions.md). |
+| **Partner dev store** `zitas-art-studio-development.myshopify.com` | All V2 work happens here. Theme **Zita V2 — Development** is **published** so the storefront can be demonstrated. The storefront is **password-protected**, so `shopify theme dev` needs `--store-password` for its local proxy; the hosted preview works after entering the password in the browser. Both V2 PoC products are **Active** and assigned to the `original` product template. Metafield definitions: see [provisioning state](architecture/metafield-definitions.md). |
 | **Ranjeeta's production store** | **Not modified** by V2 work. Flora remains published. No Zita V2 theme uploaded. No V2 products or metafield definitions created. Phase B is future work. |
 
 ## Open inputs from Ranjeeta

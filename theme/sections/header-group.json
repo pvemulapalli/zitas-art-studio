@@ -24,8 +24,7 @@
       "type": "zita-header",
       "settings": {
         "menu": "main-menu",
-        "series_count": 3,
-        "series_heading": "Current series"
+        "mobile_originals_label": "All originals, earlier series & sold work"
       }
     }
   },

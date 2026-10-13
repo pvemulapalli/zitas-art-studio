@@ -1,7 +1,104 @@
 {%- liquid
   assign menu = section.settings.menu
-  assign series_count = section.settings.series_count
-  assign series_heading = section.settings.series_heading
+
+  # Structural menu reading (no names): the dropdown is the first top-level item that holds a
+  # level-2 item with children (the series group); failing that, the first item with children.
+  assign dropdown_index = -1
+  assign series_index = -1
+  for link in menu.links
+    for child in link.links
+      if child.links.size > 0
+        assign dropdown_index = forloop.parentloop.index0
+        assign series_index = forloop.index0
+        break
+      endif
+    endfor
+    if dropdown_index >= 0
+      break
+    endif
+  endfor
+  if dropdown_index < 0
+    for link in menu.links
+      if link.links.size > 0
+        assign dropdown_index = forloop.index0
+        break
+      endif
+    endfor
+  endif
+
+  assign dropdown = nil
+  assign series_group = nil
+  assign parent_url = nil
+  assign dropdown_active = false
+  assign preview_index = 0
+  assign parent_listed = false
+
+  if dropdown_index >= 0
+    assign dropdown = menu.links[dropdown_index]
+    if series_index >= 0
+      assign series_group = dropdown.links[series_index]
+    endif
+    if dropdown.type == 'collection_link'
+      assign parent_url = dropdown.url
+    endif
+
+    if dropdown.current or dropdown.child_active
+      assign dropdown_active = true
+    endif
+    for child in dropdown.links
+      if child.current or child.child_active
+        assign dropdown_active = true
+      endif
+      for grandchild in child.links
+        if grandchild.current
+          assign dropdown_active = true
+        endif
+      endfor
+      if forloop.index0 != series_index and parent_url and child.url == parent_url
+        assign parent_listed = true
+      endif
+    endfor
+
+    if template.name == 'product'
+      if template.suffix == 'original'
+        assign dropdown_active = true
+      elsif parent_url
+        for product_collection in product.collections
+          if product_collection.handle == dropdown.object.handle
+            assign dropdown_active = true
+            break
+          endif
+        endfor
+      endif
+    endif
+
+    if series_group
+      assign preview_found = false
+      for child in series_group.links
+        if child.current
+          assign preview_index = forloop.index0
+          assign preview_found = true
+          break
+        endif
+      endfor
+      if preview_found == false and template.name == 'product'
+        for child in series_group.links
+          if child.type == 'collection_link'
+            for product_collection in product.collections
+              if product_collection.handle == child.object.handle
+                assign preview_index = forloop.parentloop.index0
+                assign preview_found = true
+                break
+              endif
+            endfor
+          endif
+          if preview_found
+            break
+          endif
+        endfor
+      endif
+    endif
+  endif
 -%}
 
 <script src="{{ 'zita-header.js' | asset_url }}" defer></script>
@@ -18,25 +115,25 @@
           <ul class="site-nav__list list-unstyled">
             {%- for link in menu.links -%}
               <li class="site-nav__item">
-                {%- if link.links.size > 0 -%}
+                {%- if forloop.index0 == dropdown_index -%}
                   <zita-mega-menu class="site-nav__dropdown">
                     <details>
-                      <summary class="site-nav__link{% if link.child_active or link.current %} is-current{% endif %}">
+                      <summary class="site-nav__link{% if dropdown_active %} is-current{% endif %}">
                         {{- link.title | escape -}}
                         {%- render 'icon', name: 'chevron-down', size: 14, class: 'site-nav__chevron' -%}
                       </summary>
                       <div class="mega-menu">
                         <div class="mega-menu__inner page-width">
-                          {%- if series_count > 0 -%}
+                          {%- if series_group -%}
                             <div class="mega-menu__series">
-                              {%- if series_heading != blank -%}
-                                <p class="eyebrow">{{ series_heading | escape }}</p>
-                              {%- endif -%}
-                              <ul class="list-unstyled">
-                                {%- for child in link.links limit: series_count -%}
+                              <p class="eyebrow mega-menu__eyebrow" id="MegaMenuSeries-{{ section.id }}">
+                                {{- series_group.title | escape -}}
+                              </p>
+                              <ul class="mega-menu__series-list list-unstyled" aria-labelledby="MegaMenuSeries-{{ section.id }}">
+                                {%- for child in series_group.links -%}
                                   <li>
                                     <a
-                                      class="mega-menu__series-link"
+                                      class="mega-menu__series-link{% if forloop.index0 == preview_index %} is-previewed{% endif %}"
                                       href="{{ child.url }}"
                                       data-preview-index="{{ forloop.index0 }}"
                                       {% if child.current %}
@@ -56,9 +153,21 @@
                             </div>
                           {%- endif -%}
 
-                          {%- if link.links.size > series_count -%}
-                            <ul class="mega-menu__links list-unstyled">
-                              {%- for child in link.links offset: series_count -%}
+                          <ul class="mega-menu__links list-unstyled">
+                            {%- if parent_url and parent_listed == false -%}
+                              <li>
+                                <a
+                                  href="{{ parent_url }}"
+                                  {% if link.current %}
+                                    aria-current="page"
+                                  {% endif %}
+                                >
+                                  {{- 'header.all_originals' | t -}}
+                                </a>
+                              </li>
+                            {%- endif -%}
+                            {%- for child in link.links -%}
+                              {%- unless forloop.index0 == series_index -%}
                                 <li>
                                   <a
                                     href="{{ child.url }}"
@@ -69,26 +178,33 @@
                                     {{- child.title | escape -}}
                                   </a>
                                 </li>
-                              {%- endfor -%}
-                            </ul>
-                          {%- endif -%}
+                              {%- endunless -%}
+                            {%- endfor -%}
+                          </ul>
 
-                          {%- if series_count > 0 -%}
+                          {%- if series_group -%}
                             <div class="mega-menu__preview" aria-hidden="true">
-                              {%- for child in link.links limit: series_count -%}
+                              {%- for child in series_group.links -%}
                                 {%- liquid
                                   assign preview_image = nil
                                   if child.type == 'collection_link' or child.type == 'product_link'
                                     assign preview_image = child.object.featured_image
                                   endif
                                 -%}
-                                <div class="mega-menu__preview-item" data-preview-index="{{ forloop.index0 }}" {% unless forloop.first %}hidden{% endunless %}>
+                                <div
+                                  class="mega-menu__preview-item{% if forloop.index0 == preview_index %} is-active{% endif %}"
+                                  data-preview-index="{{ forloop.index0 }}"
+                                >
                                   {%- if preview_image -%}
                                     {%- render 'artwork-plate',
                                       image: preview_image,
-                                      sizes: '(min-width: 1000px) 26vw, 1px',
+                                      sizes: '(min-width: 1000px) 20vw, 1px',
                                       class: 'artwork-plate--square artwork-plate--wide-pad'
                                     -%}
+                                  {%- else -%}
+                                    <div class="mega-menu__preview-empty">
+                                      <span>{{ child.title | escape }}</span>
+                                    </div>
                                   {%- endif -%}
                                 </div>
                               {%- endfor -%}
@@ -147,98 +263,143 @@
             </summary>
 
             <div class="mobile-menu__panel">
-              {%- if menu.links.size > 0 -%}
-                <nav class="mobile-menu__nav" aria-label="{{ 'header.main_navigation' | t }}">
-                  {%- for link in menu.links -%}
-                    {%- if link.links.size > 0 -%}
-                      <div class="mobile-menu__group">
-                        <p class="eyebrow mobile-menu__eyebrow">
-                          {{- link.title | escape -}}
-                          {%- if series_count > 0 and series_heading != blank %} · {{ series_heading | escape }}{% endif -%}
-                        </p>
+              <nav class="mobile-menu__nav" aria-label="{{ 'header.main_navigation' | t }}">
+                {%- liquid
+                  assign seen_urls = '|' | append: routes.search_url | append: '|'
+                  assign show_all_row = false
+                  if dropdown and parent_url
+                    assign show_all_row = true
+                    assign seen_urls = seen_urls | append: parent_url | append: '|'
+                  endif
+                -%}
 
-                        {%- if series_count > 0 -%}
-                          <ul class="list-unstyled">
-                            {%- for child in link.links limit: series_count -%}
-                              {%- liquid
-                                assign thumb_image = nil
-                                if child.type == 'collection_link' or child.type == 'product_link'
-                                  assign thumb_image = child.object.featured_image
-                                endif
-                              -%}
-                              <li>
-                                <a
-                                  class="mobile-menu__series"
-                                  href="{{ child.url }}"
-                                  {% if child.current %}
-                                    aria-current="page"
-                                  {% endif %}
-                                >
-                                  <span class="mobile-menu__thumb">
-                                    {%- if thumb_image -%}
-                                      {%- render 'responsive-image',
-                                        image: thumb_image,
-                                        sizes: '48px',
-                                        widths: '96, 144',
-                                        decorative: true
-                                      -%}
-                                    {%- endif -%}
-                                  </span>
-                                  <span class="mobile-menu__series-text">
-                                    <span class="mobile-menu__series-name">{{ child.title | escape }}</span>
-                                    {%- if child.type == 'collection_link' and child.object.products_count > 0 -%}
-                                      <span class="mobile-menu__series-meta">
-                                        {{- 'header.originals_count' | t: count: child.object.products_count -}}
-                                      </span>
-                                    {%- endif -%}
-                                  </span>
-                                </a>
-                              </li>
-                            {%- endfor -%}
-                          </ul>
-                        {%- endif -%}
+                <a
+                  class="mobile-menu__search"
+                  href="{{ routes.search_url }}"
+                  {% if request.page_type == 'search' %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {%- render 'icon', name: 'search', size: 18 -%}
+                  {{- 'header.search' | t -}}
+                </a>
 
-                        {%- if link.links.size > series_count -%}
-                          <ul class="list-unstyled mobile-menu__more">
-                            {%- for child in link.links offset: series_count -%}
-                              <li>
-                                <a
-                                  class="mobile-menu__more-link"
-                                  href="{{ child.url }}"
-                                  {% if child.current %}
-                                    aria-current="page"
-                                  {% endif %}
-                                >
-                                  {{- child.title | escape -}}
-                                  {%- render 'icon', name: 'arrow-right', size: 16 -%}
-                                </a>
-                              </li>
-                            {%- endfor -%}
-                          </ul>
-                        {%- endif -%}
-                      </div>
+                {%- if series_group or show_all_row -%}
+                  <div class="mobile-menu__group">
+                    <p class="eyebrow mobile-menu__eyebrow" id="MobileMenuSeries-{{ section.id }}">
+                      {{- dropdown.title | escape -}}
+                      {%- if series_group %} · {{ series_group.title | escape }}{% endif -%}
+                    </p>
+
+                    {%- if series_group -%}
+                      <ul class="list-unstyled" aria-labelledby="MobileMenuSeries-{{ section.id }}">
+                        {%- for child in series_group.links -%}
+                          {%- liquid
+                            assign thumb_image = nil
+                            if child.type == 'collection_link' or child.type == 'product_link'
+                              assign thumb_image = child.object.featured_image
+                            endif
+                            assign seen_urls = seen_urls | append: child.url | append: '|'
+                          -%}
+                          <li>
+                            <a
+                              class="mobile-menu__series"
+                              href="{{ child.url }}"
+                              {% if child.current %}
+                                aria-current="page"
+                              {% endif %}
+                            >
+                              <span class="mobile-menu__thumb">
+                                {%- if thumb_image -%}
+                                  {%- render 'responsive-image',
+                                    image: thumb_image,
+                                    sizes: '48px',
+                                    widths: '96, 144',
+                                    decorative: true
+                                  -%}
+                                {%- endif -%}
+                              </span>
+                              <span class="mobile-menu__series-text">
+                                <span class="mobile-menu__series-name">{{ child.title | escape }}</span>
+                                {%- if child.type == 'collection_link' and child.object.products_count > 0 -%}
+                                  <span class="mobile-menu__series-meta">
+                                    {{- 'header.originals_count' | t: count: child.object.products_count -}}
+                                  </span>
+                                {%- endif -%}
+                              </span>
+                            </a>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
                     {%- endif -%}
-                  {%- endfor -%}
 
-                  <ul class="list-unstyled mobile-menu__rows">
-                    {%- for link in menu.links -%}
-                      {%- if link.links.size == 0 -%}
-                        <li>
-                          <a
-                            class="mobile-menu__row"
-                            href="{{ link.url }}"
-                            {% if link.current %}
-                              aria-current="page"
-                            {% endif %}
-                          >
-                            {{- link.title | escape -}}
-                          </a>
-                        </li>
-                      {%- endif -%}
+                    {%- if show_all_row -%}
+                      <a
+                        class="mobile-menu__all"
+                        href="{{ parent_url }}"
+                        {% if dropdown.current %}
+                          aria-current="page"
+                        {% endif %}
+                      >
+                        {{- section.settings.mobile_originals_label | default: dropdown.title | escape -}}
+                        {%- render 'icon', name: 'arrow-right', size: 16 -%}
+                      </a>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+
+                <ul class="list-unstyled mobile-menu__rows">
+                  {%- if dropdown -%}
+                    {%- for child in dropdown.links -%}
+                      {%- liquid
+                        if forloop.index0 == series_index
+                          continue
+                        endif
+                        assign url_key = '|' | append: child.url | append: '|'
+                        if seen_urls contains url_key
+                          continue
+                        endif
+                        assign seen_urls = seen_urls | append: child.url | append: '|'
+                      -%}
+                      <li>
+                        <a
+                          class="mobile-menu__row"
+                          href="{{ child.url }}"
+                          {% if child.current %}
+                            aria-current="page"
+                          {% endif %}
+                        >
+                          {{- child.title | escape -}}
+                        </a>
+                      </li>
                     {%- endfor -%}
-                  </ul>
-                </nav>
-              {%- endif -%}
+                  {%- endif -%}
+
+                  {%- for link in menu.links -%}
+                    {%- liquid
+                      if forloop.index0 == dropdown_index
+                        continue
+                      endif
+                      assign url_key = '|' | append: link.url | append: '|'
+                      if seen_urls contains url_key
+                        continue
+                      endif
+                      assign seen_urls = seen_urls | append: link.url | append: '|'
+                    -%}
+                    <li>
+                      <a
+                        class="mobile-menu__row"
+                        href="{{ link.url }}"
+                        {% if link.current %}
+                          aria-current="page"
+                        {% endif %}
+                      >
+                        {{- link.title | escape -}}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </nav>
 
               {%- if settings.social_instagram_link != blank or settings.contact_email != blank -%}
                 <div class="mobile-menu__contact">
@@ -249,7 +410,9 @@
                     </a>
                   {%- endif -%}
                   {%- if settings.contact_email != blank -%}
-                    <a href="mailto:{{ settings.contact_email | strip }}">{{ settings.contact_email | escape }}</a>
+                    <a class="mobile-menu__email" href="mailto:{{ settings.contact_email | strip }}">
+                      {{- settings.contact_email | escape -}}
+                    </a>
                   {%- endif -%}
                 </div>
               {%- endif -%}
@@ -310,7 +473,10 @@
   .site-nav__link {
     display: flex;
     align-items: center;
+    align-self: center;
     gap: 6px;
+    padding-block: 10px;
+    border-bottom: 1px solid transparent;
     font-family: var(--font-display);
     font-size: 13px;
     line-height: 1;
@@ -327,16 +493,17 @@
     display: none;
   }
 
-  .site-nav__link:hover,
-  details[open] > .site-nav__link {
+  .site-nav__link:hover {
     color: var(--color-copper);
   }
 
   .site-nav__link.is-current {
     color: var(--color-teal);
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 8px;
+    border-bottom-color: var(--color-teal);
+  }
+
+  .site-nav__dropdown details[open] > .site-nav__link {
+    color: var(--color-teal);
   }
 
   .site-nav__chevron {
@@ -351,22 +518,33 @@
     position: absolute;
     inset-inline: 0;
     top: 100%;
+    max-height: var(--mega-menu-max-height, calc(100vh - var(--header-height)));
+    overflow-y: auto;
+    overscroll-behavior: contain;
     background: var(--color-gesso);
     border-top: var(--hairline);
     box-shadow: var(--shadow-overlay);
   }
 
+  .site-nav__dropdown details[open] > .mega-menu {
+    animation: site-header-fade-in var(--duration-fast) var(--ease-pour);
+  }
+
   .mega-menu__inner {
     display: grid;
-    grid-template-columns: 1.1fr 1fr 0.9fr;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 0.9fr);
     gap: clamp(24px, 4vw, 64px);
     padding-block: 40px 48px;
   }
 
-  .mega-menu__series {
+  .mega-menu__eyebrow {
+    margin-block-end: 12px;
+    font-size: 11px;
+  }
+
+  .mega-menu__series-list {
     display: grid;
-    align-content: start;
-    gap: 8px;
+    gap: 4px;
   }
 
   .mega-menu__series-link {
@@ -385,9 +563,9 @@
     transition: color var(--duration-fast) var(--ease-pour);
   }
 
-  .mega-menu__series-link:hover .mega-menu__series-name,
-  .mega-menu__series-link:focus-visible .mega-menu__series-name {
-    color: var(--color-copper);
+  .mega-menu__series-link.is-previewed .mega-menu__series-name,
+  .mega-menu__series-link[aria-current='page'] .mega-menu__series-name {
+    color: var(--color-teal);
   }
 
   .mega-menu__series-meta {
@@ -397,6 +575,7 @@
   }
 
   .mega-menu__links {
+    grid-column: 2;
     display: grid;
     align-content: start;
     gap: 14px;
@@ -414,8 +593,43 @@
     color: var(--color-copper);
   }
 
+  .mega-menu__links a[aria-current='page'] {
+    color: var(--color-teal);
+  }
+
   .mega-menu__preview {
     grid-column: 3;
+    display: grid;
+    align-self: start;
+  }
+
+  .mega-menu__preview-item {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--duration-fast) var(--ease-pour),
+      visibility 0s linear var(--duration-fast);
+  }
+
+  .mega-menu__preview-item.is-active {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  .mega-menu__preview-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    padding: 12%;
+    background: var(--color-mat);
+    font-family: var(--font-display);
+    font-size: 20px;
+    line-height: 1.3;
+    text-align: center;
+    color: var(--color-stone-500);
   }
 
   .site-header__icons {
@@ -465,6 +679,11 @@
   @media (max-width: 999px) {
     .site-header {
       min-height: var(--header-height);
+    }
+
+    /* Above sticky page chrome such as the collection toolbar and filter drawer. */
+    .site-header:has(.mobile-menu > details[open]) {
+      z-index: 70;
     }
 
     .site-header__inner {
@@ -521,19 +740,32 @@
       position: fixed;
       inset: var(--header-height) 0 0;
       z-index: 1;
-      display: grid;
-      align-content: start;
+      display: flex;
+      flex-direction: column;
       gap: 28px;
-      padding: 24px 20px 36px;
+      padding: 24px 20px calc(36px + env(safe-area-inset-bottom));
       overflow-y: auto;
       overscroll-behavior: contain;
       background: var(--color-gesso);
-      animation: mobile-menu-in 240ms var(--ease-pour);
+      animation: site-header-fade-in var(--duration-fast) var(--ease-pour);
     }
 
     .mobile-menu__nav {
       display: grid;
       gap: 28px;
+    }
+
+    .mobile-menu__search {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 52px;
+      border-bottom: var(--hairline);
+      font-family: var(--font-display);
+      font-size: 19px;
+      line-height: 1.2;
+      color: var(--color-ink);
+      text-decoration: none;
     }
 
     .mobile-menu__group {
@@ -542,6 +774,7 @@
 
     .mobile-menu__eyebrow {
       margin-block-end: 8px;
+      font-size: 11px;
     }
 
     .mobile-menu__series {
@@ -590,14 +823,11 @@
       color: var(--color-text-meta);
     }
 
-    .mobile-menu__more {
-      padding-block-start: 8px;
-    }
-
-    .mobile-menu__more-link {
+    .mobile-menu__all {
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
+      gap: 12px;
       min-height: 52px;
       font-family: var(--font-display);
       font-size: 13px;
@@ -606,6 +836,10 @@
       text-transform: uppercase;
       color: var(--color-teal);
       text-decoration: none;
+    }
+
+    .mobile-menu__all .icon {
+      flex: none;
     }
 
     .mobile-menu__row {
@@ -620,6 +854,7 @@
       text-decoration: none;
     }
 
+    .mobile-menu__search[aria-current='page'],
     .mobile-menu__row[aria-current='page'],
     .mobile-menu__series[aria-current='page'] .mobile-menu__series-name {
       color: var(--color-teal);
@@ -628,7 +863,8 @@
     .mobile-menu__contact {
       display: grid;
       justify-items: start;
-      gap: 4px;
+      gap: 10px;
+      margin-block-start: auto;
       font-size: 16px;
     }
 
@@ -639,9 +875,13 @@
       min-height: 44px;
       color: var(--color-ink);
     }
+
+    .mobile-menu__contact .mobile-menu__email {
+      color: var(--color-text-meta);
+    }
   }
 
-  @keyframes mobile-menu-in {
+  @keyframes site-header-fade-in {
     from {
       opacity: 0;
     }
@@ -661,27 +901,14 @@
       "id": "menu",
       "label": "Menu",
       "default": "main-menu",
-      "info": "Navigation comes from this Shopify menu. Give an item child links (for example Originals) to turn it into a dropdown."
-    },
-    {
-      "type": "header",
-      "content": "Series in dropdowns"
-    },
-    {
-      "type": "range",
-      "id": "series_count",
-      "label": "Series per dropdown",
-      "min": 0,
-      "max": 6,
-      "step": 1,
-      "default": 3,
-      "info": "The first child links of a dropdown show as series, with the collection image as a preview. Remaining child links show as plain links."
+      "info": "Give a top-level item (for example Originals) a nested group of collections (for example Current series) to build the dropdown. The group's links are the featured series; its other child links show beside them."
     },
     {
       "type": "text",
-      "id": "series_heading",
-      "label": "Series heading",
-      "default": "Current series"
+      "id": "mobile_originals_label",
+      "label": "Mobile link to the dropdown's collection",
+      "default": "All originals, earlier series & sold work",
+      "info": "Shown on phones and tablets below the series. Links to the collection set on the top-level dropdown item."
     }
   ]
 }
