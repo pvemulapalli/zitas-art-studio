@@ -96,6 +96,24 @@ Mobile artwork detail for an **available** original, consistent with the approve
 
 ![Zita's Art Studio V2 PDP mobile in stock](./zita-v2-pdp-mobile-instock.jpg)
 
+## About the Artist — Desktop & Mobile
+
+Approved About page compositions. Sequence files scroll top to bottom:
+
+- Desktop: `about-desktop-01.jpg` … `about-desktop-18.jpg`
+- Mobile (phone frame + review notes): `about-mobile-01.jpg` … `about-mobile-16.jpg`
+
+Authoritative specs: `handoff/about/About Implementation Handoff.md` and `About Design Amendment 01 - Section Surfaces.md`. Use `handoff/about/assets/ranjeeta-portrait-crop-4x5.png` for the portrait crop (screenshot crop is inaccurate). Captured at 924px preview width; see handoff §12 for artefacts.
+
+## Exhibitions — Desktop & Mobile
+
+Approved Exhibitions (“The catalogue”) compositions:
+
+- Desktop: `exhibitions-desktop-01.jpg` … `exhibitions-desktop-15.jpg`
+- Mobile (phone frame + review notes): `exhibitions-mobile-01.jpg` … `exhibitions-mobile-12.jpg`
+
+Authoritative specs: `handoff/exhibitions/Exhibitions Implementation Handoff.md` and `Exhibitions Addendum 01 - Work and Series Links.md`. Captured at 924px preview width; see handoff §12 for artefacts.
+
 ---
 
 ## Implementation Reference

@@ -1,0 +1,90 @@
+/* Zita's Art Studio — colour tokens.
+   Every hue is sampled from Ranjeeta's paintings (see guidelines/color-sources).
+   The interface stays quieter than the art: neutrals carry 90% of any screen,
+   accents appear as small, deliberate touches — like metallic veins in a pour. */
+:root{
+  /* Canvas — the primed-canvas whites and mists that dominate every painting */
+  --canvas-0:#FFFFFF;
+  --canvas-50:#F8F8F6;   /* gesso: default page ground */
+  --canvas-100:#F0F2F1;  /* mat: behind artwork plates */
+  --canvas-200:#E3E7E7;  /* mist (Vaayu whites) */
+  /* Stone — greys from Moonlit Waves & Longing for Clouds */
+  --stone-300:#CDD1D2;
+  --stone-400:#A4A9AC;
+  --stone-500:#767C80;
+  --stone-600:#565C61;
+  --stone-700:#3B4044;
+  /* Ink — Vaayu's deepest blue, taken almost to black */
+  --ink-800:#1F2A33;
+  --ink-900:#15202A;
+  --ink-950:#0D141A;     /* Yin / Uncolored-by-Nature ground */
+
+  /* Vaayu teal — primary interface accent (from Vaayu & Jal) */
+  --teal-50:#E6F1F3;
+  --teal-100:#CFE4E9;
+  --teal-300:#7FB3C2;
+  --teal-500:#2D7F96;
+  --teal-600:#1A6479;
+  --teal-700:#0F5468;    /* primary */
+  --teal-800:#0B4050;
+  /* Cerulean — the bright pour-blue. Illustrative / focus only, never for text on white */
+  --cerulean-300:#8FCBE0;
+  --cerulean-500:#2E8FB5;
+  /* Ultramarine — the dark cells in Jal */
+  --ultramarine-700:#163E6E;
+
+  /* Copper — Vaayu's metallic vein; secondary accent, used sparingly */
+  --copper-100:#F3E3D8;
+  --copper-500:#B0602F;
+  --copper-600:#96502A;
+  --copper-700:#7A3F21;
+  /* Gold ochre — Jal / Longing for Clouds / Melting Away metallics */
+  --gold-100:#F1EAD9;
+  --gold-400:#C7A864;
+  --gold-500:#B08D4C;
+  --gold-700:#7C6230;
+  /* Umber — Melting Away / Prithvi */
+  --umber-700:#5A3322;
+  --umber-900:#3A1F16;
+
+  /* Semantic states (kept inside the artwork palette) */
+  --state-success:#2F6B5A;
+  --state-success-bg:#E4EFEA;
+  --state-warning:#8A6A22;
+  --state-warning-bg:#F4EDDB;
+  --state-error:#9C3A26;
+  --state-error-bg:#F5E4DE;
+
+  /* ---- Semantic aliases ---- */
+  --surface-page:var(--canvas-50);
+  --surface-raised:var(--canvas-0);
+  --surface-mat:var(--canvas-100);
+  --surface-mist:var(--canvas-200);
+  --surface-inverse:var(--ink-900);
+  --surface-accent:var(--teal-700);
+  --surface-accent-soft:var(--teal-50);
+
+  --text-primary:var(--ink-900);
+  --text-body:var(--ink-800);
+  --text-secondary:var(--stone-600);
+  --text-muted:var(--stone-500);
+  --text-inverse:var(--canvas-50);
+  --text-inverse-muted:var(--stone-400);
+  --text-accent:var(--teal-700);
+  --text-metal:var(--copper-600);
+
+  --border-hairline:var(--stone-300);
+  --border-strong:var(--ink-900);
+  --border-subtle:var(--canvas-200);
+  --border-inverse:var(--stone-700);
+
+  --action-primary:var(--teal-700);
+  --action-primary-hover:var(--teal-800);
+  --action-primary-text:var(--canvas-0);
+  --action-secondary-border:var(--ink-900);
+  --action-accent:var(--copper-600);
+  --focus-ring:var(--cerulean-500);
+
+  --link:var(--teal-700);
+  --link-hover:var(--copper-600);
+}

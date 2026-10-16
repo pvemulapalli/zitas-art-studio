@@ -1,6 +1,6 @@
 # Zita's Art Studio — Project Status
 
-**Last updated:** 15 October 2026 (C1 full cart page functionally approved and committed. Broader regression QA pending before launch. C2 drawer deferred by design. About/Exhibitions still gated on Claude Design sync. Header `e8b6d65`, PDP `7a435c8` committed; published demo theme deploy still outstanding.)
+**Last updated:** 15 October 2026 (About/Exhibitions Claude Design sync gate **passed**. C1 full cart page functionally approved and committed; broader regression QA pending before launch. C2 drawer deferred by design. Header `e8b6d65`, PDP `7a435c8` committed; published demo theme deploy still outstanding.)
 
 This is the **only** canonical record of project progress, current work, next steps and environment state. Other documents link here rather than tracking status themselves.
 
@@ -24,15 +24,16 @@ This is the **only** canonical record of project progress, current work, next st
 | Commerce UX Gap Audit | READ-ONLY audit of localization, predictive search, cart drawer/`/cart`, Shop Pay, ATC feedback (session, October 2026). |
 | Phase D plan | Approved with amendments; cart-primary commerce decision recorded: [phase-d-implementation-plan.md](architecture/phase-d-implementation-plan.md) |
 | C1 full cart page | V2 `/cart` with inventory validation + messaging; owner functional preview passed. **Functionally approved; broader regression QA pending before launch.** Committed locally (not pushed). |
+| About / Exhibitions Claude Design sync | **Gate passed.** Imported under `references/claude-design/`: About handoff + Section Surfaces amendment; Exhibitions handoff + Work and Series Links addendum; reference source + assets (incl. pre-cropped portrait); 61 screenshots (About 18 desktop / 16 mobile; Exhibitions 15 desktop / 12 mobile). Package manifest at `references/claude-design/about-exhibitions-MANIFEST.md`. Existing homepage/PLP/PDP/header references untouched. |
 | Source control | Homepage, PLP, PDP, header committed and pushed to `origin/main`; C1 committed locally, not pushed |
 
 ## In progress
 
-- **Phase D readiness** — editorial + commerce repair sequencing. Theme code for About and Exhibitions is **blocked** until Claude Design packages are in the repository. See [Phase D plan](architecture/phase-d-implementation-plan.md).
+- **Phase D readiness** — editorial + commerce repair sequencing. Claude Design sync gate for About/Exhibitions has **passed**; theme builds still wait on the Exhibition metaobject Basic proof (Exhibitions) and handoff-faithful implementation. See [Phase D plan](architecture/phase-d-implementation-plan.md).
 
   | Gate | State |
   |---|---|
-  | About / Exhibitions Claude Design handoffs, screenshots, amendments in Git | **Not present** under `references/claude-design/` (only homepage, PLP, PDP, header handoffs exist) |
+  | About / Exhibitions Claude Design handoffs, screenshots, amendments in Git | **Passed** — present under `references/claude-design/handoff/{about,exhibitions}/` and `screenshots/v2/`; manifest at `about-exhibitions-MANIFEST.md` |
   | Exhibition metaobject Basic feasibility proof | **Not started** |
   | Cart page (C1) — primary cart UX | **Functionally approved** (owner preview). Broader regression QA pending before launch (see Next). Committed locally; **not pushed / not deployed.** |
   | Cart drawer (C2) | **Deferred by design** — not planned for current V2; full `/cart` is primary. Not a missing feature. Revisit only if user testing shows need. **Do not implement.** |
@@ -46,8 +47,8 @@ This is the **only** canonical record of project progress, current work, next st
 ## Next
 
 1. **Pre-launch C1 regression QA** (broader cases not required for this functional approval): multi-unit tracked stock; backorder / overselling-enabled; multi-line cart; JavaScript disabled; keyboard + screen-reader error announcement; end-to-end checkout after a rejected quantity update.
-2. **Import Claude Design packages** for About and Exhibitions into the repository (see readiness checklist in [Phase D plan §2](architecture/phase-d-implementation-plan.md#2-claude-design-sync-gate-about--exhibitions)). Do **not** start About or Exhibitions theme work until this gate passes.
-3. After handoff sync: Exhibition **metaobject Basic proof**, then About / Exhibitions builds (handoff-faithful), then **C3 / C4 / C5** as designs confirm — **not** C2.
+2. Exhibition **metaobject Basic feasibility proof** (required before Exhibitions theme build). About theme implementation may proceed handoff-faithful in parallel once scheduled; do **not** invent missing/provisional content.
+3. About / Exhibitions builds (handoff-faithful), then **C3 / C4 / C5** as designs confirm — **not** C2.
 4. Push C1 + PDP + header to GitHub / published **Zita V2 — Development** theme when ready for demo parity (only when explicitly asked).
 5. Outstanding a11y spot-checks: real keyboard + VoiceOver on PDP viewer and header (script-tested earlier).
 6. PDP / header Admin content tasks (alt text, Instagram URL, shipping copy, etc.) remain as listed previously — content, not theme code.
@@ -77,11 +78,22 @@ Not blocking next Phase D gates unless noted.
 
 ## Current blockers
 
-- **About / Exhibitions implementation:** Claude Design packages not yet synchronized into the repository.
+- **Exhibitions implementation:** Exhibition metaobject Basic feasibility proof not yet run (sync gate passed; proof is the remaining Exhibitions gate).
+- **About / Exhibitions content:** handoffs mark provisional copy, sample links, and missing images — do not invent or treat provisional as verified. Ranjeeta still needs to supply/sign off About story answers, exhibition imagery, and related details (see Open inputs).
 - **Predictive search / currency selector:** V2 designs not confirmed (separate from cart).
 - **Portfolio / Contact / Policies:** awaiting Ranjeeta’s approval.
 - **Cart drawer:** not a blocker — deferred by design.
-- No blocker for **pre-launch C1 regression QA** or the About/Exhibitions sync gate. The PDP Shipping & packing row stays hidden until Ranjeeta provides approved copy.
+- No blocker for **pre-launch C1 regression QA**. The PDP Shipping & packing row stays hidden until Ranjeeta provides approved copy.
+
+## Known limitations (About / Exhibitions design package)
+
+Recorded without modifying approved designs:
+
+- Screenshots captured at **924px** preview width.
+- About screenshot portrait crop is inaccurate; use `handoff/about/assets/ranjeeta-portrait-crop-4x5.png`.
+- Header overlap at that capture width is an existing global-header issue.
+- News and obsolete Commissions links still appear in some prototype screenshots.
+- Certain About copy, exhibition links, and images are **provisional** or **missing** (see package MANIFEST and handoff §2 content-status tables).
 
 ---
 

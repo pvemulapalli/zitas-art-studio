@@ -1,0 +1,20 @@
+/* Space — generous, like the empty canvas around each pour. */
+:root{
+  --space-1:4px;
+  --space-2:8px;
+  --space-3:12px;
+  --space-4:16px;
+  --space-5:24px;
+  --space-6:32px;
+  --space-7:48px;
+  --space-8:64px;
+  --space-9:96px;
+  --space-10:144px;
+  --space-11:200px;
+
+  --gutter:clamp(20px,4vw,56px); /* @kind spacing */
+  --section-gap:clamp(96px,12vw,200px); /* @kind spacing */
+  --measure:34em; /* @kind spacing */            /* editorial line length */
+  --content-max:1360px; /* @kind spacing */
+  --header-h:76px; /* @kind spacing */
+}

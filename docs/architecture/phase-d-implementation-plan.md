@@ -45,7 +45,7 @@ This document records **architecture and sequencing decisions** for Phase D. It 
 
 ### Confirmed repository state (15 October 2026)
 
-`references/claude-design/handoff/` contains **homepage**, **plp**, **pdp**, and **header** only. **About** and **Exhibitions** handoffs, screenshots, and amendments are **not** in the repository.
+**Sync gate passed.** `references/claude-design/handoff/` now includes **about** and **exhibitions** alongside homepage, plp, pdp, and header. Screenshots live under `references/claude-design/screenshots/v2/` (`about-*`, `exhibitions-*`). Package inventory: `references/claude-design/about-exhibitions-MANIFEST.md`.
 
 ### Required import layout
 
@@ -72,20 +72,20 @@ Update `references/claude-design/screenshots/v2/README.md` when new screenshot f
 
 Use this before any About or Exhibitions theme work:
 
-- [ ] About primary handoff markdown present under `references/claude-design/handoff/about/`
-- [ ] About section-background amendment present and readable
-- [ ] About desktop and mobile screenshots (or equivalent visual truth) in `screenshots/v2/` or linked from the handoff
-- [ ] About reference HTML (if Claude Design produced any) under `handoff/about/reference/`
-- [ ] Exhibitions primary handoff markdown under `references/claude-design/handoff/exhibitions/`
-- [ ] Work and Series Links addendum present
-- [ ] Exhibitions desktop and mobile screenshots present
-- [ ] Exhibitions reference HTML (if any) present
-- [ ] Handoffs name the **seven approved surfaces** and contrast-safe foreground rules (or point to a foundations doc that does)
-- [ ] Distinct About section compositions are specified (not collapsed into one generic pattern)
-- [ ] Selected Exhibitions vs historical Archive are specified as distinct experiences
-- [ ] Exhibited product references and related collection links are specified in the addendum
-- [ ] Files committed to Git (or clearly staged for the next commit) so Cursor and collaborators share the same source
-- [ ] Short note in [project-status.md](../project-status.md) that the sync gate has passed
+- [x] About primary handoff markdown present under `references/claude-design/handoff/about/`
+- [x] About section-background amendment present and readable
+- [x] About desktop and mobile screenshots (or equivalent visual truth) in `screenshots/v2/` or linked from the handoff
+- [x] About reference HTML (if Claude Design produced any) under `handoff/about/reference/`
+- [x] Exhibitions primary handoff markdown under `references/claude-design/handoff/exhibitions/`
+- [x] Work and Series Links addendum present
+- [x] Exhibitions desktop and mobile screenshots present
+- [x] Exhibitions reference HTML (if any) present
+- [x] Handoffs name the **seven approved surfaces** and contrast-safe foreground rules (or point to a foundations doc that does)
+- [x] Distinct About section compositions are specified (not collapsed into one generic pattern)
+- [x] Selected Exhibitions vs historical Archive are specified as distinct experiences
+- [x] Exhibited product references and related collection links are specified in the addendum
+- [x] Files committed to Git (or clearly staged for the next commit) so Cursor and collaborators share the same source
+- [x] Short note in [project-status.md](../project-status.md) that the sync gate has passed
 
 **Do not** implement About or Exhibitions from chat summaries or external Claude Design workspace links alone.
 
