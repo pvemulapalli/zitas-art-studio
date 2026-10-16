@@ -1,6 +1,6 @@
 # Zita's Art Studio — Project Status
 
-**Last updated:** 12 October 2026 (header navigation implemented and QA'd on the dev preview theme; not committed and not deployed. The PDP refinement pass is committed as `7a435c8` but not deployed to the published demo theme.)
+**Last updated:** 15 October 2026 (C1 full cart page functionally approved and committed. Broader regression QA pending before launch. C2 drawer deferred by design. About/Exhibitions still gated on Claude Design sync. Header `e8b6d65`, PDP `7a435c8` committed; published demo theme deploy still outstanding.)
 
 This is the **only** canonical record of project progress, current work, next steps and environment state. Other documents link here rather than tracking status themselves.
 
@@ -19,51 +19,39 @@ This is the **only** canonical record of project progress, current work, next st
 | Metafield provisioning | Reproducible `scripts/metafields/` system; all 12 definitions provisioned and Admin order reconciled on the dev store: [metafield definitions](architecture/metafield-definitions.md) |
 | Global V2 shell + Homepage | Header, footer, announcement, hero carousel, Current Series, Selected Works and editorial sections (`3b1bf0f`, `dcee031`) |
 | V2 PLP / collection gallery | Collection intro, aligned artwork grid, native Search & Discovery Filter & Sort, collection editorial band, 8:9 desktop/tablet plate refinement from live QA (`d00ba52`) |
-| Source control | Homepage + PLP committed and pushed to `origin/main` |
+| Original-artwork PDP | Build + correction (`f713471`); refinement (`7a435c8`): story pull-quote, full-screen viewer with zoom, captions. Live QA passed on preview theme. Template `original` assigned on both PoC products. **Not** pushed to the published demo theme yet. |
+| Header navigation | Originals dropdown + mobile menu (`e8b6d65`), QA’d on preview theme. **Not** pushed to the published demo theme yet. |
+| Commerce UX Gap Audit | READ-ONLY audit of localization, predictive search, cart drawer/`/cart`, Shop Pay, ATC feedback (session, October 2026). |
+| Phase D plan | Approved with amendments; cart-primary commerce decision recorded: [phase-d-implementation-plan.md](architecture/phase-d-implementation-plan.md) |
+| C1 full cart page | V2 `/cart` with inventory validation + messaging; owner functional preview passed. **Functionally approved; broader regression QA pending before launch.** Committed locally (not pushed). |
+| Source control | Homepage, PLP, PDP, header committed and pushed to `origin/main`; C1 committed locally, not pushed |
 
 ## In progress
 
-- **Original-artwork PDP** (`product.original.json`). The Claude handoff is stored under `references/claude-design/handoff/pdp/`, and the build and its decisions are recorded in [implementation plan §14](architecture/shopify-implementation-plan.md#14-pdp-architecture).
+- **Phase D readiness** — editorial + commerce repair sequencing. Theme code for About and Exhibitions is **blocked** until Claude Design packages are in the repository. See [Phase D plan](architecture/phase-d-implementation-plan.md).
 
-  | Stage | State |
+  | Gate | State |
   |---|---|
-  | Implemented | **Yes.** Build and correction pass (`f713471`); refinement pass (`7a435c8`): editorial story pull-quote, full-screen image viewer with zoom, and visible captions separated from alt text. |
-  | Live QA | **Passed** for the refinement pass on the development preview theme (`shopify theme dev` against the Partner dev store) at 1440, 1024, 834 and 390px for Essence V2 (available) and Colored by Nature-Blue V2 (sold). Theme Check is clean. Viewer keyboard handling was exercised with script-dispatched events; a manual pass with a real keyboard and screen reader is still to do. |
-  | Product template assignment | **Done**: both PoC products use the `original` template on the Partner dev store. |
-  | Committed to Git | **Yes** (`f713471`, `7a435c8`), pushed to `origin/main` |
-  | Deployed to the published **Zita V2 — Development** theme (the normal demo storefront) | **No.** Until it is pushed, that theme has no `product.original` template, so the demo storefront renders both PoC products with the default Skeleton product template. |
-
-- **Header navigation** (Originals dropdown and mobile menu). The Claude handoff is stored under `references/claude-design/handoff/header/`, and the build, menu rules and deliberate deviations are recorded in [implementation plan §11](architecture/shopify-implementation-plan.md#11-navigation--mega-menu).
-
-  | Stage | State |
-  |---|---|
-  | Implemented | **Yes**, in the local `theme/` working tree: `zita-header.liquid`, `zita-header.js`, `zita-announcement.liquid`, `header-group.json`, `en.default.json` |
-  | Dev-store menu | `main-menu` is Originals › Current Series (Colored by Nature, Walking the Trail) plus All originals, and Contact. This was verified on the rendered storefront. Walking the Trail is empty, so it exercises the no-image and no-count fallbacks. |
-  | Live QA | **Passed** on the development preview theme (hosted preview; the dev store is now password-protected) at 1440, 1180, 1000, 999, 834, 390 and 360px. Pages: home, Originals, Colored by Nature, Walking the Trail, Essence V2, Colored by Nature-Blue V2, Search and Contact. Theme Check is clean. Keyboard behaviour was exercised with script-dispatched events and emulated focus; a manual pass with a real keyboard and VoiceOver is still to do. |
-  | Committed to Git | **No** |
-  | Deployed to the published demo theme | **No** |
+  | About / Exhibitions Claude Design handoffs, screenshots, amendments in Git | **Not present** under `references/claude-design/` (only homepage, PLP, PDP, header handoffs exist) |
+  | Exhibition metaobject Basic feasibility proof | **Not started** |
+  | Cart page (C1) — primary cart UX | **Functionally approved** (owner preview). Broader regression QA pending before launch (see Next). Committed locally; **not pushed / not deployed.** |
+  | Cart drawer (C2) | **Deferred by design** — not planned for current V2; full `/cart` is primary. Not a missing feature. Revisit only if user testing shows need. **Do not implement.** |
+  | Accelerated checkout (C3) | Separate planned enhancement (not tied to a drawer) |
+  | Predictive search (C4) | Separate planned enhancement; needs V2 search design |
+  | Currency selector (C5) | Needs V2 placement design + Markets Admin audit |
+  | PLP quick add / image browsing | Optional; pending design review |
+  | Portfolio / Contact / Policies | **On hold** — awaiting Ranjeeta’s approval |
+  | News / standalone Commissions page | **Out of scope** |
 
 ## Next
 
-1. Check the PDP viewer once with a real keyboard and a screen reader (VoiceOver).
-2. Push the PDP to the published **Zita V2 — Development** theme on the Partner dev store, then re-check both products on the demo storefront.
-3. PDP content in the dev-store Admin (content tasks, not theme work):
-   - add alt text beginning "Room view: …" to Essence V2's four room photographs (images 2–5);
-   - replace Essence V2's 420 × 840px primary image with a higher-resolution file (the viewer cannot offer zoom on it);
-   - optionally tidy the stories' own quotation marks so they sit well inside the pull-quote marks (Essence's straight `"Essence"`; Colored by Nature-Blue's unmatched `”` after "Colored by Nature") — wording is Ranjeeta's to approve;
-   - Related Works ("More originals") stays hidden until Shopify returns recommendations; related products can be set in Search & Discovery later if wanted;
-   - add shipping/packing copy (the accordion row is hidden until then) and a commission URL once Ranjeeta provides them.
-4. Review and commit the **header navigation**. Before committing:
-   - check it once with a real keyboard (Tab order through the dropdown, Enter/Space on Originals) and with VoiceOver on macOS and iOS;
-   - check it on a real iPhone (safe-area padding, scroll lock).
-
-   Then push it to the published demo theme together with the PDP.
-5. Header content in the dev-store Admin and theme settings (content tasks):
-   - add the Instagram profile URL (blank now, so the header icon and the mobile "Follow on Instagram" row are hidden);
-   - optionally give Colored by Nature and Walking the Trail their own collection images, which the previews use ahead of the first product's image;
-   - the Originals parent link points at the PoC collection `v2-poc-original-artworks`; repoint it when the final Originals collection exists.
-6. Cross-page polish and QA ([implementation plan §23](architecture/shopify-implementation-plan.md#23-qa-requirements)).
-7. Prepare **Phase B** — merchant-store integration ([implementation plan §24](architecture/shopify-implementation-plan.md#24-cutover--launch-strategy)).
+1. **Pre-launch C1 regression QA** (broader cases not required for this functional approval): multi-unit tracked stock; backorder / overselling-enabled; multi-line cart; JavaScript disabled; keyboard + screen-reader error announcement; end-to-end checkout after a rejected quantity update.
+2. **Import Claude Design packages** for About and Exhibitions into the repository (see readiness checklist in [Phase D plan §2](architecture/phase-d-implementation-plan.md#2-claude-design-sync-gate-about--exhibitions)). Do **not** start About or Exhibitions theme work until this gate passes.
+3. After handoff sync: Exhibition **metaobject Basic proof**, then About / Exhibitions builds (handoff-faithful), then **C3 / C4 / C5** as designs confirm — **not** C2.
+4. Push C1 + PDP + header to GitHub / published **Zita V2 — Development** theme when ready for demo parity (only when explicitly asked).
+5. Outstanding a11y spot-checks: real keyboard + VoiceOver on PDP viewer and header (script-tested earlier).
+6. PDP / header Admin content tasks (alt text, Instagram URL, shipping copy, etc.) remain as listed previously — content, not theme code.
+7. **Phase B** — merchant-store integration remains future work after Phase D demo readiness.
 
 ## Environments
 
@@ -74,22 +62,29 @@ This is the **only** canonical record of project progress, current work, next st
 
 ## Open inputs from Ranjeeta
 
-Not blocking current dev-store work unless noted.
+Not blocking next Phase D gates unless noted.
 
+- **Approval pending:** Portfolio; Contact / Trade / Commissions; Policies
+- **Design confirmation pending:** predictive search overlay; country/currency selector; optional PLP quick add / image browsing
+- **Cart drawer:** not awaiting design — **deferred by architecture decision** (full `/cart` primary)
 - Series descriptions: **Colored by Nature**, **BlackWhiteandGrey**, **Walking the Trail** (pending)
-- Artwork facts per product: year, confirmed dimensions, framing / ready-to-hang, certificate, shipping and packing (needed for real PDP content and catalog migration)
+- Artwork facts per product: year, confirmed dimensions, framing / ready-to-hang, certificate, shipping and packing
 - Print strategy and original ↔ print relationships
-- Commission process, pricing and timeline
-- About-page story answers; exhibition details and imagery
-- Newsletter promise; News vs Press naming; Contact response-time promise (if any)
+- Commission process, pricing and timeline (page on hold)
+- About-page story answers; exhibition details and imagery (needed for rich editorial content after handoff sync)
+- Newsletter promise; Contact response-time promise (if any)
 - Higher-resolution artwork files and room / detail photography where available
 
 ## Current blockers
 
-- No blockers. The PDP Shipping & packing row stays hidden until Ranjeeta provides approved copy.
+- **About / Exhibitions implementation:** Claude Design packages not yet synchronized into the repository.
+- **Predictive search / currency selector:** V2 designs not confirmed (separate from cart).
+- **Portfolio / Contact / Policies:** awaiting Ranjeeta’s approval.
+- **Cart drawer:** not a blocker — deferred by design.
+- No blocker for **pre-launch C1 regression QA** or the About/Exhibitions sync gate. The PDP Shipping & packing row stays hidden until Ranjeeta provides approved copy.
 
 ---
 
 ## Which documents to trust
 
-See the document map in the [README](../README.md#document-map). In short: this file for status; [project brief](project-brief.md) for the charter; `docs/architecture/` for technical decisions; the design brief and V2 acceptance for approved design intent. Claude handoffs, design reference HTML and research audits are historical snapshots.
+See the document map in the [README](../README.md#document-map). In short: this file for status; [project brief](project-brief.md) for the charter; `docs/architecture/` for technical decisions including [Phase D plan](architecture/phase-d-implementation-plan.md); the design brief and V2 acceptance for approved design intent. Claude handoffs, design reference HTML and research audits are historical snapshots once imported.

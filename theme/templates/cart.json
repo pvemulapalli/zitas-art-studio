@@ -11,7 +11,11 @@
   "sections": {
     "main": {
       "type": "cart",
-      "settings": {}
+      "settings": {
+        "eyebrow": "Bag",
+        "continue_label": "View originals",
+        "continue_url": ""
+      }
     }
   },
   "order": [

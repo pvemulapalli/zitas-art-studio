@@ -86,6 +86,7 @@ theme/                    Zita V2 Shopify theme (Online Store 2.0)
 | [Project Status](docs/project-status.md) | Completed, in progress, next, environments, open inputs |
 | [Project Brief](docs/project-brief.md) | Project charter: mission, constraints, principles |
 | [Shopify Implementation Plan](docs/architecture/shopify-implementation-plan.md) | Authoritative architecture reference |
+| [Phase D Implementation Plan](docs/architecture/phase-d-implementation-plan.md) | Editorial pages + commerce repair decisions and sequencing |
 | [Product Schema](docs/architecture/product-schema.md) | V2 product data model |
 | [Metafield Definitions](docs/architecture/metafield-definitions.md) | Metafield definitions and provisioning state |
 | [Ranjeeta's Preferences](docs/design/ranjeeta-preferences.md) | Stakeholder preferences and decisions (updated only when Ranjeeta decides something new) |

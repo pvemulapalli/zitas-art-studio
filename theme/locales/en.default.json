@@ -14,10 +14,22 @@
     "comment_form_title": "Add a comment"
   },
   "cart": {
+    "title": "Your bag",
+    "empty": "Your bag is empty. Explore original works when you are ready.",
+    "quantity": "Quantity",
+    "unit_price": "Unit price",
+    "line_total": "Line total",
+    "subtotal": "Subtotal",
+    "summary": "Order summary",
+    "taxes_and_shipping": "Taxes and shipping are calculated at checkout.",
+    "update": "Update bag",
+    "remove": "Remove",
     "checkout": "Checkout",
-    "title": "Cart",
-    "update": "Update",
-    "remove": "Remove"
+    "continue_shopping": "View originals",
+    "error_generic": "That quantity could not be updated. Please try again.",
+    "no_changes": "No quantity changes to update.",
+    "quantity_available": "Only {{ count }} available. Please adjust your quantity.",
+    "one_original_available": "One original available."
   },
   "customers": {
     "login": {

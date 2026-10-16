@@ -639,13 +639,16 @@ Before build: verify **Shopify Basic** compatibility and current metaobject stor
 
 ## 16. About / News / Contact / Commissions
 
+Phase D sequencing, gates, and scope amendments (News and standalone Commissions **out of scope**; Portfolio / Contact / Policies on hold): [phase-d-implementation-plan.md](phase-d-implementation-plan.md).
+
 | Surface | Architecture |
 |---|---|
-| **About** | Shopify **Page** + alternate JSON template; custom editorial sections; owner-editable media/copy |
-| **News / Press** | Native **blog/articles** first; custom article/list templates for editorial presentation; naming (News vs Press) still open in preferences |
-| **Contact** | Native contact form; approved public email `ranjeeta.shroff@gmail.com` and phone `469-850-0196`; **no** physical address; response-time promise not invented |
-| **Commissions** | Page + custom template/sections unless future commerce needs dictate otherwise |
-| **Policies** | Native Shopify pages/policies; simple readable styling |
+| **About** | Shopify **Page** + alternate JSON template; sections **derived from approved Claude Design handoff** (not a single generic chapter pattern); per-section Theme Editor surface controls; owner-editable media/copy. **Blocked** until handoffs are in the repository. |
+| **Exhibitions** | Prefer Exhibition **metaobject** after Basic storefront proof; Selected Exhibitions distinct from full historical Archive; date-derived status with optional manual override and undated support. **Blocked** until handoffs are in the repository and the proof passes. |
+| **News / Press** | **Out of Phase D scope.** Native **blog/articles** remain the long-term option if revived later. |
+| **Contact** | Native contact form; approved public email `ranjeeta.shroff@gmail.com` and phone `469-850-0196`; **no** physical address; response-time promise not invented. **On hold** pending Ranjeeta’s approval of Contact / Trade / Commissions design. |
+| **Commissions** | Standalone Commissions page **out of Phase D scope**. Trade/commissions may land in the Contact surface when approved. |
+| **Policies** | Native Shopify pages/policies; simple readable styling. **On hold** pending Ranjeeta’s approval. |
 
 ---
 
@@ -805,7 +808,7 @@ Review against [Design V2 acceptance](../design/design-v2-acceptance.md) and V2 
 | **A — Isolated proof** | **Partner dev store** | Skeleton in `theme/`; **Essence V2** + **Colored by Nature-Blue V2** + **`V2 PoC — Original Artworks`**; **proven custom metafields** + **[product-schema.md](product-schema.md)**; sold/available data rules proven — **Done**. Reproducible metafield-definition provisioning, including Admin order — **Done** on the dev store ([metafield-definitions.md](metafield-definitions.md)). **Later:** merchant catalog workbook, dev-store-tested migration/import |
 | **B — Merchant theme foundation** | **Ranjeeta's store** | Same theme repo (`--store` verified); development/unpublished Zita V2; global shell & components against **legacy real data**; **Flora untouched** |
 | **C — Commerce templates** | Dev → merchant | Originals + prints PLP/PDP (catalog behavior proven on dev store first) |
-| **D — Editorial pages** | Dev → merchant | About, Exhibitions, News, Contact, Commissions, policies |
+| **D — Editorial pages & commerce repair** | Dev → merchant | About, Exhibitions (gated); **C1 full `/cart` primary** (functionally approved); **C2 drawer deferred by design**; C3/C4/C5 separate. Portfolio / Contact / Policies on hold. News and standalone Commissions **out of scope**. Decisions: [phase-d-implementation-plan.md](phase-d-implementation-plan.md) |
 | **E — Catalog creation** | **Merchant store** | Remaining V2 products/collections as **Draft** until launch prep; media, metadata, relationships, redirect plan |
 | **F — Review** | **Merchant store** | Unpublished Zita V2; Ranjeeta + a11y/content QA |
 | **G — Cutover** | **Merchant store** | Activate/publish V2 catalog as required; menus; **publish Zita V2 theme**; production verification |
@@ -817,10 +820,16 @@ The phases above define scope, not strict order. In practice the commerce-page w
 
 1. Global shell + Homepage (dev store) — **Done**
 2. PLP / collection gallery (dev store) — **Done**
-3. Original-artwork PDP (dev store) — **in progress**
-4. Header collection-navigation dropdown (dev store)
-5. Cross-page polish and QA (dev store)
-6. **Phase B** — merchant-store integration on an unpublished Zita V2 theme
+3. Original-artwork PDP (dev store) — **Done** in Git; published demo theme deploy still outstanding ([project-status.md](../project-status.md))
+4. Header collection-navigation dropdown (dev store) — **Done** in Git (`e8b6d65`); published demo theme deploy still outstanding
+5. **Phase D** — see [phase-d-implementation-plan.md](phase-d-implementation-plan.md):
+   - Sync About + Exhibitions Claude Design packages into Git (**gate**)
+   - Exhibition metaobject Basic feasibility proof (**gate** for Exhibitions schema)
+   - **C1 full cart page** — functionally approved and committed (15 Oct 2026); broader regression QA before launch ([phase-d-implementation-plan.md](phase-d-implementation-plan.md) §7). **C2 drawer deferred by design.**
+   - About, then Exhibitions (handoff-faithful; Selected vs Archive preserved)
+   - C3 / C4 / C5 as respective designs confirm (not C2)
+6. Cross-page polish and QA (dev store)
+7. **Phase B** — merchant-store integration on an unpublished Zita V2 theme
 
 Current position in this sequence: [project-status.md](../project-status.md).
 
@@ -877,7 +886,7 @@ Not finalized in this plan:
 - Additional custom metafields beyond [product-schema.md](product-schema.md) §4 PROVEN set
 - Metafield-definition provisioning on Ranjeeta's store (Phase B). Dev-store state and open questions: [metafield-definitions.md](metafield-definitions.md).
 - Merchant catalog workbook + import pipeline (FUTURE)
-- Exhibition metaobject schema and Basic storefront exposure
+- Exhibition metaobject schema and Basic storefront exposure — **feasibility proof required** before finalize; see [phase-d-implementation-plan.md](phase-d-implementation-plan.md) §4 (Selected vs Archive; date-derived status + manual override; undated records)
 - Final V2 active series list (~2–3 foregrounded)
 - Collection description vs custom field for series statement
 - Sold-state rules for all legacy inventory edge cases
