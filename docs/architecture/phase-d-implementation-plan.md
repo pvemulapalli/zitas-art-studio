@@ -1,8 +1,8 @@
 # Phase D — Editorial Pages & Commerce Repair Plan
 
-**Status:** Approved with amendments (15 October 2026)  
+**Status:** Approved with amendments (15 October 2026); **recovery resequencing** (23 October 2026)
 **Progress tracking:** [project-status.md](../project-status.md) only  
-**Companion:** [Shopify implementation plan](shopify-implementation-plan.md) §15–16, §23–24
+**Companion:** [Shopify implementation plan](shopify-implementation-plan.md) §15–16, §23–24 · [Recovery audit](v2-recovery-audit-2026-10-23.md)
 
 This document records **architecture and sequencing decisions** for Phase D. It does not track day-to-day progress.
 
@@ -22,9 +22,9 @@ This document records **architecture and sequencing decisions** for Phase D. It 
 
 | Page / feature | Reason |
 |---|---|
-| Portfolio | Awaiting Ranjeeta’s approval |
-| Contact / Trade / Commissions | Awaiting Ranjeeta’s approval |
-| Policies | Awaiting Ranjeeta’s approval |
+| Portfolio | **Approved direction (Oct 2026)** — build after Claude handoff is imported to `references/claude-design/handoff/` (not in repo yet) |
+| Contact / Trade / Commissions | **Approved direction (Oct 2026)** — same handoff import gate; use `info@zitasartstudio.com` |
+| Policies | **Approved approach (Oct 2026)** — original editable drafts; owner legal/business decisions before publish |
 | News | Removed from scope |
 | Standalone Commissions page | Removed from scope |
 | Cart drawer UI | **Deferred by design** (15 Oct 2026) — full cart page is primary; not a missing V2 feature. May revisit only if user testing shows need |
@@ -107,27 +107,20 @@ Final section filenames and block schemas are deferred until the handoff is in-r
 
 ## 4. Exhibitions architecture decisions
 
+**V2 launch decision (23 October 2026):** Implement Exhibitions with **native Online Store 2.0 sections and blocks** and owner-editable Theme Editor content. **Do not** create Exhibition metaobjects or custom product/collection linking for V2 launch. Preserve the approved Claude Design editorial appearance; confirm section/block limits and owner-editing workflow during implementation.
+
 | Decision | Rule |
 |---|---|
-| Data model | Prefer structured **Exhibition metaobjects** if the Basic feasibility proof succeeds |
-| Selected vs Archive | Preserve **Selected Exhibitions** and the **broader historical Archive** as distinct presentations. Do **not** limit the entire archive to 6–8 featured entries. Featured/selected entries may be a curated subset; the archive holds the full set. |
-| Status | Investigate **date-derived status** (upcoming / current / past) with an **optional manual override**, including support for **undated historical** records (override or explicit past/archive placement; never invent dates) |
-| Links | Support optional exhibited **product** references and related **collection** references per the Work and Series Links addendum |
+| Data model | **Theme sections/blocks** for V2 launch (no metaobjects this phase) |
+| Selected vs Archive | Preserve **Selected Exhibitions** and the **broader historical Archive** as distinct presentations. Do **not** limit the entire archive to 6–8 featured entries. |
+| Status | **Manual / editor-controlled** labels (upcoming, current, past, archive) where the handoff requires; never invent dates |
+| Commerce links | Optional plain URLs or collection links via standard block settings if the handoff allows; **no** structured product/collection reference fields in this phase |
 | Incomplete data | Omit missing dates, images, and descriptions; do not invent them |
-| Owner workflow | Ranjeeta must create, edit, reorder (or control selected vs archive placement), and link records without developer help |
+| Owner workflow | Ranjeeta edits, reorders, and curates via Theme Editor without developer help |
 
-### Metaobject feasibility proof (required before finalizing schema)
+### Deferred (post–V2 launch or separate spike)
 
-On the Partner **Basic** store, before locking architecture:
-
-1. Create a temporary Exhibition-like metaobject definition with: title, optional dates, status/override fields as needed for the proof, **list of product references**, **list of collection references**, optional image.
-2. Create 2–3 sample entries (including one undated).
-3. Verify **Liquid / Online Store** can read entries on a test page or section (storefront access on Basic).
-4. Verify multiple product refs and collection refs render as expected.
-5. Walk Ranjeeta’s (or merchant-proxy) Admin path: create, edit, reorder/select, attach products/collections.
-6. Record pass/fail and any Basic limitations in this document and [project-status.md](../project-status.md).
-
-If the proof fails, document a Theme Editor / page-section fallback without abandoning Selected vs Archive.
+Metaobject + Admin API product/collection linking remains documented in the Exhibitions handoff addendum for a **future** phase if merchant workflow outgrows sections/blocks.
 
 ---
 
@@ -176,16 +169,21 @@ Use the Commerce UX Gap Audit as the gap inventory. Implement as **isolated, tes
 | Order | Milestone | Gate |
 |---|---|---|
 | **0a** | Sync About + Exhibitions Claude Design packages into Git | Checklist in §2 |
-| **0b** | Exhibition metaobject Basic feasibility proof | §4 |
+| **0b** | ~~Exhibition metaobject proof~~ | **Superseded for V2 launch** — sections/blocks only (§4) |
 | **1 — FIRST THEME MILESTONE** | **C1 — Full cart page** (primary cart UX) | **Functionally approved** and committed — §7. Broader regression QA before launch. **C2 not in sequence.** |
 | **2** | About implementation (handoff-faithful sections) | §2 gate passed |
-| **3** | Exhibitions schema finalize + page build | §2 + §4 proof passed |
+| **3** | Exhibitions page build (sections/blocks) | §2 handoffs in repo |
 | **4** | Seed content + wire nav/announcement/recognition links | Content available |
 | **5+** | C3 / C4 / C5 (and optional PLP enhancements) | Respective design/Admin gates — **not** C2 |
 | **Deferred** | C2 cart drawer | By design decision (15 Oct 2026); not in current V2 |
-| **Hold** | Portfolio, Contact, Policies | Ranjeeta approval |
+| **Hold** | Portfolio, Contact handoff import | Approved to build once packages are in-repo |
+| **Recovery** | About deploy + QA + commit | See [project-status § Recovery](../project-status.md) milestones M0–M3 |
 
-About (2) and Exhibitions (3) must not start before their gates. C1 is functionally approved and committed; remaining cart work is pre-launch regression QA only (§7).
+About (2) and Exhibitions (3) must not start before their gates. **About code exists locally but is uncommitted and was not pushed to the published dev theme** — see [recovery audit §3](v2-recovery-audit-2026-10-23.md). C1 is functionally approved and committed; remaining cart work is pre-launch regression QA only (§7).
+
+### Recovery sequencing (23 October 2026)
+
+After owner recovery review, prioritize **About on published theme `#192367558949` → visual QA → Git commit**, then **PDP variants + Cart copy + Shop Pay**, then **Exhibitions proof + page**, then **Contact/Portfolio** (import handoffs first), then **Policies drafts**. Full milestone table: [project-status.md](../project-status.md).
 
 ---
 

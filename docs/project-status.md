@@ -1,8 +1,43 @@
 # Zita's Art Studio — Project Status
 
-**Last updated:** 15 October 2026 (About/Exhibitions Claude Design sync gate **passed**. C1 full cart page functionally approved and committed; broader regression QA pending before launch. C2 drawer deferred by design. Header `e8b6d65`, PDP `7a435c8` committed; published demo theme deploy still outstanding.)
+**Last updated:** 23 October 2026 (M2 — About + 404 promoted to published dev theme `#192367558949`; Git checkpoints on `main`, **not pushed**. See § M2.)
 
 This is the **only** canonical record of project progress, current work, next steps and environment state. Other documents link here rather than tracking status themselves.
+
+---
+
+## Recovery audit summary (23 Oct 2026)
+
+| Layer | State |
+|---|---|
+| **Git `main`** | **Local commits** for About, docs, 404 (M2); **not pushed** to `origin`. |
+| **Published dev theme** | **Zita V2 — Development** `#192367558949` — **About + 404 deployed** (M2). |
+| **Prior About push target** | Theme `#192659095845` **no longer exists** — explains Ranjeeta not seeing About on demo. |
+| **Production store** | Untouched (Phase B). |
+
+Full evidence and fix path: [architecture/v2-recovery-audit-2026-10-23.md](architecture/v2-recovery-audit-2026-10-23.md).
+
+---
+
+## Owner decisions (recovery, Oct 2026)
+
+Authoritative for V2 completion planning (supersedes earlier “on hold” where noted).
+
+| Topic | Decision |
+|---|---|
+| Homepage | Keep **existing teal**; design generally approved |
+| Header / nav | Preserve approved design; owner-managed **current-series** submenu; **About, Exhibitions, Contact**; **no News**; **favicon before launch** |
+| PDP | Short **description near buy box**; hide **Year** and **Framing**; keep **Medium, Surface, Size**; reduce **COA repetition**; **“Add to Cart”** (not bag) + a11y strings |
+| Variants | **Required for launch** — Shopify-native, any option count (Original vs Print, print sizes); correct price/media/URL/availability/cart in a **later milestone** |
+| Diptych inventory | Shared stock for solo A, solo B, and pair — **evaluate Shopify Bundles app** (dev prototype + Ranjeeta decision on listings vs variant model); **launch gate**; does not block ordinary variant work |
+| Cart / checkout | **Full `/cart`** (no drawer); preserve **Shop Pay / accelerated checkout** where eligible; USD OK initially |
+| About | Seven-chapter design; **finish + visual QA before Git commit**; seven surfaces; no invented Ch 02 photos |
+| Exhibitions | Approved design; **V2 launch = OS 2.0 sections/blocks only** (no metaobjects, no custom product/collection linking this phase); historical rows without commerce links OK |
+| Contact | Approved layout + inquiry types; **`info@zitasartstudio.com`** everywhere customer-facing |
+| Portfolio | Approved room/series editorial; **1 or 2 images per room**; owner surfaces — **handoff not yet in repo** |
+| Policies | Original **editable drafts** later; owner decisions on refunds, shipping, commissions, privacy — **Ranjeeta review before publish** |
+| Product data | [Cleanup/import spreadsheet spec](architecture/product-cleanup-import-spec.md); **no catalog changes during audit** |
+| Deferred | Cart drawer, currency selector, predictive search overlay, optional PLP quick-add |
 
 ---
 
@@ -13,90 +48,186 @@ This is the **only** canonical record of project progress, current work, next st
 | Reference research | [Dimitra Milan](research/dimitra-milan-audit.md), [Rinske Douna](research/rinske-douna-audit.md), [content & brand inventory](research/zita-content-brand-inventory.md) |
 | Design | **Zita Design V2** approved by Ranjeeta (October 2026): [design brief](design/zita-design-brief.md), [V2 acceptance](design/design-v2-acceptance.md) |
 | Architecture | Shopify Online Store 2.0, theme-first, Shopify Basic: [implementation plan](architecture/shopify-implementation-plan.md) |
-| Theme foundation | Shopify Skeleton v1.0.0 baseline in `theme/` (`b21dca4`) |
+| Theme foundation | Shopify Skeleton baseline in `theme/` |
 | Partner dev store | `zitas-art-studio-development.myshopify.com` (Basic) |
-| Phase A product-data proof | Essence V2 (available) + Colored by Nature-Blue V2 (sold) in `V2 PoC — Original Artworks`: [product schema](architecture/product-schema.md) |
-| Metafield provisioning | Reproducible `scripts/metafields/` system; all 12 definitions provisioned and Admin order reconciled on the dev store: [metafield definitions](architecture/metafield-definitions.md) |
-| Global V2 shell + Homepage | Header, footer, announcement, hero carousel, Current Series, Selected Works and editorial sections (`3b1bf0f`, `dcee031`) |
-| V2 PLP / collection gallery | Collection intro, aligned artwork grid, native Search & Discovery Filter & Sort, collection editorial band, 8:9 desktop/tablet plate refinement from live QA (`d00ba52`) |
-| Original-artwork PDP | Build + correction (`f713471`); refinement (`7a435c8`): story pull-quote, full-screen viewer with zoom, captions. Live QA passed on preview theme. Template `original` assigned on both PoC products. **Not** pushed to the published demo theme yet. |
-| Header navigation | Originals dropdown + mobile menu (`e8b6d65`), QA’d on preview theme. **Not** pushed to the published demo theme yet. |
-| Commerce UX Gap Audit | READ-ONLY audit of localization, predictive search, cart drawer/`/cart`, Shop Pay, ATC feedback (session, October 2026). |
-| Phase D plan | Approved with amendments; cart-primary commerce decision recorded: [phase-d-implementation-plan.md](architecture/phase-d-implementation-plan.md) |
-| C1 full cart page | V2 `/cart` with inventory validation + messaging; owner functional preview passed. **Functionally approved; broader regression QA pending before launch.** Committed locally (not pushed). |
-| About / Exhibitions Claude Design sync | **Gate passed.** Imported under `references/claude-design/`: About handoff + Section Surfaces amendment; Exhibitions handoff + Work and Series Links addendum; reference source + assets (incl. pre-cropped portrait); 61 screenshots (About 18 desktop / 16 mobile; Exhibitions 15 desktop / 12 mobile). Package manifest at `references/claude-design/about-exhibitions-MANIFEST.md`. Existing homepage/PLP/PDP/header references untouched. |
-| Source control | Homepage, PLP, PDP, header committed and pushed to `origin/main`; C1 committed locally, not pushed |
+| Phase A product-data proof | Essence V2 + Colored by Nature-Blue V2: [product schema](architecture/product-schema.md) |
+| Metafield provisioning | 12 definitions on dev store: [metafield definitions](architecture/metafield-definitions.md) |
+| Global V2 shell + Homepage | Header, footer, announcement, hero, Current Series, Selected Works |
+| V2 PLP / collection gallery | Editorial band, filters, 8:9 plate refinement |
+| Original-artwork PDP | Story, viewer, related works — commits `7a435c8` et al. |
+| Header navigation | Originals mega-menu + mobile menu — `e8b6d65` |
+| Commerce UX Gap Audit | READ-ONLY session (cart, Shop Pay, search, localization) |
+| Phase D plan | [phase-d-implementation-plan.md](architecture/phase-d-implementation-plan.md) |
+| C1 full cart page | Committed on `main` (`3ecb3d2`); owner functional preview passed; **regression QA before launch** |
+| About / Exhibitions Claude Design sync | Committed `ced70a1`; manifest at `references/claude-design/about-exhibitions-MANIFEST.md` |
+| Recovery audit (planning) | [v2-recovery-audit-2026-10-23.md](architecture/v2-recovery-audit-2026-10-23.md), [product-cleanup-import-spec.md](architecture/product-cleanup-import-spec.md) |
 
-## In progress
+---
 
-- **Phase D readiness** — editorial + commerce repair sequencing. Claude Design sync gate for About/Exhibitions has **passed**; theme builds still wait on the Exhibition metaobject Basic proof (Exhibitions) and handoff-faithful implementation. See [Phase D plan](architecture/phase-d-implementation-plan.md).
+## M2 promotion (23 Oct 2026)
 
-  | Gate | State |
-  |---|---|
-  | About / Exhibitions Claude Design handoffs, screenshots, amendments in Git | **Passed** — present under `references/claude-design/handoff/{about,exhibitions}/` and `screenshots/v2/`; manifest at `about-exhibitions-MANIFEST.md` |
-  | Exhibition metaobject Basic feasibility proof | **Not started** |
-  | Cart page (C1) — primary cart UX | **Functionally approved** (owner preview). Broader regression QA pending before launch (see Next). Committed locally; **not pushed / not deployed.** |
-  | Cart drawer (C2) | **Deferred by design** — not planned for current V2; full `/cart` is primary. Not a missing feature. Revisit only if user testing shows need. **Do not implement.** |
-  | Accelerated checkout (C3) | Separate planned enhancement (not tied to a drawer) |
-  | Predictive search (C4) | Separate planned enhancement; needs V2 search design |
-  | Currency selector (C5) | Needs V2 placement design + Markets Admin audit |
-  | PLP quick add / image browsing | Optional; pending design review |
-  | Portfolio / Contact / Policies | **On hold** — awaiting Ranjeeta’s approval |
-  | News / standalone Commissions page | **Out of scope** |
+| Item | Status |
+|---|---|
+| **Theme backup** | `/tmp/zita-theme-backup-192367558949-1aowCn` (75 files, read-only snapshot before push) |
+| **About on published** | Targeted `--only` push of full About stack + merged locale (`about.*`, `not_found.title` only; **remote cart strings preserved**) + `en.default.schema.json` template label |
+| **404 on published** | `zita-not-found` section, CSS, `404.json` pushed |
+| **About QA** | Local `http://127.0.0.1:9292/pages/about` — all **7 sections**; Ch 02 empty; **portrait crop still missing** in Files |
+| **404 QA** | Local invalid URL — title **404 Not Found**, h1 **This room is empty**, CTAs **Return home** / **Browse original artworks**; no JS |
+| **Template label** | `templates.page.about.name` → **About** deployed in schema locale; confirm in Theme Editor on live theme |
+| **Public email** | **`settings_schema.json` default** updated locally; **saved theme setting on remote** may still need Theme Editor → Public email → `info@zitasartstudio.com` (settings_data not pushed) |
+| **Navigation** | **Menus API access denied** — manual Admin: add **About** → `/pages/about`; defer **Exhibitions** (no page); remove **News** if present |
+| **Theme Check** | 74 files, 0 offenses |
 
-## Next
+**Hosted About URL:** `https://zitas-art-studio-development.myshopify.com/pages/about` (store password).
 
-1. **Pre-launch C1 regression QA** (broader cases not required for this functional approval): multi-unit tracked stock; backorder / overselling-enabled; multi-line cart; JavaScript disabled; keyboard + screen-reader error announcement; end-to-end checkout after a rejected quantity update.
-2. Exhibition **metaobject Basic feasibility proof** (required before Exhibitions theme build). About theme implementation may proceed handoff-faithful in parallel once scheduled; do **not** invent missing/provisional content.
-3. About / Exhibitions builds (handoff-faithful), then **C3 / C4 / C5** as designs confirm — **not** C2.
-4. Push C1 + PDP + header to GitHub / published **Zita V2 — Development** theme when ready for demo parity (only when explicitly asked).
-5. Outstanding a11y spot-checks: real keyboard + VoiceOver on PDP viewer and header (script-tested earlier).
-6. PDP / header Admin content tasks (alt text, Instagram URL, shipping copy, etc.) remain as listed previously — content, not theme code.
-7. **Phase B** — merchant-store integration remains future work after Phase D demo readiness.
+---
+
+## M1 About QA (23 Oct 2026)
+
+| Item | Value |
+|---|---|
+| **QA theme** | **Zita V2 — About QA** `#193116733733` (unpublished) — duplicated from published `#192367558949`; `settings_data.json` + `index.json` verified identical to source |
+| **Published theme** | Superseded by **M2** — About now on `#192367558949` |
+| **About page** | **About the Artist** — handle **`about`**, published, **`templateSuffix: about`** (Page ID `178246123813`) |
+| **Navigation** | **Not changed** (per M1 scope) |
+| **Theme Check** | 73 files, 0 offenses (local, pre-push) |
+| **Portrait crop** | **`ranjeeta-portrait-crop-4x5.png` not in Files** (Oct 2026) — manual upload required; QA/local JSON already reference it |
+
+**Preview URL:** `https://zitas-art-studio-development.myshopify.com/pages/about?preview_theme_id=193116733733` (store password required)
+
+**Theme Editor:** `https://zitas-art-studio-development.myshopify.com/admin/themes/193116733733/editor?previewPath=/pages/about`
+
+---
+
+## M1.5 closure (local, 23 Oct 2026)
+
+| Item | Status |
+|---|---|
+| **About ↔ QA sync** | Local `page.about.json` synced to QA theme (incl. Theme Editor header); seven sections + assets match QA except locale/cart differences documented below |
+| **Praveen About QA** | Technical design **approved**; promotion pending portrait upload + optional owner pass |
+| **404** | **`zita-not-found`** section + `zita-not-found.css`; `404.json` updated — **local only**, not deployed |
+| **Template label** | `locales/en.default.schema.json` → `templates.page.about.name`: **"About"** (Shopify schema locale convention) |
+| **Public email default** | `settings_schema.json` default → **info@zitasartstudio.com**; **saved** remote theme settings still hold prior value until Theme Editor / settings_data update |
+| **Locale reconciliation** | Local adds **`about.*`**, **`not_found.title`**, full **V2 cart** strings; published remote locale still **Skeleton cart** (`Cart` / `Update`) — deploy must **merge About (+404) keys only**, not replace entire locale |
+| **SEO** | [v2-seo-foundation.md](architecture/v2-seo-foundation.md) — production baseline, V2 audit, page checklist, agency handoff |
+| **Marketing agency** | Preview via password + QA `preview_theme_id`; do not index dev store |
+
+---
+
+## Owner content still pending (About)
+
+| Item | Notes |
+|---|---|
+| **Portrait crop** | Upload `ranjeeta-portrait-crop-4x5.png` to Shopify Files |
+| **Ch 02 photography** | Intentionally empty until Ranjeeta supplies |
+| **Biography sign-off** | Provisional copy on page |
+
+---
+
+## Approved but not implemented (theme)
+
+| Page / feature | Gate |
+|---|---|
+| **Exhibitions** | Handoff-faithful sections/blocks (editorial); investigate block limits at implementation time |
+| **Contact** | Import/sync Claude handoff to repo (if not in ZIP), then build |
+| **Portfolio** | Import handoff to repo, then build |
+| **Policies (V2 editorial)** | After owner policy decisions + draft copy |
+| **PDP commerce polish** | Description placement, attribute filter, Cart wording, variant UX, Shop Pay on `product.original` |
+| **Favicon** | Asset + theme setting |
+| **Public email (saved settings)** | After deploy: Theme settings → **info@zitasartstudio.com** (schema default updated locally only) |
+
+---
+
+## Launch blockers
+
+1. **About content** — portrait Files upload; Ranjeeta sign-off; **main menu About link** (manual Admin).
+2. **Variant-capable PDP on dev catalog** — PoC products are single-variant; need representative multi-variant product on **dev store only** for QA (pattern: Vibrant Life diptych).
+3. **“Add to Cart” + cart copy alignment** — locale and header/cart strings still say “bag”.
+4. **Shop Pay / accelerated checkout** — confirm Payments on dev store; add to V2 original PDP if eligible.
+5. **C1 regression QA** — multi-line cart, stock edge cases, a11y (see Next).
+6. **Exhibitions** — sections/blocks build (no metaobjects for V2 launch).
+7. **Diptych / bundles** — Shopify Bundles eligibility + dev prototype + Ranjeeta listing model decision.
+8. **Contact + Portfolio** — handoffs missing from `references/claude-design/handoff/`; import before build.
+9. **Policies** — Ranjeeta decisions + draft review before publish.
+10. **Favicon** — owner decision on asset; theme wiring before launch.
+
+---
+
+## Content / merchant decisions needed (Ranjeeta)
+
+- Policy topics: refunds, returns, damage, shipping, international, cancellations, commissions, privacy, terms ([spreadsheet spec](architecture/product-cleanup-import-spec.md) for product rows).
+- **Surface** field source and PDP display vs **Medium** / **Size**.
+- **Certificate** vs description duplication — approve trimmed COA pattern.
+- **Hanging / ready_to_hang** — confirm hidden with “Framing” or retained under another label.
+- Diptych / paired inventory rules for originals.
+- About story sign-off; Ch 02 photography when available; exhibition imagery.
+- Series descriptions (Colored by Nature, BlackWhiteandGrey, Walking the Trail).
+- Commission process copy (Contact surface, not standalone page).
+- Newsletter / response-time promises (if any).
+- Dev-store collaborator access confirmed for Theme Editor work.
+
+---
+
+## Deferred enhancements
+
+- Cart drawer (C2) — **by design**
+- Predictive search overlay (C4)
+- Country / currency selector (C5)
+- PLP quick-add / image browsing
+- Extra layout variants beyond approved Claude designs
+
+---
+
+## Recovery completion plan
+
+### Recommended order (small milestones)
+
+| # | Milestone | Test |
+|---|---|---|
+| M0 | Read-only confirm published theme file list + Admin About page/menu | Checklist in [recovery audit §3](architecture/v2-recovery-audit-2026-10-23.md) |
+| M1 | Done — QA theme `#193116733733` | — |
+| M2 | **Done** — About + 404 on published `#192367558949`; Git commits local | § M2 |
+| M2b | Portrait upload + nav About link + saved public email in Theme Editor | Admin |
+| M3 | **Git commit** About after QA | Clean `main` |
+| M4 | PDP: description near buy box; hide hanging/framing as agreed; Medium/Surface/Size; **Add to Cart** strings | Dev PDP PoC + multi-variant test product |
+| M5 | Variant picker: price, availability, URL, media on change | Diptych-style product |
+| M6 | Shop Pay on original PDP + C1 regression QA | Checkout smoke test on dev |
+| M7 | Exhibitions page (sections/blocks, no metaobjects) | Theme Editor content |
+| M8 | Import Portfolio + Contact handoffs → build → nav | Theme Editor content |
+| M9 | Policy drafts in Admin + V2 policy templates when copy approved | Legal review |
+| M10 | Favicon, `info@…` email, final deploy parity Git ↔ published theme | Pre-launch demo |
+
+### Single next action
+
+**Contact or Exhibitions theme build** (after handoff import where needed) — or **M2b Admin**: portrait upload, About menu link, confirm Theme Editor template label **About**, set saved public email to `info@zitasartstudio.com`. **Push Git commits to origin** when Praveen reviews.
+
+---
 
 ## Environments
 
 | Store | State |
 |---|---|
-| **Partner dev store** `zitas-art-studio-development.myshopify.com` | All V2 work happens here. Theme **Zita V2 — Development** is **published** so the storefront can be demonstrated. The storefront is **password-protected**, so `shopify theme dev` needs `--store-password` for its local proxy; the hosted preview works after entering the password in the browser. Both V2 PoC products are **Active** and assigned to the `original` product template. Metafield definitions: see [provisioning state](architecture/metafield-definitions.md). |
-| **Ranjeeta's production store** | **Not modified** by V2 work. Flora remains published. No Zita V2 theme uploaded. No V2 products or metafield definitions created. Phase B is future work. |
+| **Partner dev store** `zitas-art-studio-development.myshopify.com` | V2 on published theme **#192367558949**. Password-protected storefront. PoC products on `original` template. |
+| **Ranjeeta's production store** | **Not modified** by V2 work. Phase B future. |
 
-## Open inputs from Ranjeeta
+---
 
-Not blocking next Phase D gates unless noted.
+## Open inputs from Ranjeeta (non-blocking unless noted)
 
-- **Approval pending:** Portfolio; Contact / Trade / Commissions; Policies
-- **Design confirmation pending:** predictive search overlay; country/currency selector; optional PLP quick add / image browsing
-- **Cart drawer:** not awaiting design — **deferred by architecture decision** (full `/cart` primary)
-- Series descriptions: **Colored by Nature**, **BlackWhiteandGrey**, **Walking the Trail** (pending)
-- Artwork facts per product: year, confirmed dimensions, framing / ready-to-hang, certificate, shipping and packing
-- Print strategy and original ↔ print relationships
-- Commission process, pricing and timeline (page on hold)
-- About-page story answers; exhibition details and imagery (needed for rich editorial content after handoff sync)
-- Newsletter promise; Contact response-time promise (if any)
-- Higher-resolution artwork files and room / detail photography where available
+- Series descriptions; artwork facts per product; print strategy; commission pricing/timeline
+- About/exhibition imagery; higher-res files
+- Portfolio/Contact/Policies content after template builds
 
-## Current blockers
-
-- **Exhibitions implementation:** Exhibition metaobject Basic feasibility proof not yet run (sync gate passed; proof is the remaining Exhibitions gate).
-- **About / Exhibitions content:** handoffs mark provisional copy, sample links, and missing images — do not invent or treat provisional as verified. Ranjeeta still needs to supply/sign off About story answers, exhibition imagery, and related details (see Open inputs).
-- **Predictive search / currency selector:** V2 designs not confirmed (separate from cart).
-- **Portfolio / Contact / Policies:** awaiting Ranjeeta’s approval.
-- **Cart drawer:** not a blocker — deferred by design.
-- No blocker for **pre-launch C1 regression QA**. The PDP Shipping & packing row stays hidden until Ranjeeta provides approved copy.
+---
 
 ## Known limitations (About / Exhibitions design package)
 
-Recorded without modifying approved designs:
-
-- Screenshots captured at **924px** preview width.
-- About screenshot portrait crop is inaccurate; use `handoff/about/assets/ranjeeta-portrait-crop-4x5.png`.
-- Header overlap at that capture width is an existing global-header issue.
-- News and obsolete Commissions links still appear in some prototype screenshots.
-- Certain About copy, exhibition links, and images are **provisional** or **missing** (see package MANIFEST and handoff §2 content-status tables).
+- Screenshots at **924px** width; portrait crop — use `handoff/about/assets/ranjeeta-portrait-crop-4x5.png`.
+- Provisional copy and missing images per MANIFEST — do not treat as verified.
+- Prototype nav may still show **News** — owner decision: remove in Shopify menu only.
 
 ---
 
 ## Which documents to trust
 
-See the document map in the [README](../README.md#document-map). In short: this file for status; [project brief](project-brief.md) for the charter; `docs/architecture/` for technical decisions including [Phase D plan](architecture/phase-d-implementation-plan.md); the design brief and V2 acceptance for approved design intent. Claude handoffs, design reference HTML and research audits are historical snapshots once imported.
+See [README](../README.md#document-map). Status: **this file**. Recovery detail: [v2-recovery-audit-2026-10-23.md](architecture/v2-recovery-audit-2026-10-23.md). Phase sequencing: [phase-d-implementation-plan.md](architecture/phase-d-implementation-plan.md).

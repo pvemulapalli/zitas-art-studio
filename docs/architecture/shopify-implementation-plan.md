@@ -646,7 +646,7 @@ Phase D sequencing, gates, and scope amendments (News and standalone Commissions
 | **About** | Shopify **Page** + alternate JSON template; sections **derived from approved Claude Design handoff** (not a single generic chapter pattern); per-section Theme Editor surface controls; owner-editable media/copy. **Blocked** until handoffs are in the repository. |
 | **Exhibitions** | Prefer Exhibition **metaobject** after Basic storefront proof; Selected Exhibitions distinct from full historical Archive; date-derived status with optional manual override and undated support. **Blocked** until handoffs are in the repository and the proof passes. |
 | **News / Press** | **Out of Phase D scope.** Native **blog/articles** remain the long-term option if revived later. |
-| **Contact** | Native contact form; approved public email `ranjeeta.shroff@gmail.com` and phone `469-850-0196`; **no** physical address; response-time promise not invented. **On hold** pending Ranjeeta’s approval of Contact / Trade / Commissions design. |
+| **Contact** | Native contact form; public email **`info@zitasartstudio.com`** (confirmed Oct 2026); phone `469-850-0196`; **no** physical address; response-time promise not invented. Contact layout approved; theme build pending handoff import. |
 | **Commissions** | Standalone Commissions page **out of Phase D scope**. Trade/commissions may land in the Contact surface when approved. |
 | **Policies** | Native Shopify pages/policies; simple readable styling. **On hold** pending Ranjeeta’s approval. |
 
