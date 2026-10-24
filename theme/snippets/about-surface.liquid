@@ -1,0 +1,24 @@
+{% doc %}
+  About-only surface attribute helper. Maps a Theme Editor surface setting to a
+  validated `data-surface` value. Foreground schemes live in zita-about.css.
+
+  @param {string} surface - Section setting value (gesso, vaayu_mist, …)
+  @param {string} [allowed] - Comma-separated allow-list. Defaults to all seven.
+  @param {string} [fallback] - Used when the value is blank or not allowed (default gesso)
+
+  @example
+    <section {% render 'about-surface', surface: section.settings.surface, allowed: 'gesso,vaayu_mist,stone_mist,sand' %}>
+{% enddoc %}
+{%- liquid
+  assign raw = surface | default: fallback | default: 'gesso' | strip
+  assign allowed_list = allowed | default: 'gesso,vaayu_mist,stone_mist,sand,deep_teal,ink,night' | split: ','
+  assign resolved = fallback | default: 'gesso'
+  for option in allowed_list
+    assign candidate = option | strip
+    if candidate == raw
+      assign resolved = candidate
+      break
+    endif
+  endfor
+-%}
+data-surface="{{ resolved }}"

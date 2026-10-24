@@ -1,4 +1,11 @@
 {
+  "templates": {
+    "page": {
+      "about": {
+        "name": "About"
+      }
+    }
+  },
   "general": {
     "404": "Not found",
     "article": "Article",
@@ -71,6 +78,6 @@
       "title": "Title",
       "subtitle": "Subtitle",
       "normal": "Normal text"
-    },
+    }
   }
 }

@@ -1,0 +1,115 @@
+{{ 'zita-about.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign surface = section.settings.surface | default: 'gesso'
+-%}
+
+<section
+  class="about-section about-words full-width"
+  {% render 'about-surface', surface: surface, fallback: 'gesso' %}
+  {% if section.settings.title != blank %}aria-labelledby="About-ch1-title-{{ section.id }}"{% endif %}
+>
+  <div class="about-shell">
+    <div class="about-grid about-words__row" data-about-reveal>
+      <div class="about-words__label">
+        {%- if section.settings.numeral != blank -%}
+          <span class="about-numeral" aria-hidden="true">{{ section.settings.numeral | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 id="About-ch1-title-{{ section.id }}" class="about-words__heading">{{ section.settings.title | escape }}</h2>
+        {%- endif -%}
+      </div>
+      <div class="about-words__copy">
+        {%- if section.settings.lead != blank -%}
+          <p class="about-lead">{{ section.settings.lead | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.body != blank -%}
+          <p class="about-body">{{ section.settings.body | escape }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if section.settings.pull != blank or section.settings.answer != blank -%}
+      <div class="about-words__pull-block" data-about-reveal>
+        {%- if section.settings.pull != blank -%}
+          <p class="about-pull about-words__pull">{{ section.settings.pull | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.answer != blank -%}
+          <p class="about-answer about-words__answer">{{ section.settings.answer | escape }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About chapter · words",
+  "tag": "section",
+  "class": "section-about-words",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "surface",
+      "label": "Surface",
+      "info": "Avoid two dark sections next to each other. Sand once per page. All foreground colours switch with the surface.",
+      "options": [
+        { "value": "gesso", "label": "Gesso (light)" },
+        { "value": "vaayu_mist", "label": "Vaayu mist (light blue)" },
+        { "value": "stone_mist", "label": "Stone mist (light grey)" },
+        { "value": "sand", "label": "Sand (warm light)" },
+        { "value": "deep_teal", "label": "Deep teal (dark)" },
+        { "value": "ink", "label": "Ink (dark)" },
+        { "value": "night", "label": "Night (darkest)" }
+      ],
+      "default": "gesso"
+    },
+    {
+      "type": "text",
+      "id": "numeral",
+      "label": "Chapter numeral",
+      "default": "01"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Chapter title",
+      "default": "A creative journey",
+      "info": "Provisional until Ranjeeta signs off chapter titles."
+    },
+    {
+      "type": "textarea",
+      "id": "lead",
+      "label": "Lead paragraph",
+      "default": "Creativity has always been a part of who I am. From a young age, I’ve been drawn to exploring different art forms, experimenting with materials, and discovering new ways to express myself.",
+      "info": "Provisional biography draft for development preview."
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body paragraph",
+      "default": "For me, art is more than something I create. It is a reflection of who I am in a particular moment — my thoughts, emotions, experiences, and the ways I continue to grow and evolve, both as an artist and as a person."
+    },
+    {
+      "type": "textarea",
+      "id": "pull",
+      "label": "Pull line",
+      "default": "My artistic journey has never followed a single path."
+    },
+    {
+      "type": "textarea",
+      "id": "answer",
+      "label": "Answer line",
+      "default": "And perhaps that is what I love most about it."
+    }
+  ],
+  "presets": [
+    {
+      "name": "About chapter · words"
+    }
+  ]
+}
+{% endschema %}

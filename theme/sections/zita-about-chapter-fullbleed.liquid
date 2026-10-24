@@ -1,0 +1,152 @@
+{{ 'zita-about.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign surface = section.settings.surface | default: 'night'
+  assign detail = section.settings.detail_image
+-%}
+
+<section
+  class="about-section about-fullbleed full-width"
+  {% render 'about-surface', surface: surface, fallback: 'night' %}
+  {% if section.settings.title != blank %}aria-labelledby="About-ch3-title-{{ section.id }}"{% endif %}
+>
+  {%- if detail != blank -%}
+    <figure class="about-cover about-cover--moonlit">
+      {%- render 'responsive-image',
+        image: detail,
+        alt: section.settings.detail_alt,
+        sizes: '100vw',
+        widths: '720, 960, 1200, 1600, 2000, 2400',
+        class: 'about-cover__image'
+      -%}
+      {%- if section.settings.detail_caption != blank -%}
+        <figcaption class="about-cover__chip">{{ section.settings.detail_caption }}</figcaption>
+      {%- endif -%}
+    </figure>
+  {%- elsif request.design_mode -%}
+    <div class="about-cover about-cover--moonlit">
+      <span class="editor-placeholder">{{ 'about.editor.add_detail' | t }}</span>
+    </div>
+  {%- endif -%}
+
+  <div class="about-shell about-fullbleed__text">
+    <div class="about-grid about-fullbleed__grid">
+      <div class="about-fullbleed__label" data-about-reveal>
+        {%- if section.settings.numeral != blank -%}
+          <span class="about-numeral" aria-hidden="true">{{ section.settings.numeral | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 id="About-ch3-title-{{ section.id }}" class="about-fullbleed__heading">{{ section.settings.title | escape }}</h2>
+        {%- endif -%}
+      </div>
+
+      <div class="about-fullbleed__copy" data-about-reveal>
+        {%- if section.settings.lead != blank -%}
+          <p class="about-lead">{{ section.settings.lead | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.body != blank -%}
+          <p class="about-body">{{ section.settings.body | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.quote != blank -%}
+        <blockquote class="about-fullbleed__quote" data-about-reveal>
+          {{ section.settings.quote | escape }}
+        </blockquote>
+      {%- endif -%}
+
+      {%- if section.settings.final != blank -%}
+        <p class="about-body about-fullbleed__final" data-about-reveal>
+          {{ section.settings.final | escape }}
+        </p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About · full-bleed",
+  "tag": "section",
+  "class": "section-about-fullbleed",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "surface",
+      "label": "Surface",
+      "info": "Avoid two dark sections next to each other. Sand once per page. The full-bleed detail is independent of the text surface.",
+      "options": [
+        { "value": "gesso", "label": "Gesso (light)" },
+        { "value": "vaayu_mist", "label": "Vaayu mist (light blue)" },
+        { "value": "stone_mist", "label": "Stone mist (light grey)" },
+        { "value": "sand", "label": "Sand (warm light)" },
+        { "value": "deep_teal", "label": "Deep teal (dark)" },
+        { "value": "ink", "label": "Ink (dark)" },
+        { "value": "night", "label": "Night (darkest)" }
+      ],
+      "default": "night"
+    },
+    {
+      "type": "image_picker",
+      "id": "detail_image",
+      "label": "Full-bleed detail image"
+    },
+    {
+      "type": "text",
+      "id": "detail_alt",
+      "label": "Detail alt text",
+      "default": "Detail of Moonlit Waves: white and silver paint breaking like surf across black"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "detail_caption",
+      "label": "Detail caption chip",
+      "default": "<em>Moonlit Waves</em>, detail"
+    },
+    {
+      "type": "text",
+      "id": "numeral",
+      "label": "Chapter numeral",
+      "default": "03"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Chapter title",
+      "default": "The beauty of unpredictability"
+    },
+    {
+      "type": "textarea",
+      "id": "lead",
+      "label": "Lead paragraph",
+      "default": "What draws me to fluid painting is its unpredictability."
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body paragraph",
+      "default": "I love watching colors move across the canvas, blending, separating, and creating unexpected forms. There is something fascinating about working with a composition while the paint is still flowing, responding to its movement rather than trying to control every detail."
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Blockquote",
+      "default": "Each painting becomes a balance between intention and spontaneity."
+    },
+    {
+      "type": "textarea",
+      "id": "final",
+      "label": "Final paragraph",
+      "default": "The energy, vibrancy, and constantly changing nature of this process continue to inspire me. No two experiences are quite the same, and there is always something new to discover."
+    }
+  ],
+  "presets": [
+    {
+      "name": "About · full-bleed"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,172 @@
+{{ 'zita-about.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'zita-about-reveal.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign surface = section.settings.surface | default: 'gesso'
+  assign eyebrow = section.settings.eyebrow
+  assign title = section.settings.title
+  assign subtitle = section.settings.subtitle
+  assign vaayu = section.settings.vaayu_image
+  assign vaayu_caption = section.settings.vaayu_caption
+  assign vaayu_alt = section.settings.vaayu_alt
+  assign portrait = section.settings.portrait_image
+  assign portrait_caption = section.settings.portrait_caption
+  assign portrait_alt = section.settings.portrait_alt
+-%}
+
+<section
+  class="about-section about-opening full-width"
+  {% render 'about-surface', surface: surface, allowed: 'gesso,vaayu_mist,stone_mist,sand', fallback: 'gesso' %}
+  {% if title != blank %}aria-labelledby="about-opening-title"{% endif %}
+>
+  <div class="about-shell about-opening__shell">
+    <div class="about-opening__intro" data-about-reveal>
+      {%- if eyebrow != blank -%}
+        <p class="eyebrow" style="--eyebrow-color: var(--about-eyebrow)">{{ eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if title != blank -%}
+        <h1 id="about-opening-title" class="about-opening__title">{{ title | escape }}</h1>
+      {%- endif -%}
+      {%- if subtitle != blank -%}
+        <p class="about-opening__subtitle">{{ subtitle | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="about-opening__compose">
+      {%- if portrait != blank -%}
+        <figure class="about-figure about-opening__portrait" data-about-reveal>
+          <div class="about-cover about-cover--portrait">
+            {%- render 'responsive-image',
+              image: portrait,
+              alt: portrait_alt,
+              sizes: '(min-width: 750px) 30vw, 100vw',
+              widths: '360, 540, 720, 960',
+              loading: 'eager',
+              class: 'about-cover__image'
+            -%}
+          </div>
+          {%- if portrait_caption != blank -%}
+            <figcaption class="about-caption">{{ portrait_caption | escape }}</figcaption>
+          {%- endif -%}
+        </figure>
+      {%- elsif request.design_mode -%}
+        <figure class="about-figure about-opening__portrait">
+          <div class="about-cover about-cover--portrait">
+            <span class="editor-placeholder">{{ 'about.editor.add_portrait' | t }}</span>
+          </div>
+        </figure>
+      {%- endif -%}
+
+      {%- if vaayu != blank -%}
+        <figure class="about-figure about-opening__vaayu">
+          <div class="about-cover about-cover--vaayu">
+            {%- render 'responsive-image',
+              image: vaayu,
+              alt: vaayu_alt,
+              sizes: '(min-width: 750px) 78vw, 100vw',
+              widths: '640, 960, 1200, 1600, 2000',
+              loading: 'eager',
+              fetchpriority: 'high',
+              class: 'about-cover__image'
+            -%}
+          </div>
+          {%- if vaayu_caption != blank -%}
+            <figcaption class="about-caption">{{ vaayu_caption }}</figcaption>
+          {%- endif -%}
+        </figure>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About opening",
+  "tag": "section",
+  "class": "section-about-opening",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "surface",
+      "label": "Surface",
+      "info": "Avoid two dark sections next to each other. The approved page alternates light and dark. Opening is limited to light surfaces.",
+      "options": [
+        { "value": "gesso", "label": "Gesso (light)" },
+        { "value": "vaayu_mist", "label": "Vaayu mist (light blue)" },
+        { "value": "stone_mist", "label": "Stone mist (light grey)" },
+        { "value": "sand", "label": "Sand (warm light)" }
+      ],
+      "default": "gesso"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "About the artist"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Name (H1)",
+      "default": "Ranjeeta Shroff"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Artist behind Zita’s Art Studio"
+    },
+    {
+      "type": "header",
+      "content": "Vaayu detail"
+    },
+    {
+      "type": "image_picker",
+      "id": "vaayu_image",
+      "label": "Detail image"
+    },
+    {
+      "type": "text",
+      "id": "vaayu_alt",
+      "label": "Detail alt text",
+      "default": "Detail of Vaayu – Air: cerulean and deep blue paint crossing a white ground, edged with copper cells"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "vaayu_caption",
+      "label": "Detail caption",
+      "default": "<em>Vaayu – Air</em>, detail"
+    },
+    {
+      "type": "header",
+      "content": "Portrait"
+    },
+    {
+      "type": "image_picker",
+      "id": "portrait_image",
+      "label": "Portrait",
+      "info": "Upload a pre-cropped 4:5 head-and-shoulders image. Do not rely on CSS scaling. Provisional until a studio portrait is approved."
+    },
+    {
+      "type": "text",
+      "id": "portrait_alt",
+      "label": "Portrait alt text",
+      "default": "Ranjeeta Shroff, smiling, in a mustard dress and a teal beaded necklace"
+    },
+    {
+      "type": "text",
+      "id": "portrait_caption",
+      "label": "Portrait caption",
+      "default": "Ranjeeta Shroff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "About opening"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,245 @@
+{{ 'zita-about.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign surface = section.settings.surface | default: 'stone_mist'
+  assign glass_image = section.settings.glass_image
+  assign return_image = section.settings.return_image
+  assign melting = section.settings.melting_image
+  assign has_glass = false
+  assign has_return = false
+  if glass_image != blank
+    assign has_glass = true
+  endif
+  if return_image != blank
+    assign has_return = true
+  endif
+-%}
+
+<section
+  class="about-section about-practice full-width{% if has_glass %} has-glass-photo{% endif %}{% if has_return %} has-return-photo{% endif %}"
+  {% render 'about-surface', surface: surface, fallback: 'stone_mist' %}
+  {% if section.settings.title != blank %}aria-labelledby="About-ch2-title-{{ section.id }}"{% endif %}
+>
+  <div class="about-shell about-grid about-practice__shell">
+    <div class="about-practice__intro" data-about-reveal>
+      <div class="about-practice__label">
+        {%- if section.settings.numeral != blank -%}
+          <span class="about-numeral" aria-hidden="true">{{ section.settings.numeral | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 id="About-ch2-title-{{ section.id }}" class="about-practice__heading">{{ section.settings.title | escape }}</h2>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.glass_copy != blank -%}
+        <div class="about-practice__glass-copy">
+          <p class="about-body">{{ section.settings.glass_copy | escape }}</p>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%}
+      Missing photos: omit the figure entirely. Do not render empty boxes or design-mode placeholders
+      for missing Ch 02 photographs — the editorial grid keeps its remaining placements.
+    {%- endcomment -%}
+    {%- if has_glass -%}
+      <figure class="about-figure about-practice__glass-photo" data-about-reveal>
+        <div class="about-practice__photo">
+          {%- render 'responsive-image',
+            image: glass_image,
+            alt: section.settings.glass_alt,
+            sizes: '(min-width: 750px) 48vw, 100vw',
+            widths: '480, 720, 960, 1200',
+            class: 'about-practice__photo-image'
+          -%}
+        </div>
+        {%- if section.settings.glass_caption != blank -%}
+          <figcaption class="about-caption">{{ section.settings.glass_caption | escape }}</figcaption>
+        {%- endif -%}
+      </figure>
+    {%- endif -%}
+
+    {%- if has_return -%}
+      <figure class="about-figure about-practice__return-photo" data-about-reveal>
+        <div class="about-practice__photo about-practice__photo--return">
+          {%- render 'responsive-image',
+            image: return_image,
+            alt: section.settings.return_alt,
+            sizes: '(min-width: 750px) 22vw, 64vw',
+            widths: '360, 480, 720, 960',
+            class: 'about-practice__photo-image'
+          -%}
+        </div>
+        {%- if section.settings.return_caption != blank -%}
+          <figcaption class="about-caption">{{ section.settings.return_caption | escape }}</figcaption>
+        {%- endif -%}
+      </figure>
+    {%- endif -%}
+
+    {%- if section.settings.return_copy != blank -%}
+      <p class="about-body about-practice__return-copy" data-about-reveal>
+        {{ section.settings.return_copy | escape }}
+      </p>
+    {%- endif -%}
+
+    {%- if section.settings.pull != blank -%}
+      <p class="about-pull about-practice__pull" data-about-reveal>
+        {{ section.settings.pull | escape }}
+      </p>
+    {%- endif -%}
+
+    {%- if melting != blank -%}
+      <figure class="about-figure about-practice__plate" data-about-reveal>
+        <div class="about-plate">
+          {%- render 'responsive-image',
+            image: melting,
+            alt: section.settings.melting_alt,
+            sizes: '(min-width: 750px) 30vw, 100vw',
+            widths: '360, 480, 720, 960',
+            class: 'about-plate__image'
+          -%}
+        </div>
+        {%- if section.settings.melting_caption != blank -%}
+          <figcaption class="about-caption">{{ section.settings.melting_caption }}</figcaption>
+        {%- endif -%}
+      </figure>
+    {%- elsif request.design_mode -%}
+      <figure class="about-figure about-practice__plate">
+        <div class="about-plate">
+          <span class="editor-placeholder">{{ 'about.editor.add_artwork' | t }}</span>
+        </div>
+      </figure>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About chapter · practice",
+  "tag": "section",
+  "class": "section-about-practice",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "surface",
+      "label": "Surface",
+      "info": "Avoid two dark sections next to each other. Sand once per page.",
+      "options": [
+        { "value": "gesso", "label": "Gesso (light)" },
+        { "value": "vaayu_mist", "label": "Vaayu mist (light blue)" },
+        { "value": "stone_mist", "label": "Stone mist (light grey)" },
+        { "value": "sand", "label": "Sand (warm light)" },
+        { "value": "deep_teal", "label": "Deep teal (dark)" },
+        { "value": "ink", "label": "Ink (dark)" },
+        { "value": "night", "label": "Night (darkest)" }
+      ],
+      "default": "stone_mist"
+    },
+    {
+      "type": "text",
+      "id": "numeral",
+      "label": "Chapter numeral",
+      "default": "02"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Chapter title",
+      "default": "An evolving practice",
+      "info": "Provisional until Ranjeeta signs off chapter titles."
+    },
+    {
+      "type": "textarea",
+      "id": "glass_copy",
+      "label": "Glass paragraph",
+      "default": "Over the years, I’ve explored many forms of artistic expression, including spending nearly six years working with glass, particularly fused glass."
+    },
+    {
+      "type": "header",
+      "content": "Fused-glass photograph"
+    },
+    {
+      "type": "paragraph",
+      "content": "Missing on purpose until supplied. Leave empty to omit the figure and keep the editorial rhythm — no empty box is shown."
+    },
+    {
+      "type": "image_picker",
+      "id": "glass_image",
+      "label": "Fused-glass photo"
+    },
+    {
+      "type": "text",
+      "id": "glass_alt",
+      "label": "Fused-glass alt text"
+    },
+    {
+      "type": "text",
+      "id": "glass_caption",
+      "label": "Fused-glass caption"
+    },
+    {
+      "type": "header",
+      "content": "Return to painting"
+    },
+    {
+      "type": "textarea",
+      "id": "return_copy",
+      "label": "Return paragraph",
+      "default": "After my son was born, I found my way back to painting. I began experimenting with different mediums and techniques, allowing curiosity to guide me."
+    },
+    {
+      "type": "paragraph",
+      "content": "Missing on purpose until supplied. Leave empty to omit the figure."
+    },
+    {
+      "type": "image_picker",
+      "id": "return_image",
+      "label": "Return-to-painting photo"
+    },
+    {
+      "type": "text",
+      "id": "return_alt",
+      "label": "Return photo alt text"
+    },
+    {
+      "type": "text",
+      "id": "return_caption",
+      "label": "Return photo caption"
+    },
+    {
+      "type": "textarea",
+      "id": "pull",
+      "label": "Pull line",
+      "default": "It was during this exploration that I discovered fluid painting — and something about it captivated me."
+    },
+    {
+      "type": "header",
+      "content": "Melting away plate"
+    },
+    {
+      "type": "image_picker",
+      "id": "melting_image",
+      "label": "Artwork plate"
+    },
+    {
+      "type": "text",
+      "id": "melting_alt",
+      "label": "Artwork alt text",
+      "default": "Melting away: a fluid pour in soft whites, greys and gold"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "melting_caption",
+      "label": "Artwork caption",
+      "default": "<em>Melting away</em>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "About chapter · practice"
+    }
+  ]
+}
+{% endschema %}

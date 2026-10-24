@@ -1,0 +1,212 @@
+{{ 'zita-about.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign surface = section.settings.surface | default: 'gesso'
+  assign button_label = section.settings.button_label
+  assign button_link = section.settings.button_link
+  assign link_1_url = section.settings.link_1_url | default: '/pages/contact?type=commission#message'
+  assign link_2_url = section.settings.link_2_url | default: '/pages/contact'
+  assign series_1 = section.settings.series_1
+  assign series_2 = section.settings.series_2
+  assign series_3 = section.settings.series_3
+  assign has_series = false
+  if series_1 != blank or series_2 != blank or series_3 != blank
+    assign has_series = true
+  endif
+-%}
+
+<section
+  class="about-section about-closing full-width"
+  {% render 'about-surface', surface: surface, allowed: 'gesso,vaayu_mist,stone_mist,sand', fallback: 'gesso' %}
+  {% if section.settings.eyebrow != blank %}aria-labelledby="About-close-title-{{ section.id }}"{% endif %}
+>
+  <div class="about-shell">
+    <div class="about-closing__letter" data-about-reveal>
+      {%- if section.settings.eyebrow != blank -%}
+        <h2 id="About-close-title-{{ section.id }}" class="about-closing__eyebrow">{{ section.settings.eyebrow | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.letter_1 != blank -%}
+        <p>{{ section.settings.letter_1 | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.letter_2 != blank -%}
+        <p>{{ section.settings.letter_2 | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.letter_3 != blank -%}
+        <p>{{ section.settings.letter_3 | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.signoff != blank -%}
+        <p class="about-closing__signoff">{{ section.settings.signoff | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="about-closing__actions" data-about-reveal>
+      <div class="about-closing__primary">
+        {%- if button_label != blank and button_link != blank -%}
+          <a class="button button--large" href="{{ button_link }}">
+            {{- button_label | escape -}}
+            {%- render 'icon', name: 'arrow-right', size: 18 -%}
+          </a>
+        {%- endif -%}
+
+        {%- if has_series -%}
+          <div class="about-closing__series">
+            {%- if section.settings.series_label != blank -%}
+              <span class="about-closing__series-label">{{ section.settings.series_label | escape }}</span>
+            {%- endif -%}
+            {%- if series_1 != blank -%}
+              <a class="about-closing__series-link" href="{{ series_1.url }}">{{ series_1.title | escape }}</a>
+            {%- endif -%}
+            {%- if series_2 != blank -%}
+              <a class="about-closing__series-link" href="{{ series_2.url }}">{{ series_2.title | escape }}</a>
+            {%- endif -%}
+            {%- if series_3 != blank -%}
+              <a class="about-closing__series-link" href="{{ series_3.url }}">{{ series_3.title | escape }}</a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="about-closing__secondary">
+        {%- if section.settings.link_1_label != blank and link_1_url != blank -%}
+          {%- render 'label-link',
+            url: link_1_url,
+            label: section.settings.link_1_label,
+            tone: 'light'
+          -%}
+        {%- endif -%}
+        {%- if section.settings.link_2_label != blank and link_2_url != blank -%}
+          {%- render 'label-link',
+            url: link_2_url,
+            label: section.settings.link_2_label,
+            tone: 'light'
+          -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About closing",
+  "tag": "section",
+  "class": "section-about-closing",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "surface",
+      "label": "Surface",
+      "info": "Closing is limited to light surfaces so it does not merge with the Ink footer.",
+      "options": [
+        { "value": "gesso", "label": "Gesso (light)" },
+        { "value": "vaayu_mist", "label": "Vaayu mist (light blue)" },
+        { "value": "stone_mist", "label": "Stone mist (light grey)" },
+        { "value": "sand", "label": "Sand (warm light)" }
+      ],
+      "default": "gesso"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "An invitation"
+    },
+    {
+      "type": "textarea",
+      "id": "letter_1",
+      "label": "Letter paragraph 1",
+      "default": "Thank you for being here and taking the time to explore my work."
+    },
+    {
+      "type": "textarea",
+      "id": "letter_2",
+      "label": "Letter paragraph 2",
+      "default": "Every painting holds a part of my journey, but I also believe art can mean something different to everyone who experiences it."
+    },
+    {
+      "type": "textarea",
+      "id": "letter_3",
+      "label": "Letter paragraph 3",
+      "default": "I hope something here speaks to you, sparks your curiosity, or simply gives you a moment to pause and feel."
+    },
+    {
+      "type": "text",
+      "id": "signoff",
+      "label": "Sign-off",
+      "default": "— Ranjeeta"
+    },
+    {
+      "type": "header",
+      "content": "Primary actions"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Explore the originals"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Prefer the Originals / All products collection."
+    },
+    {
+      "type": "text",
+      "id": "series_label",
+      "label": "Series label",
+      "default": "Current series"
+    },
+    {
+      "type": "collection",
+      "id": "series_1",
+      "label": "Series 1"
+    },
+    {
+      "type": "collection",
+      "id": "series_2",
+      "label": "Series 2"
+    },
+    {
+      "type": "collection",
+      "id": "series_3",
+      "label": "Series 3"
+    },
+    {
+      "type": "header",
+      "content": "Secondary links"
+    },
+    {
+      "type": "text",
+      "id": "link_1_label",
+      "label": "Link 1 label",
+      "default": "Commission a painting"
+    },
+    {
+      "type": "url",
+      "id": "link_1_url",
+      "label": "Link 1 URL",
+      "info": "Required target: /pages/contact?type=commission#message (Contact page may still be pending)."
+    },
+    {
+      "type": "text",
+      "id": "link_2_label",
+      "label": "Link 2 label",
+      "default": "Write to Ranjeeta"
+    },
+    {
+      "type": "url",
+      "id": "link_2_url",
+      "label": "Link 2 URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "About closing"
+    }
+  ]
+}
+{% endschema %}

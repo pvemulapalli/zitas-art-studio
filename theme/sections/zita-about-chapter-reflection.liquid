@@ -1,0 +1,148 @@
+{{ 'zita-about.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign surface = section.settings.surface | default: 'deep_teal'
+  assign yin = section.settings.yin_image
+-%}
+
+<section
+  class="about-section about-reflection full-width"
+  {% render 'about-surface', surface: surface, fallback: 'deep_teal' %}
+  {% if section.settings.title != blank %}aria-labelledby="About-ch5-title-{{ section.id }}"{% endif %}
+>
+  <div class="about-shell">
+    <div class="about-grid about-reflection__grid">
+      <div class="about-reflection__aside" data-about-reveal>
+        <div class="about-reflection__label">
+          {%- if section.settings.numeral != blank -%}
+            <span class="about-numeral" aria-hidden="true">{{ section.settings.numeral | escape }}</span>
+          {%- endif -%}
+          {%- if section.settings.title != blank -%}
+            <h2 id="About-ch5-title-{{ section.id }}" class="about-reflection__heading">{{ section.settings.title | escape }}</h2>
+          {%- endif -%}
+        </div>
+
+        {%- if yin != blank -%}
+          <figure class="about-figure about-reflection__yin">
+            {%- render 'responsive-image',
+              image: yin,
+              alt: section.settings.yin_alt,
+              sizes: '(min-width: 750px) 260px, 62vw',
+              widths: '240, 360, 480, 640',
+              class: 'about-reflection__yin-image'
+            -%}
+            {%- if section.settings.yin_caption != blank -%}
+              <figcaption class="about-caption">{{ section.settings.yin_caption }}</figcaption>
+            {%- endif -%}
+          </figure>
+        {%- elsif request.design_mode -%}
+          <figure class="about-figure about-reflection__yin">
+            <span class="editor-placeholder">{{ 'about.editor.add_artwork' | t }}</span>
+          </figure>
+        {%- endif -%}
+      </div>
+
+      <div class="about-reflection__copy">
+        {%- if section.settings.lead != blank -%}
+          <p class="about-lead" data-about-reveal>{{ section.settings.lead | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.body != blank -%}
+          <p class="about-body" data-about-reveal>{{ section.settings.body | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.italic_pull != blank -%}
+          <p class="about-reflection__italic" data-about-reveal>{{ section.settings.italic_pull | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.final != blank -%}
+          <p class="about-body" data-about-reveal>{{ section.settings.final | escape }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About · reflection",
+  "tag": "section",
+  "class": "section-about-reflection",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "surface",
+      "label": "Surface",
+      "info": "Avoid two dark sections next to each other. Sand once per page. Yin sits without a plate or hang shadow.",
+      "options": [
+        { "value": "gesso", "label": "Gesso (light)" },
+        { "value": "vaayu_mist", "label": "Vaayu mist (light blue)" },
+        { "value": "stone_mist", "label": "Stone mist (light grey)" },
+        { "value": "sand", "label": "Sand (warm light)" },
+        { "value": "deep_teal", "label": "Deep teal (dark)" },
+        { "value": "ink", "label": "Ink (dark)" },
+        { "value": "night", "label": "Night (darkest)" }
+      ],
+      "default": "deep_teal"
+    },
+    {
+      "type": "text",
+      "id": "numeral",
+      "label": "Chapter numeral",
+      "default": "05"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Chapter title",
+      "default": "What art means to me"
+    },
+    {
+      "type": "image_picker",
+      "id": "yin_image",
+      "label": "Yin artwork (no plate)"
+    },
+    {
+      "type": "text",
+      "id": "yin_alt",
+      "label": "Yin alt text",
+      "default": "Yin – The Dark Side: black and white paint curling across a dark ground"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "yin_caption",
+      "label": "Yin caption",
+      "default": "<em>Yin – The Dark Side</em>"
+    },
+    {
+      "type": "textarea",
+      "id": "lead",
+      "label": "Lead paragraph",
+      "default": "Through my work, I find myself returning to the abundance of nature and the nurturing forces in our lives."
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body paragraph",
+      "default": "Painting gives me space to reflect on gratitude, on respecting different perspectives, on finding strength through pain, and on the conscious choices we make as we move through life."
+    },
+    {
+      "type": "textarea",
+      "id": "italic_pull",
+      "label": "Italic pull line",
+      "default": "Color and movement become ways of exploring those thoughts and feelings, sometimes expressing what words cannot."
+    },
+    {
+      "type": "textarea",
+      "id": "final",
+      "label": "Final paragraph",
+      "default": "I don’t always know exactly where a painting will lead when I begin. I value that openness — the possibility of discovering something unexpected along the way."
+    }
+  ],
+  "presets": [
+    {
+      "name": "About · reflection"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,177 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+/*
+ * ------------------------------------------------------------
+ * About the Artist — V2 alternate page template.
+ * Assign this template to the About page in Admin.
+ * Biographical copy and portrait crop are provisional pending Ranjeeta's approval.
+ * Ch 02 fused-glass and return-to-painting photos intentionally omitted until supplied.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "about_opening": {
+      "type": "zita-about-opening",
+      "settings": {
+        "surface": "gesso",
+        "eyebrow": "About the artist",
+        "title": "Ranjeeta Shroff",
+        "subtitle": "Artist behind Zita’s Art Studio",
+        "vaayu_image": "shopify://shop_images/vaayu-air-c.png",
+        "vaayu_alt": "Detail of Vaayu – Air: cerulean and deep blue paint crossing a white ground, edged with copper cells",
+        "vaayu_caption": "<em>Vaayu – Air</em>, detail",
+        "portrait_image": "shopify://shop_images/ranjeeta-portrait-crop-4x5.png",
+        "portrait_alt": "Ranjeeta Shroff, smiling, in a mustard dress and a teal beaded necklace",
+        "portrait_caption": "Ranjeeta Shroff"
+      }
+    },
+    "about_words": {
+      "type": "zita-about-chapter-words",
+      "settings": {
+        "surface": "gesso",
+        "numeral": "01",
+        "title": "A creative journey",
+        "lead": "Creativity has always been a part of who I am. From a young age, I’ve been drawn to exploring different art forms, experimenting with materials, and discovering new ways to express myself.",
+        "body": "For me, art is more than something I create. It is a reflection of who I am in a particular moment — my thoughts, emotions, experiences, and the ways I continue to grow and evolve, both as an artist and as a person.",
+        "pull": "My artistic journey has never followed a single path.",
+        "answer": "And perhaps that is what I love most about it."
+      }
+    },
+    "about_practice": {
+      "type": "zita-about-chapter-practice",
+      "settings": {
+        "surface": "stone_mist",
+        "numeral": "02",
+        "title": "An evolving practice",
+        "glass_copy": "Over the years, I’ve explored many forms of artistic expression, including spending nearly six years working with glass, particularly fused glass.",
+        "return_copy": "After my son was born, I found my way back to painting. I began experimenting with different mediums and techniques, allowing curiosity to guide me.",
+        "pull": "It was during this exploration that I discovered fluid painting — and something about it captivated me.",
+        "melting_image": "shopify://shop_images/melting-away.webp",
+        "melting_alt": "Melting away: a fluid pour in soft whites, greys and gold",
+        "melting_caption": "<em>Melting away</em>"
+      }
+    },
+    "about_fullbleed": {
+      "type": "zita-about-chapter-fullbleed",
+      "settings": {
+        "surface": "night",
+        "detail_image": "shopify://shop_images/moonlit-waves.webp",
+        "detail_alt": "Detail of Moonlit Waves: white and silver paint breaking like surf across black",
+        "detail_caption": "<em>Moonlit Waves</em>, detail",
+        "numeral": "03",
+        "title": "The beauty of unpredictability",
+        "lead": "What draws me to fluid painting is its unpredictability.",
+        "body": "I love watching colors move across the canvas, blending, separating, and creating unexpected forms. There is something fascinating about working with a composition while the paint is still flowing, responding to its movement rather than trying to control every detail.",
+        "quote": "Each painting becomes a balance between intention and spontaneity.",
+        "final": "The energy, vibrancy, and constantly changing nature of this process continue to inspire me. No two experiences are quite the same, and there is always something new to discover."
+      }
+    },
+    "about_atlas": {
+      "type": "zita-about-chapter-atlas",
+      "blocks": {
+        "plate_sky": {
+          "type": "plate",
+          "settings": {
+            "image": "shopify://shop_images/longing-for-clouds.jpg",
+            "phrase": "the vastness of the sky",
+            "label": "Longing for clouds",
+            "alt": "Longing for clouds: a tall pour of white, grey-blue and gold"
+          }
+        },
+        "plate_ocean": {
+          "type": "plate",
+          "settings": {
+            "image": "shopify://shop_images/jal-water-c.png",
+            "phrase": "the depth of the ocean",
+            "label": "Jal – Water",
+            "alt": "Jal – Water: cerulean and ultramarine cells pouring across white"
+          }
+        },
+        "plate_mountains": {
+          "type": "plate",
+          "settings": {
+            "image": "shopify://shop_images/prithvi-earth.webp",
+            "phrase": "the stillness of mountains",
+            "label": "Prithvi – Earth",
+            "alt": "Prithvi – Earth: umber and ochre paint moving across white"
+          }
+        },
+        "plate_spring": {
+          "type": "plate",
+          "settings": {
+            "image": "shopify://shop_images/colored-by-nature-purple.jpg",
+            "phrase": "the freshness of spring",
+            "label": "Colored by Nature – Purple",
+            "alt": "Colored by Nature – Purple: violet and white fluid forms"
+          }
+        }
+      },
+      "block_order": [
+        "plate_sky",
+        "plate_ocean",
+        "plate_mountains",
+        "plate_spring"
+      ],
+      "settings": {
+        "surface": "vaayu_mist",
+        "numeral": "04",
+        "title": "Inspired by nature",
+        "statement": "Nature is at the heart of much of my abstract work.",
+        "intro": "I find inspiration in the vastness of the sky, the depth of the ocean, the stillness of mountains, the movement of air, and the freshness of spring.",
+        "mid_para_1": "These elements often find their way into my paintings, not necessarily as literal landscapes, but as expressions of how I experience the world around me.",
+        "mid_para_2": "Some works emerge as bold florals, fiery orange skies, or restless ocean tides. Others reflect quieter moments — open stretches of sand, distant horizons, and the gentle meeting of earth and sky.",
+        "close_pull": "My paintings carry different emotions, just as we do.",
+        "close_body": "Some are vibrant and full of energy; others invite stillness and reflection."
+      }
+    },
+    "about_reflection": {
+      "type": "zita-about-chapter-reflection",
+      "settings": {
+        "surface": "deep_teal",
+        "numeral": "05",
+        "title": "What art means to me",
+        "yin_image": "shopify://shop_images/yin-dark-side-c.png",
+        "yin_alt": "Yin – The Dark Side: black and white paint curling across a dark ground",
+        "yin_caption": "<em>Yin – The Dark Side</em>",
+        "lead": "Through my work, I find myself returning to the abundance of nature and the nurturing forces in our lives.",
+        "body": "Painting gives me space to reflect on gratitude, on respecting different perspectives, on finding strength through pain, and on the conscious choices we make as we move through life.",
+        "italic_pull": "Color and movement become ways of exploring those thoughts and feelings, sometimes expressing what words cannot.",
+        "final": "I don’t always know exactly where a painting will lead when I begin. I value that openness — the possibility of discovering something unexpected along the way."
+      }
+    },
+    "about_closing": {
+      "type": "zita-about-closing",
+      "settings": {
+        "surface": "gesso",
+        "eyebrow": "An invitation",
+        "letter_1": "Thank you for being here and taking the time to explore my work.",
+        "letter_2": "Every painting holds a part of my journey, but I also believe art can mean something different to everyone who experiences it.",
+        "letter_3": "I hope something here speaks to you, sparks your curiosity, or simply gives you a moment to pause and feel.",
+        "signoff": "— Ranjeeta",
+        "button_label": "Explore the originals",
+        "button_link": "/collections/all",
+        "series_label": "Current series",
+        "link_1_label": "Commission a painting",
+        "link_1_url": "/pages/contact?type=commission#message",
+        "link_2_label": "Write to Ranjeeta",
+        "link_2_url": "/pages/contact"
+      }
+    }
+  },
+  "order": [
+    "about_opening",
+    "about_words",
+    "about_practice",
+    "about_fullbleed",
+    "about_atlas",
+    "about_reflection",
+    "about_closing"
+  ]
+}

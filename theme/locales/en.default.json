@@ -4,6 +4,9 @@
     "not_found": "Page not found.",
     "back_to_shopping": "Back to shopping"
   },
+  "not_found": {
+    "title": "This room is empty"
+  },
   "blog": {
     "article_comments": "Comments",
     "article_metadata_html": "{{ date }} by {{ author }}",
@@ -196,5 +199,12 @@
     "add_portrait": "Add a portrait of Ranjeeta",
     "add_image": "Add an image",
     "add_product_images": "Add images to this product"
+  },
+  "about": {
+    "editor": {
+      "add_portrait": "Add a pre-cropped 4:5 portrait of Ranjeeta",
+      "add_artwork": "Add artwork",
+      "add_detail": "Add a full-bleed detail crop"
+    }
   }
 }
