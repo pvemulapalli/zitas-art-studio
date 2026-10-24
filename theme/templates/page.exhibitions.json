@@ -1,0 +1,390 @@
+/*
+ * ------------------------------------------------------------
+ * Exhibitions — V2 alternate page template (M3 local).
+ * Assign suffix "exhibitions" to the Exhibitions page when created in Admin.
+ * Provisional cover copy; product/series links omitted until Ranjeeta confirms.
+ * Selected image slots (Devi, Indulgence, Adiyogi) intentionally empty pending assets.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "ex_cover": {
+      "type": "zita-exhibitions-cover",
+      "settings": {}
+    },
+    "ex_on_view": {
+      "type": "zita-exhibitions-on-view",
+      "blocks": {},
+      "block_order": [],
+      "settings": {}
+    },
+    "ex_plate_one": {
+      "type": "zita-exhibitions-plate-one",
+      "settings": {
+        "artwork_alt": "Un Colored by Nature: white poured forms rising from a black ground",
+        "artwork_caption": "Un Colored by Nature",
+        "fallback_asset": "exhibition-uncolored-by-nature.jpg",
+        "work_title": "Un Colored by Nature"
+      }
+    },
+    "ex_recognition": {
+      "type": "zita-exhibitions-recognition",
+      "settings": {}
+    },
+    "ex_selected": {
+      "type": "zita-exhibitions-selected",
+      "blocks": {
+        "sel_1": {
+          "type": "large_image",
+          "settings": {
+            "entry_num": "01",
+            "entry_year": "2026",
+            "title": "Devi",
+            "place": "Blue House Too Gallery, Allen, Texas\nGroup exhibition",
+            "works": "Devi \u2013 The Divine Feminine, Emergence"
+          }
+        },
+        "sel_2": {
+          "type": "typographic_pair",
+          "settings": {}
+        },
+        "sel_3": {
+          "type": "medium_image",
+          "settings": {
+            "entry_num": "04",
+            "entry_year": "2026",
+            "title": "Indulgence",
+            "place": "Lincoln Center, Dallas, Texas\nGroup exhibition",
+            "works": "Indulgence",
+            "works_suffix": "which found its home during the exhibition."
+          }
+        },
+        "sel_4": {
+          "type": "typographic_trio",
+          "settings": {}
+        },
+        "sel_5": {
+          "type": "small_image",
+          "settings": {
+            "entry_num": "08",
+            "title": "Sacred Stories of Light",
+            "place": "Blue House Too Gallery, Allen, Texas",
+            "works": "Adiyogi \u2013 The first Yogi"
+          }
+        }
+      },
+      "block_order": [
+        "sel_1",
+        "sel_2",
+        "sel_3",
+        "sel_4",
+        "sel_5"
+      ],
+      "settings": {}
+    },
+    "ex_archive": {
+      "type": "zita-exhibitions-archive",
+      "blocks": {
+        "arc_1": {
+          "type": "row",
+          "settings": {
+            "year_group": "2026",
+            "title": "Black & White, International Juried Exhibition",
+            "place": "Le Gateau Gallery, France \u00b7 3\u201317 April",
+            "works": "Un Colored by Nature",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": "Curator's Choice, Virtual"
+          }
+        },
+        "arc_2": {
+          "type": "row",
+          "settings": {
+            "year_group": "2026",
+            "title": "Solo exhibition",
+            "place": "Le Gateau Gallery, France",
+            "works": "",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": "Solo, Virtual"
+          }
+        },
+        "arc_3": {
+          "type": "row",
+          "settings": {
+            "year_group": "2026",
+            "title": "Devi",
+            "place": "Blue House Too Gallery, Allen, Texas",
+            "works": "Devi \u2013 The Divine Feminine; Emergence",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": ""
+          }
+        },
+        "arc_4": {
+          "type": "row",
+          "settings": {
+            "year_group": "2026",
+            "title": "Indulgence",
+            "place": "Lincoln Center, Dallas, Texas",
+            "works": "Indulgence",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": "Work sold"
+          }
+        },
+        "arc_5": {
+          "type": "row",
+          "settings": {
+            "year_group": "2026",
+            "title": "Art in Arena",
+            "place": "Frisco, Texas",
+            "works": "",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": ""
+          }
+        },
+        "arc_6": {
+          "type": "row",
+          "settings": {
+            "year_group": "2026",
+            "title": "Pink Revisited",
+            "place": "theGallery8680, Frisco, Texas",
+            "works": "",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": ""
+          }
+        },
+        "arc_7": {
+          "type": "row",
+          "settings": {
+            "year_group": "2024",
+            "title": "Rebirth \u00b7 VALA 2024",
+            "place": "Cotton Mills, McKinney, Texas",
+            "works": "Blooming in Blues; The Spring Delight",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": ""
+          }
+        },
+        "arc_8": {
+          "type": "row",
+          "settings": {
+            "year_group": "2024",
+            "title": "Fun-in-Sun \u00b7 VALA 2024",
+            "place": "Rec Center, Allen, Texas",
+            "works": "Fiery Waves; Sky is Pink",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": ""
+          }
+        },
+        "arc_9": {
+          "type": "row",
+          "settings": {
+            "year_group": "2024",
+            "title": "Spring Collective 2024",
+            "place": "Blue House Too, Allen, Texas",
+            "works": "Petal of Joy; Spring in Bloom; Forces of Nature",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": ""
+          }
+        },
+        "arc_10": {
+          "type": "row",
+          "settings": {
+            "year_group": "2024",
+            "title": "Abstract 2024",
+            "place": "VAGF, Sweetwaters, Frisco, Texas",
+            "works": "Yin and Yang \u2013 The Dark Side",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": ""
+          }
+        },
+        "arc_11": {
+          "type": "row",
+          "settings": {
+            "year_group": "2021",
+            "title": "VALA Spring 2021",
+            "place": "Blue House Too Gallery, Allen, Texas",
+            "works": "",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": ""
+          }
+        },
+        "arc_12": {
+          "type": "row",
+          "settings": {
+            "year_group": "2020",
+            "title": "IAVA 2020, A HELP",
+            "place": "International virtual selection \u00b7 64 artists from 872 proposals, 25 countries",
+            "works": "",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": "International selection, Virtual"
+          }
+        },
+        "arc_13": {
+          "type": "row",
+          "settings": {
+            "year_group": "additional",
+            "title": "Earth Day",
+            "place": "theGallery8680, Frisco, Texas",
+            "works": "Two paintings from the Sand and Cloud series",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": ""
+          }
+        },
+        "arc_14": {
+          "type": "row",
+          "settings": {
+            "year_group": "additional",
+            "title": "Festival of Trees",
+            "place": "theGallery8680, Frisco, Texas",
+            "works": "The Transformation series",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": ""
+          }
+        },
+        "arc_15": {
+          "type": "row",
+          "settings": {
+            "year_group": "additional",
+            "title": "The Blue",
+            "place": "DAC Art Gallery",
+            "works": "Mighty Rivers",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": "Virtual"
+          }
+        },
+        "arc_16": {
+          "type": "row",
+          "settings": {
+            "year_group": "additional",
+            "title": "Touching the Sun",
+            "place": "Blue House Too Gallery, Allen, Texas",
+            "works": "Touching the Sun",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": "Work sold"
+          }
+        },
+        "arc_17": {
+          "type": "row",
+          "settings": {
+            "year_group": "additional",
+            "title": "Cotton Mills",
+            "place": "McKinney, Texas",
+            "works": "Two works in black, white and grey, 3 \u00d7 4 ft",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": ""
+          }
+        },
+        "arc_18": {
+          "type": "row",
+          "settings": {
+            "year_group": "additional",
+            "title": "Small Works",
+            "place": "Plano Arts Association, Texas",
+            "works": "Monarch series, two works",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": ""
+          }
+        },
+        "arc_19": {
+          "type": "row",
+          "settings": {
+            "year_group": "additional",
+            "title": "Sacred Stories of Light",
+            "place": "Blue House Too Gallery, Allen, Texas",
+            "works": "Adiyogi \u2013 The first Yogi",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": ""
+          }
+        },
+        "arc_20": {
+          "type": "row",
+          "settings": {
+            "year_group": "additional",
+            "title": "Global Cultures",
+            "place": "Plano Art Center",
+            "works": "Buddha \u2013 The awakened one",
+            "linked_works": "",
+            "series_title": "",
+            "series_url": "",
+            "tags": ""
+          }
+        }
+      },
+      "block_order": [
+        "arc_1",
+        "arc_2",
+        "arc_3",
+        "arc_4",
+        "arc_5",
+        "arc_6",
+        "arc_7",
+        "arc_8",
+        "arc_9",
+        "arc_10",
+        "arc_11",
+        "arc_12",
+        "arc_13",
+        "arc_14",
+        "arc_15",
+        "arc_16",
+        "arc_17",
+        "arc_18",
+        "arc_19",
+        "arc_20"
+      ],
+      "settings": {}
+    },
+    "ex_closing": {
+      "type": "zita-exhibitions-closing",
+      "settings": {
+        "button_link": "/collections/all",
+        "write_url": "/pages/contact"
+      }
+    }
+  },
+  "order": [
+    "ex_cover",
+    "ex_on_view",
+    "ex_plate_one",
+    "ex_recognition",
+    "ex_selected",
+    "ex_archive",
+    "ex_closing"
+  ]
+}

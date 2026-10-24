@@ -1,0 +1,85 @@
+{{ 'zita-exhibitions.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign eyebrow = section.settings.eyebrow | default: 'Exhibitions'
+  assign display = section.settings.display_line
+  assign support = section.settings.supporting_line
+  assign places_raw = section.settings.places_list | newline_to_br | split: '<br />'
+-%}
+
+<div class="exhibitions-page">
+  <section class="ex-cover" aria-labelledby="exhibitions-page-title">
+    <div class="ex-shell ex-grid-12 ex-cover__head">
+      <div style="grid-column: 1 / span 9; min-width: 0">
+        <h1 id="exhibitions-page-title" class="ex-eyebrow">{{ eyebrow | escape }}</h1>
+        {%- if display != blank -%}
+          <p class="ex-cover__display">{{ display | escape }}</p>
+        {%- endif -%}
+      </div>
+      {%- if support != blank -%}
+        <p class="ex-cover__support">{{ support | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.places_list != blank -%}
+      <div class="ex-shell ex-grid-12 ex-cover__shown">
+        <span class="ex-cover__shown-label ex-eyebrow" style="color: var(--color-text-muted, #565c61)">
+          {{- section.settings.places_label | default: 'Shown in' | escape -}}
+        </span>
+        <ul class="ex-cover__places">
+          {%- for place_line in places_raw -%}
+            {%- assign place = place_line | strip -%}
+            {%- if place != blank -%}
+              <li>
+                {{- place | escape -}}
+                {%- unless forloop.last -%}
+                  <span class="ex-cover__places-sep" aria-hidden="true">·</span>
+                {%- endunless -%}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Exhibitions · Cover",
+  "class": "exhibitions-cover-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Exhibitions"
+    },
+    {
+      "type": "textarea",
+      "id": "display_line",
+      "label": "Display line",
+      "default": "Exhibiting since 2019, in Texas and internationally."
+    },
+    {
+      "type": "textarea",
+      "id": "supporting_line",
+      "label": "Supporting line",
+      "default": "A record of where Ranjeeta’s paintings have been shown and recognised."
+    },
+    {
+      "type": "text",
+      "id": "places_label",
+      "label": "Places label",
+      "default": "Shown in"
+    },
+    {
+      "type": "textarea",
+      "id": "places_list",
+      "label": "Places (one per line)",
+      "default": "Le Gateau Gallery, France\nAllen\nFrisco\nDallas\nMcKinney\nPlano, Texas\nVirtual exhibitions"
+    }
+  ],
+  "presets": [{ "name": "Exhibitions · Cover" }]
+}
+{% endschema %}

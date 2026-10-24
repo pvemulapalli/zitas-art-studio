@@ -1,0 +1,15 @@
+{%- liquid
+  assign title_class = title_class | default: 'ex-selected__entry-title--typo'
+-%}
+{%- if num != blank -%}
+  <span class="ex-selected__entry-num">
+    No. {{ num | escape -}}
+    {%- if year != blank %} · {{ year | escape }}{%- endif -%}
+  </span>
+{%- endif -%}
+{%- if title != blank -%}
+  <h3 class="ex-selected__entry-title {{ title_class }}">{{ title | escape }}</h3>
+{%- endif -%}
+{%- if place != blank -%}
+  <p class="ex-selected__place">{{ place | escape }}</p>
+{%- endif -%}

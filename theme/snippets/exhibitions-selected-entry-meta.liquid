@@ -1,0 +1,33 @@
+{%- liquid
+  assign num = block.settings.entry_num
+  assign year = block.settings.entry_year
+  assign title = block.settings.title
+  assign place_raw = block.settings.place
+  assign works = block.settings.works
+  assign linked = block.settings.linked_works
+  assign suffix = block.settings.works_suffix
+  assign title_class = title_class | default: 'ex-selected__entry-title--lg'
+-%}
+{%- if num != blank -%}
+  <span class="ex-selected__entry-num">
+    No. {{ num | escape -}}
+    {%- if year != blank %} · {{ year | escape }}{%- endif -%}
+  </span>
+{%- endif -%}
+{%- if title != blank -%}
+  <h3 class="ex-selected__entry-title {{ title_class }}">{{ title | escape }}</h3>
+{%- endif -%}
+{%- if place_raw != blank -%}
+  {%- assign place_lines = place_raw | newline_to_br | split: '<br />' -%}
+  <p class="ex-selected__place">
+    {%- for line in place_lines -%}
+      {%- assign row = line | strip -%}
+      {%- if row != blank -%}
+        {%- unless forloop.first -%}<br>{%- endunless -%}
+        {{- row | escape -}}
+      {%- endif -%}
+    {%- endfor -%}
+  </p>
+{%- endif -%}
+{%- render 'exhibitions-works-line', prefix: 'Shown:', works: works, linked_works: linked, suffix: suffix -%}
+{%- render 'exhibitions-series-link', title: block.settings.series_title, url: block.settings.series_url -%}

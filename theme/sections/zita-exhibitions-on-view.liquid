@@ -1,0 +1,78 @@
+{%- if section.blocks.size > 0 -%}
+  <div class="exhibitions-page">
+    <section class="ex-on-view" aria-labelledby="exhibitions-on-view-heading">
+      <div class="ex-shell ex-on-view__shell">
+        {%- for block in section.blocks -%}
+          <div class="ex-grid-12 ex-on-view__row" {{ block.shopify_attributes }}>
+            {%- if forloop.first -%}
+              <div class="ex-on-view__label-wrap">
+                <h2 id="exhibitions-on-view-heading" class="ex-eyebrow ex-eyebrow--teal">
+                  {{- section.settings.heading | default: 'On view' | escape -}}
+                </h2>
+              </div>
+            {%- else -%}
+              <div class="ex-on-view__label-wrap" aria-hidden="true"></div>
+            {%- endif -%}
+            <h3 class="ex-on-view__title">{{ block.settings.title | escape }}</h3>
+            <p class="ex-on-view__venue">
+              {%- if block.settings.venue != blank -%}
+                {{- block.settings.venue | escape -}}
+                {%- if block.settings.format != blank -%}<br>{{ block.settings.format | escape }}{%- endif -%}
+              {%- elsif block.settings.format != blank -%}
+                {{- block.settings.format | escape -}}
+              {%- endif -%}
+            </p>
+            {%- if block.settings.dates != blank -%}
+              <span class="ex-on-view__dates">{{ block.settings.dates | escape }}</span>
+            {%- endif -%}
+            {%- if block.settings.details_url != blank -%}
+              <a class="ex-on-view__details" href="{{ block.settings.details_url }}">
+                {{- block.settings.details_label | default: 'Details' | escape -}}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    </section>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Exhibitions · On view",
+  "class": "exhibitions-on-view-section",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Hidden when there are no blocks. Add a block when an exhibition is current or upcoming; remove blocks when nothing is on view."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "On view"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "On view row",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Exhibition title" },
+        { "type": "text", "id": "venue", "label": "Venue and city" },
+        { "type": "text", "id": "format", "label": "Format" },
+        { "type": "text", "id": "dates", "label": "Dates" },
+        { "type": "url", "id": "details_url", "label": "Details link" },
+        {
+          "type": "text",
+          "id": "details_label",
+          "label": "Details link label",
+          "default": "Details"
+        }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Exhibitions · On view" }]
+}
+{% endschema %}

@@ -7,6 +7,9 @@
   "not_found": {
     "title": "This room is empty"
   },
+  "exhibitions": {
+    "series_link_prefix": "Explore the series · "
+  },
   "blog": {
     "article_comments": "Comments",
     "article_metadata_html": "{{ date }} by {{ author }}",

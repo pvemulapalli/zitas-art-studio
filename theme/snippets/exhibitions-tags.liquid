@@ -1,0 +1,20 @@
+{% doc %}
+  Renders exhibition archive tag chips from comma-separated labels.
+
+  @param {string} tags - e.g. "Curator's Choice, Virtual"
+{% enddoc %}
+{%- assign tag_list = tags | split: ',' -%}
+{%- for raw in tag_list -%}
+  {%- assign tag = raw | strip -%}
+  {%- if tag != blank -%}
+    {%- liquid
+      assign tag_class = 'ex-tag--neutral'
+      if tag == "Curator's Choice" or tag == 'International selection'
+        assign tag_class = 'ex-tag--copper'
+      elsif tag == 'Solo'
+        assign tag_class = 'ex-tag--teal'
+      endif
+    -%}
+    <span class="ex-tag {{ tag_class }}">{{ tag | escape }}</span>
+  {%- endif -%}
+{%- endfor -%}

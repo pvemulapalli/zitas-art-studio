@@ -1,0 +1,77 @@
+{%- liquid
+  assign headline = section.settings.headline
+  assign button_label = section.settings.button_label
+  assign button_link = section.settings.button_link | default: '/collections/all'
+  assign note = section.settings.note
+  assign write_label = section.settings.write_label
+  assign write_url = section.settings.write_url | default: '/pages/contact'
+-%}
+
+<div class="exhibitions-page">
+  <section class="ex-closing" aria-labelledby="exhibitions-closing-heading">
+    <div class="ex-shell ex-grid-12 ex-closing__grid">
+      <div class="ex-closing__primary">
+        {%- if headline != blank -%}
+          <h2 id="exhibitions-closing-heading" class="ex-closing__headline">{{ headline | escape }}</h2>
+        {%- endif -%}
+        {%- if button_label != blank -%}
+          <div class="ex-closing__cta-wrap">
+            <a class="button button--primary" href="{{ button_link }}">{{ button_label | escape }}</a>
+          </div>
+        {%- endif -%}
+      </div>
+      <div class="ex-closing__aside">
+        {%- if note != blank -%}
+          <p class="ex-closing__note">{{ note | escape }}</p>
+        {%- endif -%}
+        {%- if write_label != blank and write_url != blank -%}
+          <a class="ex-closing__write" href="{{ write_url }}">{{ write_label | escape }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Exhibitions · Closing",
+  "class": "exhibitions-closing-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "See the paintings for yourself."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Primary button label",
+      "default": "Explore the originals"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "textarea",
+      "id": "note",
+      "label": "Curator note",
+      "default": "Galleries and curators are welcome to get in touch about exhibiting Ranjeeta’s work."
+    },
+    {
+      "type": "text",
+      "id": "write_label",
+      "label": "Contact link label",
+      "default": "Write to Ranjeeta"
+    },
+    {
+      "type": "url",
+      "id": "write_url",
+      "label": "Contact link URL"
+    }
+  ],
+  "presets": [{ "name": "Exhibitions · Closing" }]
+}
+{% endschema %}

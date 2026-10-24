@@ -1,0 +1,28 @@
+{%- liquid
+  assign works_raw = works | strip
+  assign link_map = linked_works | default: '' | newline_to_br | split: '<br />'
+  assign parts = works_raw | split: ';'
+-%}
+{%- for part in parts -%}
+  {%- assign piece = part | strip -%}
+  {%- if piece != blank -%}
+    {%- assign href = '' -%}
+    {%- for pair in link_map -%}
+      {%- assign pair_line = pair | strip -%}
+      {%- if pair_line contains '|' -%}
+        {%- assign pair_bits = pair_line | split: '|' -%}
+        {%- assign pair_title = pair_bits[0] | strip -%}
+        {%- if pair_title == piece -%}
+          {%- assign href = pair_bits[1] | strip -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- unless forloop.first -%}; {%- endunless -%}
+    {%- if href != blank -%}
+      <a class="ex-work-link" href="{{ href }}">{{ piece | escape }}</a>
+    {%- else -%}
+      {{- piece | escape -}}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}

@@ -1,0 +1,177 @@
+{%- liquid
+  assign plate_label = section.settings.plate_label
+  assign heading = section.settings.heading
+  assign exhibition_line = section.settings.exhibition_line
+  assign image = section.settings.artwork_image
+  assign caption = section.settings.artwork_caption
+  assign alt = section.settings.artwork_alt
+-%}
+
+<div class="exhibitions-page">
+  <section class="ex-plate-one" aria-labelledby="exhibitions-plate-one-heading">
+    <div class="ex-shell ex-grid-12 ex-plate-one__shell">
+      <figure class="ex-plate-one__figure">
+        {%- if image != blank -%}
+          <div class="ex-plate-one__image-wrap">
+            {%- render 'responsive-image',
+              image: image,
+              alt: alt,
+              sizes: '(min-width: 750px) 45vw, 84vw',
+              widths: '400, 560, 720, 960',
+              loading: 'lazy',
+              class: 'ex-plate-one__image'
+            -%}
+          </div>
+        {%- elsif section.settings.fallback_asset != blank -%}
+          <div class="ex-plate-one__image-wrap">
+            <img
+              class="ex-plate-one__image"
+              src="{{ section.settings.fallback_asset | asset_url }}"
+              alt="{{ alt | escape }}"
+              width="560"
+              height="700"
+              loading="eager"
+              decoding="async"
+            >
+          </div>
+        {%- elsif request.design_mode -%}
+          <div class="ex-plate-one__image-wrap">
+            <span class="ex-eyebrow">Add artwork image</span>
+          </div>
+        {%- endif -%}
+        {%- if caption != blank -%}
+          <figcaption class="ex-plate-one__caption">{{ caption }}</figcaption>
+        {%- endif -%}
+      </figure>
+
+      <div class="ex-plate-one__label-col">
+        {%- if plate_label != blank -%}
+          <span class="ex-eyebrow ex-eyebrow--gold">{{ plate_label | escape }}</span>
+        {%- endif -%}
+        {%- if heading != blank -%}
+          <h2 id="exhibitions-plate-one-heading" class="ex-plate-one__title">{{ heading | escape }}</h2>
+        {%- endif -%}
+        {%- if exhibition_line != blank -%}
+          <p class="ex-plate-one__exhibition-line">{{ exhibition_line | escape }}</p>
+        {%- endif -%}
+
+        <dl class="ex-wall-label">
+          {%- if section.settings.venue != blank -%}
+            <dt>{{ section.settings.label_venue | default: 'Venue' | escape }}</dt>
+            <dd>{{ section.settings.venue | escape }}</dd>
+          {%- endif -%}
+          {%- if section.settings.format != blank -%}
+            <dt>{{ section.settings.label_format | default: 'Format' | escape }}</dt>
+            <dd>{{ section.settings.format | escape }}</dd>
+          {%- endif -%}
+          {%- if section.settings.dates != blank -%}
+            <dt>{{ section.settings.label_dates | default: 'Dates' | escape }}</dt>
+            <dd>{{ section.settings.dates | escape }}</dd>
+          {%- endif -%}
+          {%- if section.settings.work_title != blank -%}
+            <dt>{{ section.settings.label_work | default: 'Work' | escape }}</dt>
+            <dd>
+              {%- if section.settings.work_url != blank -%}
+                <a class="ex-work-link ex-work-link--night" href="{{ section.settings.work_url }}">
+                  <em>{{ section.settings.work_title | escape }}</em>
+                </a>
+              {%- else -%}
+                <em>{{ section.settings.work_title | escape }}</em>
+              {%- endif -%}
+            </dd>
+          {%- endif -%}
+        </dl>
+
+        {%- render 'exhibitions-series-link',
+          title: section.settings.series_title,
+          url: section.settings.series_url,
+          variant: 'night'
+        -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Exhibitions · Plate I",
+  "class": "exhibitions-plate-one-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "artwork_image",
+      "label": "Artwork image",
+      "info": "Prefer Files/Theme Editor upload in production. Fallback theme asset used when empty."
+    },
+    {
+      "type": "text",
+      "id": "fallback_asset",
+      "label": "Fallback theme asset filename",
+      "default": "exhibition-uncolored-by-nature.jpg"
+    },
+    {
+      "type": "text",
+      "id": "artwork_alt",
+      "label": "Artwork alt text",
+      "default": "Un Colored by Nature: white poured forms rising from a black ground"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "artwork_caption",
+      "label": "Caption",
+      "default": "Un Colored by Nature"
+    },
+    {
+      "type": "text",
+      "id": "plate_label",
+      "label": "Plate label",
+      "default": "Plate I · Recognition"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Curator’s Choice"
+    },
+    {
+      "type": "text",
+      "id": "exhibition_line",
+      "label": "Exhibition line",
+      "default": "Black & White, International Juried Exhibition"
+    },
+    { "type": "header", "content": "Wall label" },
+    { "type": "text", "id": "label_venue", "label": "Venue label", "default": "Venue" },
+    {
+      "type": "text",
+      "id": "venue",
+      "label": "Venue",
+      "default": "Le Gateau Gallery, France"
+    },
+    { "type": "text", "id": "label_format", "label": "Format label", "default": "Format" },
+    {
+      "type": "text",
+      "id": "format",
+      "label": "Format",
+      "default": "Virtual group exhibition"
+    },
+    { "type": "text", "id": "label_dates", "label": "Dates label", "default": "Dates" },
+    { "type": "text", "id": "dates", "label": "Dates", "default": "3–17 April 2026" },
+    { "type": "text", "id": "label_work", "label": "Work label", "default": "Work" },
+    {
+      "type": "text",
+      "id": "work_title",
+      "label": "Work title",
+      "default": "Un Colored by Nature"
+    },
+    {
+      "type": "url",
+      "id": "work_url",
+      "label": "Work link (optional product URL)"
+    },
+    { "type": "header", "content": "Series link (optional)" },
+    { "type": "text", "id": "series_title", "label": "Series title" },
+    { "type": "url", "id": "series_url", "label": "Series collection URL" }
+  ],
+  "presets": [{ "name": "Exhibitions · Plate I" }]
+}
+{% endschema %}

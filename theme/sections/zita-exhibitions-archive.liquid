@@ -1,0 +1,192 @@
+{%- if section.blocks.size > 0 -%}
+  {%- liquid
+    assign chip_seen = '|'
+  -%}
+
+  <div class="exhibitions-page">
+    <section id="exhibitions-archive" class="ex-archive" aria-labelledby="exhibitions-archive-heading">
+      <div class="ex-shell ex-archive__shell">
+        <div class="ex-archive__header">
+          <h2 id="exhibitions-archive-heading" class="ex-archive__title">
+            {{- section.settings.heading | default: 'Archive' | escape -}}
+          </h2>
+          {%- if section.settings.note != blank -%}
+            <p class="ex-archive__note">{{ section.settings.note | escape }}</p>
+          {%- endif -%}
+        </div>
+
+        {%- capture year_chips -%}
+          {%- for block in section.blocks -%}
+            {%- liquid
+              assign group_key = block.settings.year_group | strip
+              if group_key == blank
+                assign group_key = 'additional'
+              endif
+              assign token = '|' | append: group_key | append: '|'
+            -%}
+            {%- unless chip_seen contains token -%}
+              {%- assign chip_seen = chip_seen | append: group_key | append: '|' -%}
+              {%- liquid
+                if group_key == 'additional'
+                  assign chip_label = section.settings.additional_label | default: 'Additional'
+                else
+                  assign chip_label = group_key
+                endif
+                assign anchor_id = 'ex-archive-year-' | append: group_key | handleize
+              -%}
+              <a class="ex-archive__year-chip" href="#{{ anchor_id }}">{{ chip_label | escape }}</a>
+            {%- endunless -%}
+          {%- endfor -%}
+        {%- endcapture -%}
+
+        {%- if year_chips != blank -%}
+          <nav class="ex-archive__year-nav" aria-label="{{ section.settings.year_nav_label | default: 'Archive years' | escape }}">
+            {{- year_chips -}}
+          </nav>
+        {%- endif -%}
+
+        {%- assign group_seen = '|' -%}
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign group_key = block.settings.year_group | strip
+            if group_key == blank
+              assign group_key = 'additional'
+            endif
+            assign group_token = '|' | append: group_key | append: '|'
+          -%}
+          {%- unless group_seen contains group_token -%}
+            {%- assign group_seen = group_seen | append: group_key | append: '|' -%}
+            {%- liquid
+              assign anchor_id = 'ex-archive-year-' | append: group_key | handleize
+              if group_key == 'additional'
+                assign heading_label = section.settings.additional_heading | default: 'Additional exhibitions'
+                assign heading_class = 'ex-archive__year-heading ex-archive__year-heading--additional'
+              else
+                assign heading_label = group_key
+                assign heading_class = 'ex-archive__year-heading'
+              endif
+            -%}
+            <div class="ex-grid-12 ex-archive__group" id="{{ anchor_id }}">
+              <h3 class="{{ heading_class }}">{{ heading_label | escape }}</h3>
+              <ul class="ex-archive__rows">
+                {%- for row in section.blocks -%}
+                  {%- liquid
+                    assign row_key = row.settings.year_group | strip
+                    if row_key == blank
+                      assign row_key = 'additional'
+                    endif
+                  -%}
+                  {%- if row_key == group_key -%}
+                    <li class="ex-archive__row" {{ row.shopify_attributes }}>
+                      <span class="ex-archive__row-title">{{ row.settings.title | escape }}</span>
+                      <span class="ex-archive__row-middle">
+                        {%- if row.settings.place != blank -%}
+                          <span>{{ row.settings.place | escape }}</span>
+                        {%- endif -%}
+                        {%- if row.settings.works != blank -%}
+                          <span class="ex-archive__row-works">
+                            {%- render 'exhibitions-archive-works',
+                              works: row.settings.works,
+                              linked_works: row.settings.linked_works
+                            -%}
+                          </span>
+                        {%- endif -%}
+                        {%- render 'exhibitions-series-link',
+                          title: row.settings.series_title,
+                          url: row.settings.series_url
+                        -%}
+                      </span>
+                      <span class="ex-archive__row-tags">
+                        {%- render 'exhibitions-tags', tags: row.settings.tags -%}
+                      </span>
+                    </li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+    </section>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Exhibitions · Archive",
+  "class": "exhibitions-archive-section",
+  "max_blocks": 50,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Archive"
+    },
+    {
+      "type": "textarea",
+      "id": "note",
+      "label": "Supporting note",
+      "default": "Exhibitions and selections since 2019. More of the record is being added."
+    },
+    {
+      "type": "text",
+      "id": "additional_heading",
+      "label": "Undated group heading",
+      "default": "Additional exhibitions"
+    },
+    {
+      "type": "text",
+      "id": "additional_label",
+      "label": "Undated chip label (mobile nav)",
+      "default": "Additional"
+    },
+    {
+      "type": "text",
+      "id": "year_nav_label",
+      "label": "Year nav accessible name",
+      "default": "Archive years"
+    },
+    {
+      "type": "paragraph",
+      "content": "Group rows by setting the same Year group on consecutive blocks. Use “additional” for undated records (keep those blocks last). Reorder blocks to sort within a year."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Archive row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "year_group",
+          "label": "Year group",
+          "info": "e.g. 2026, 2024, or additional",
+          "default": "2026"
+        },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "text", "id": "place", "label": "Place and dates line" },
+        {
+          "type": "textarea",
+          "id": "works",
+          "label": "Works (semicolon-separated for archive)"
+        },
+        {
+          "type": "textarea",
+          "id": "linked_works",
+          "label": "Linked works (Title|/url per line)"
+        },
+        { "type": "text", "id": "series_title", "label": "Series title (optional)" },
+        { "type": "url", "id": "series_url", "label": "Series URL (optional)" },
+        {
+          "type": "text",
+          "id": "tags",
+          "label": "Tags (comma-separated)",
+          "info": "Curator's Choice, International selection, Solo, Virtual, Work sold"
+        }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Exhibitions · Archive" }]
+}
+{% endschema %}

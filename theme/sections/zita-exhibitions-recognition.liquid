@@ -1,0 +1,80 @@
+<div class="exhibitions-page">
+  <section class="ex-recognition" aria-label="{{ section.settings.aria_label | default: 'Further recognition' | escape }}">
+    <div class="ex-shell ex-grid-12">
+      <div class="ex-recognition__ii">
+        {%- if section.settings.plate_ii_label != blank -%}
+          <span class="ex-eyebrow">{{ section.settings.plate_ii_label | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.plate_ii_line != blank -%}
+          <p class="ex-recognition__ii-line">{{ section.settings.plate_ii_line | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.plate_ii_source != blank -%}
+          <p class="ex-recognition__source">{{ section.settings.plate_ii_source | escape }}</p>
+        {%- endif -%}
+      </div>
+      <div class="ex-recognition__iii">
+        {%- if section.settings.plate_iii_label != blank -%}
+          <span class="ex-eyebrow">{{ section.settings.plate_iii_label | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.plate_iii_venue != blank -%}
+          <p class="ex-recognition__iii-venue">{{ section.settings.plate_iii_venue | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.plate_iii_format != blank -%}
+          <p class="ex-recognition__source">{{ section.settings.plate_iii_format | escape }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Exhibitions · Recognition",
+  "class": "exhibitions-recognition-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessible name",
+      "default": "Further recognition"
+    },
+    {
+      "type": "text",
+      "id": "plate_ii_label",
+      "label": "Plate II label",
+      "default": "Plate II · International selection"
+    },
+    {
+      "type": "textarea",
+      "id": "plate_ii_line",
+      "label": "Plate II headline",
+      "default": "One of 64 artists selected from 872 proposals across 25 countries."
+    },
+    {
+      "type": "text",
+      "id": "plate_ii_source",
+      "label": "Plate II source line",
+      "default": "IAVA 2020, A HELP · International virtual selection"
+    },
+    {
+      "type": "text",
+      "id": "plate_iii_label",
+      "label": "Plate III label",
+      "default": "Plate III · Solo exhibition"
+    },
+    {
+      "type": "text",
+      "id": "plate_iii_venue",
+      "label": "Plate III venue",
+      "default": "Le Gateau Gallery, France"
+    },
+    {
+      "type": "text",
+      "id": "plate_iii_format",
+      "label": "Plate III format",
+      "default": "Virtual solo exhibition"
+    }
+  ],
+  "presets": [{ "name": "Exhibitions · Recognition" }]
+}
+{% endschema %}

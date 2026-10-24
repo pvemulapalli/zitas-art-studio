@@ -3,6 +3,9 @@
     "page": {
       "about": {
         "name": "About"
+      },
+      "exhibitions": {
+        "name": "Exhibitions"
       }
     }
   },

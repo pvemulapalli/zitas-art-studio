@@ -1,0 +1,51 @@
+{% doc %}
+  Renders a “Shown:” or archive works line with optional title→URL links.
+
+  @param {string} [prefix] - Label before works (default “Shown:”)
+  @param {string} works - Comma-separated work titles (plain italic when unlinked)
+  @param {string} [linked_works] - Newline-separated “Title|/path” pairs
+  @param {string} [suffix] - Text after works (e.g. “, which found its home…”)
+  @param {string} [variant] - light | night
+{% enddoc %}
+{%- liquid
+  assign label_prefix = prefix | default: 'Shown:'
+  assign works_raw = works | strip
+  assign suffix_text = suffix | strip
+  assign line_variant = variant | default: 'light'
+  assign link_map = linked_works | default: '' | newline_to_br | split: '<br />'
+-%}
+{%- if works_raw != blank or suffix_text != blank -%}
+  <p class="ex-works-line ex-works-line--{{ line_variant }}">
+    {%- if works_raw != blank -%}
+      <span class="ex-works-line__label">{{ label_prefix }}</span>
+      {%- assign titles = works_raw | split: ',' -%}
+      {%- for title_part in titles -%}
+        {%- assign piece = title_part | strip -%}
+        {%- if piece != blank -%}
+          {%- assign href = '' -%}
+          {%- for pair in link_map -%}
+            {%- assign pair_line = pair | strip -%}
+            {%- if pair_line contains '|' -%}
+              {%- assign pair_bits = pair_line | split: '|' -%}
+              {%- assign pair_title = pair_bits[0] | strip -%}
+              {%- if pair_title == piece -%}
+                {%- assign href = pair_bits[1] | strip -%}
+                {%- break -%}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- unless forloop.first -%}, {%- endunless -%}
+          {%- if href != blank -%}
+            <a class="ex-work-link ex-work-link--{{ line_variant }}" href="{{ href }}"><em>{{ piece }}</em></a>
+          {%- else -%}
+            <em>{{ piece }}</em>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+    {%- if suffix_text != blank -%}
+      {%- if works_raw != blank -%}, {%- endif -%}
+      {{- suffix_text -}}
+    {%- endif -%}
+  </p>
+{%- endif -%}

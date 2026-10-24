@@ -1,0 +1,23 @@
+{% doc %}
+  Optional “Explore the series” label link for Exhibitions records.
+
+  @param {string} title - Collection / series title for wording
+  @param {string} url - Destination URL (blank hides link)
+  @param {string} [variant] - light | night (default light)
+{% enddoc %}
+{%- liquid
+  assign series_title = title | strip
+  assign series_url = url | strip
+  assign link_variant = variant | default: 'light'
+-%}
+{%- if series_url != blank and series_title != blank -%}
+  <a
+    class="ex-series-link ex-series-link--{{ link_variant }}"
+    href="{{ series_url }}"
+    aria-label="{{ 'exhibitions.series_link_prefix' | t | strip }}{{ series_title | escape }}"
+  >
+    {{- 'exhibitions.series_link_prefix' | t -}}
+    {{- series_title -}}
+    <span class="ex-series-link__arrow" aria-hidden="true">&nbsp;→</span>
+  </a>
+{%- endif -%}
