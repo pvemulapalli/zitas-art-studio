@@ -39,7 +39,7 @@
         "type": "text",
         "id": "contact_email",
         "label": "Public email",
-        "default": "ranjeeta.shroff@gmail.com"
+        "default": "info@zitasartstudio.com"
       },
       {
         "type": "text",

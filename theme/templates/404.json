@@ -1,20 +1,14 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
- {
+{
   "sections": {
     "main": {
-      "type": "404",
-      "settings": {}
+      "type": "zita-not-found",
+      "settings": {
+        "heading": "404",
+        "message": "This path does not lead anywhere in the gallery. The work you were looking for may have moved, or the address may be mistyped.",
+        "cta_label": "Return home",
+        "secondary_label": "Browse original artworks"
+      }
     }
   },
-  "order": [
-    "main"
-  ]
+  "order": ["main"]
 }

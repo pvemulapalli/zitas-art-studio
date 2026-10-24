@@ -1,0 +1,82 @@
+{{ 'zita-not-found.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign heading = section.settings.heading | default: '404'
+  assign message = section.settings.message
+  assign cta_label = section.settings.cta_label
+  assign cta_url = section.settings.cta_url | default: routes.root_url
+  assign secondary_url = section.settings.secondary_url | default: routes.all_products_collection_url
+  assign secondary_label = section.settings.secondary_label
+-%}
+
+<section class="not-found full-width" aria-labelledby="NotFoundHeading-{{ section.id }}">
+  <div class="not-found__inner page-width">
+    <p class="not-found__code" aria-hidden="true">{{ heading | escape }}</p>
+    <h1 id="NotFoundHeading-{{ section.id }}" class="not-found__title">{{ 'not_found.title' | t }}</h1>
+    <p class="not-found__message">{{ message | escape }}</p>
+    <div class="not-found__actions">
+      <a class="button button--large" href="{{ cta_url }}">{{ cta_label | escape }}</a>
+      {%- if secondary_label != blank -%}
+        {%- render 'label-link',
+          url: secondary_url,
+          label: secondary_label
+        -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Not found",
+  "tag": "section",
+  "class": "section-not-found",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Shown when a visitor opens a URL that does not exist. HTTP 404 is handled by Shopify."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Display numeral",
+      "default": "404",
+      "info": "Large background typography only; the accessible page title uses the fixed heading below."
+    },
+    {
+      "type": "textarea",
+      "id": "message",
+      "label": "Message",
+      "default": "This path does not lead anywhere in the gallery. The work you were looking for may have moved, or the address may be mistyped."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Primary button label",
+      "default": "Return home"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary link label",
+      "default": "Browse original artworks"
+    },
+    {
+      "type": "url",
+      "id": "secondary_url",
+      "label": "Secondary link",
+      "info": "Defaults to all products when left blank in the theme editor after first save."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Not found"
+    }
+  ]
+}
+{% endschema %}
