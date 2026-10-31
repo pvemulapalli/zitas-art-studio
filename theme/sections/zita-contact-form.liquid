@@ -57,11 +57,12 @@
             data-msg-summary-title="{{ section.settings.msg_summary_title | escape }}"
           >
             {%- comment -%}
-              return_to must be a path without a hash. A fragment in return_to drops
-              Shopify's form.posted_successfully? flash after the redirect.
+              Do not set return_to. A custom return_to redirects as a plain GET and
+              drops Shopify's form.posted_successfully? flash, so the thank-you
+              panel never renders even though the inquiry email was sent.
+              Shopify returns to this page via the HTTP referrer with the flash set.
               Scroll/focus to #message is handled in zita-contact.js on success.
             {%- endcomment -%}
-            <input type="hidden" name="return_to" value="{{ request.path }}">
             {%- if form.posted_successfully? -%}
               <div
                 id="ContactSuccess-{{ section.id }}"

@@ -252,12 +252,10 @@
       renderErrors(errors);
       return;
     }
+    // Keep draft until Shopify confirms success (data-posted). Do not disable the
+    // submit control here — disabling the submitter during the submit event can
+    // cancel the native POST and interferes with Shopify CAPTCHA re-submit.
     saveDraft();
-    const submitBtn = form.querySelector('[type="submit"]');
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.setAttribute('aria-busy', 'true');
-    }
   });
 
   applyTypeFromQuery();
