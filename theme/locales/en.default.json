@@ -4,12 +4,6 @@
     "not_found": "Page not found.",
     "back_to_shopping": "Back to shopping"
   },
-  "not_found": {
-    "title": "This room is empty"
-  },
-  "exhibitions": {
-    "series_link_prefix": "Explore the series · "
-  },
   "blog": {
     "article_comments": "Comments",
     "article_metadata_html": "{{ date }} by {{ author }}",
@@ -20,7 +14,10 @@
     "comment_form_title": "Add a comment"
   },
   "cart": {
+    "checkout": "Checkout",
     "title": "Your bag",
+    "update": "Update bag",
+    "remove": "Remove",
     "empty": "Your bag is empty. Explore original works when you are ready.",
     "quantity": "Quantity",
     "unit_price": "Unit price",
@@ -28,9 +25,6 @@
     "subtotal": "Subtotal",
     "summary": "Order summary",
     "taxes_and_shipping": "Taxes and shipping are calculated at checkout.",
-    "update": "Update bag",
-    "remove": "Remove",
-    "checkout": "Checkout",
     "continue_shopping": "View originals",
     "error_generic": "That quantity could not be updated. Please try again.",
     "no_changes": "No quantity changes to update.",
@@ -209,5 +203,11 @@
       "add_artwork": "Add artwork",
       "add_detail": "Add a full-bleed detail crop"
     }
+  },
+  "not_found": {
+    "title": "This room is empty"
+  },
+  "exhibitions": {
+    "series_link_prefix": "Explore the series · "
   }
 }

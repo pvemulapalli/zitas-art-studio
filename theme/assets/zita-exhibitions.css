@@ -195,7 +195,21 @@
 /* --- Plate I (night) --- */
 .ex-plate-one {
   background: var(--ex-night);
-  color: var(--ex-gesso);
+  color: var(--ex-gesso, #f8f8f6);
+}
+
+/* Night spread: global h2/h3 use ink; force readable ivory on dark ground. */
+.ex-plate-one .ex-plate-one__title,
+.ex-plate-one .ex-wall-label dd {
+  color: #f8f8f6;
+}
+
+.ex-plate-one .ex-plate-one__caption {
+  color: #e3e7e7;
+}
+
+.ex-plate-one .ex-wall-label dt {
+  color: #b8bcc0;
 }
 
 .ex-plate-one__shell {
