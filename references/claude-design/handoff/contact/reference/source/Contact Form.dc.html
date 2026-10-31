@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/zita-s-art-studio-design-system-2425aac4-be73-49f2-8113-38d2f5adf854/styles.css">
+<script src="zita-data.js"></script>
+</helmet>
+<div style="width:100%;font-family:var(--font-serif);color:#1F2A33">
+  <sc-if value="{{ isSuccess }}" hint-placeholder-val="{{ false }}">
+    <div role="status" tabindex="-1" ref="{{ successRef }}" style="display:grid;gap:16px;padding:{{ pad }};border-top:1px solid #15202A;outline:none">
+      <span style="font-family:var(--font-display);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#0F5468">Message sent</span>
+      <p style="margin:0;font-family:var(--font-display);font-size:{{ successSize }};line-height:1.2;color:#15202A">Thank you. Your message has been sent to Ranjeeta.</p>
+      <p style="margin:0;font-size:16px;line-height:1.6;color:#3B4044">A copy of what you wrote is below.</p>
+      <dl style="margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 20px;font-size:15px;color:#3B4044">
+        <dt style="color:#565C61">Inquiry</dt><dd style="margin:0;color:#15202A">{{ typeLabel }}</dd>
+        <dt style="color:#565C61">From</dt><dd style="margin:0;color:#15202A;overflow-wrap:anywhere">{{ v.name }} · {{ v.email }}</dd>
+      </dl>
+      <button type="button" onClick="{{ reset }}" style="justify-self:start;min-height:44px;padding:0;background:none;border:0;border-bottom:1px solid #CDD1D2;font-family:var(--font-display);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#15202A;cursor:pointer" style-hover="color:#96502A">Send another message</button>
+    </div>
+  </sc-if>
+  <sc-if value="{{ isForm }}" hint-placeholder-val="{{ true }}">
+    <form novalidate="" onSubmit="{{ submit }}" aria-labelledby="cf-h" style="display:grid;gap:28px">
+      <sc-if value="{{ hasErrors }}" hint-placeholder-val="{{ false }}">
+        <div role="alert" tabindex="-1" ref="{{ summaryRef }}" style="display:grid;gap:8px;padding:16px 18px;border:1px solid var(--state-error);border-left-width:1px;outline:none">
+          <span style="font-family:var(--font-display);font-size:15px;color:var(--state-error)">{{ errorTitle }}</span>
+          <ul style="margin:0;padding-left:1.1em;display:grid;gap:4px;font-size:15px">
+            <sc-for list="{{ errorList }}" as="e" hint-placeholder-count="2"><li><a href="#{{ e.id }}" onClick="{{ e.go }}" style="color:var(--state-error);text-decoration:underline;text-underline-offset:3px">{{ e.msg }}</a></li></sc-for>
+          </ul>
+        </div>
+      </sc-if>
+
+      <fieldset ref="{{ fsRef }}" style="margin:0;padding:0;border:0;display:grid;gap:12px">
+        <legend style="padding:0;margin-bottom:12px;font-family:var(--font-display);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#15202A">What is your message about?</legend>
+        <div style="display:grid;grid-template-columns:{{ typeCols }};gap:10px">
+          <sc-for list="{{ types }}" as="t" hint-placeholder-count="4">
+            <label style="display:flex;align-items:center;gap:12px;min-height:52px;padding:12px 16px;box-sizing:border-box;border:1px solid {{ t.line }};background:{{ t.bg }};border-radius:2px;cursor:pointer;font-size:16px;line-height:1.3;color:#15202A" style-hover="border-color:#15202A">
+              <input type="radio" name="contact[Inquiry type]" value="{{ t.label }}" checked="{{ t.checked }}" onChange="{{ t.pick }}" style="margin:0;width:18px;height:18px;accent-color:#0F5468;flex-shrink:0">
+              <span>{{ t.label }}</span>
+            </label>
+          </sc-for>
+        </div>
+      </fieldset>
+
+      <div style="display:grid;grid-template-columns:{{ pairCols }};gap:20px">
+        <div style="display:grid;gap:8px;min-width:0">
+          <label for="cf-name-{{ uid }}" style="font-size:15px;color:#15202A">Name</label>
+          <input id="cf-name-{{ uid }}" name="contact[name]" autocomplete="name" value="{{ v.name }}" onChange="{{ onName }}" aria-invalid="{{ a.name }}" aria-describedby="cf-name-{{ uid }}-err" style="min-height:48px;padding:0 14px;box-sizing:border-box;width:100%;border:1px solid {{ line.name }};border-radius:2px;background:#FFFFFF;font-family:var(--font-serif);font-size:17px;color:#15202A" style-focus="outline:2px solid #2E8FB5;outline-offset:3px">
+          <sc-if value="{{ err.name }}" hint-placeholder-val="{{ false }}"><span id="cf-name-{{ uid }}-err" style="font-size:14px;color:var(--state-error)">{{ err.name }}</span></sc-if>
+        </div>
+        <div style="display:grid;gap:8px;min-width:0">
+          <label for="cf-email-{{ uid }}" style="font-size:15px;color:#15202A">Email</label>
+          <input id="cf-email-{{ uid }}" type="email" name="contact[email]" autocomplete="email" value="{{ v.email }}" onChange="{{ onEmail }}" aria-invalid="{{ a.email }}" aria-describedby="cf-email-{{ uid }}-err" style="min-height:48px;padding:0 14px;box-sizing:border-box;width:100%;border:1px solid {{ line.email }};border-radius:2px;background:#FFFFFF;font-family:var(--font-serif);font-size:17px;color:#15202A" style-focus="outline:2px solid #2E8FB5;outline-offset:3px">
+          <sc-if value="{{ err.email }}" hint-placeholder-val="{{ false }}"><span id="cf-email-{{ uid }}-err" style="font-size:14px;color:var(--state-error)">{{ err.email }}</span></sc-if>
+        </div>
+      </div>
+
+      <sc-if value="{{ hasExtra }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:{{ pairCols }};gap:20px;padding:20px 0 0;border-top:1px solid #CDD1D2">
+          <sc-for list="{{ extras }}" as="x" hint-placeholder-count="2">
+            <div style="display:grid;gap:8px;min-width:0">
+              <label for="{{ x.id }}" style="font-size:15px;color:#15202A">{{ x.label }} <span style="color:#565C61">(optional)</span></label>
+              <input id="{{ x.id }}" name="{{ x.name }}" value="{{ x.value }}" onChange="{{ x.change }}" style="min-height:48px;padding:0 14px;box-sizing:border-box;width:100%;border:1px solid #A4A9AC;border-radius:2px;background:#FFFFFF;font-family:var(--font-serif);font-size:17px;color:#15202A" style-focus="outline:2px solid #2E8FB5;outline-offset:3px">
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <div style="display:grid;gap:8px">
+        <label for="cf-msg-{{ uid }}" style="font-size:15px;color:#15202A">Message</label>
+        <textarea id="cf-msg-{{ uid }}" name="contact[body]" rows="6" value="{{ v.message }}" onChange="{{ onMessage }}" aria-invalid="{{ a.message }}" aria-describedby="cf-msg-{{ uid }}-err" style="padding:12px 14px;box-sizing:border-box;width:100%;min-height:160px;resize:vertical;border:1px solid {{ line.message }};border-radius:2px;background:#FFFFFF;font-family:var(--font-serif);font-size:17px;line-height:1.6;color:#15202A" style-focus="outline:2px solid #2E8FB5;outline-offset:3px"></textarea>
+        <sc-if value="{{ err.message }}" hint-placeholder-val="{{ false }}"><span id="cf-msg-{{ uid }}-err" style="font-size:14px;color:var(--state-error)">{{ err.message }}</span></sc-if>
+      </div>
+
+      <sc-if value="{{ isSendError }}" hint-placeholder-val="{{ false }}">
+        <p role="alert" style="margin:0;padding:14px 16px;border:1px solid var(--state-error);font-size:15px;line-height:1.55;color:#15202A">Your message couldn’t be sent. Everything you wrote is still here. Please try again, or email <a href="mailto:ranjeeta.shroff@gmail.com" style="color:#0F5468">ranjeeta.shroff@gmail.com</a>.</p>
+      </sc-if>
+
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px">
+        <button type="submit" style="min-height:52px;padding:0 32px;background:#0F5468;color:#FFFFFF;border:0;border-radius:0;font-family:var(--font-display);font-size:13px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;width:{{ btnW }}" style-hover="background:#0B4050" style-focus="outline:2px solid #2E8FB5;outline-offset:3px">Send message</button>
+        <span style="font-size:14px;color:#565C61">Name, email and message are needed.</span>
+      </div>
+    </form>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:640,&quot;height&quot;:820},&quot;compact&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;presetType&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;presetNonce&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;number&quot;},&quot;reviewState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;live&quot;,&quot;errors&quot;,&quot;success&quot;,&quot;sendError&quot;],&quot;default&quot;:&quot;live&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { type: 'General inquiry', v: { name: '', email: '', message: '' }, x: {}, errors: {}, status: 'idle', tried: false };
+  TYPES = ['General inquiry', 'Artwork inquiry', 'Commission inquiry', 'Trade / interior designer inquiry'];
+  EXTRA = {
+    'Artwork inquiry': [['Artwork name', 'contact[Artwork]']],
+    'Commission inquiry': [['Approximate size or wall space', 'contact[Size or space]'], ['Colours or mood you have in mind', 'contact[Colours or mood]']],
+    'Trade / interior designer inquiry': [['Company or studio', 'contact[Company]'], ['Project or location', 'contact[Project]']]
+  };
+  componentDidMount() { this.applyReview(); }
+  syncRadios() { if (!this.fsEl) return; this.fsEl.querySelectorAll('input[type=radio]').forEach((r) => { const on = r.value === this.state.type; r.checked = on; if (on) r.setAttribute('checked', ''); else r.removeAttribute('checked'); }); }
+  componentDidUpdate(pp) {
+    this.syncRadios();
+    if (pp.presetNonce !== this.props.presetNonce && this.props.presetType) this.setState({ type: this.props.presetType, status: this.state.status === 'success' ? 'idle' : this.state.status });
+    if (pp.reviewState !== this.props.reviewState) this.applyReview();
+  }
+  applyReview() {
+    const r = this.props.reviewState || 'live';
+    if (r === 'errors') { const v = { name: '', email: 'collector@', message: '' }; this.setState({ v, type: 'Commission inquiry', errors: this.validate(v), status: 'idle', tried: true }); }
+    else if (r === 'success') this.setState({ v: { name: 'A. Collector', email: 'collector@example.com', message: 'Sample message' }, type: 'Commission inquiry', status: 'success', errors: {} });
+    else if (r === 'sendError') this.setState({ v: { name: 'A. Collector', email: 'collector@example.com', message: 'I would love a painting for our living room wall.' }, type: 'Commission inquiry', status: 'sendError', errors: {} });
+    else this.setState({ v: { name: '', email: '', message: '' }, type: 'General inquiry', status: 'idle', errors: {}, tried: false, x: {} });
+  }
+  validate(v) {
+    const e = {};
+    if (!v.name.trim()) e.name = 'Please enter your name.';
+    if (!v.email.trim()) e.email = 'Please enter your email address.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email.trim())) e.email = 'Please enter an email address like name@example.com.';
+    if (!v.message.trim()) e.message = 'Please write a short message.';
+    return e;
+  }
+  set(k, val) { const v = { ...this.state.v, [k]: val }; this.setState({ v, errors: this.state.tried ? this.validate(v) : {} }); }
+  renderVals() {
+    const { type, v, errors, status } = this.state; const compact = !!this.props.compact; const uid = compact ? 'm' : 'd';
+    const ids = { name: 'cf-name-' + uid, email: 'cf-email-' + uid, message: 'cf-msg-' + uid };
+    const focus = (id) => (ev) => { if (ev) ev.preventDefault(); const el = document.getElementById(id); if (el) el.focus(); };
+    const errorList = ['name', 'email', 'message'].filter((k) => errors[k]).map((k) => ({ id: ids[k], msg: errors[k], go: focus(ids[k]) }));
+    const ex = (this.EXTRA[type] || []).map(([label, name], i) => ({ id: 'cf-x' + i + '-' + uid, label, name, value: this.state.x[name] || '', change: (e) => this.setState({ x: { ...this.state.x, [name]: e.target.value } }) }));
+    return {
+      uid, v, pad: compact ? '24px 0' : '32px 0',
+      isSuccess: status === 'success', isForm: status !== 'success', isSendError: status === 'sendError',
+      typeLabel: type, successSize: compact ? '24px' : '30px',
+      typeCols: compact ? 'minmax(0,1fr)' : 'repeat(2,minmax(0,1fr))', pairCols: compact ? 'minmax(0,1fr)' : 'repeat(2,minmax(0,1fr))',
+      btnW: compact ? '100%' : 'auto',
+      types: this.TYPES.map((t) => ({ label: t, checked: t === type, line: t === type ? '#0F5468' : '#A4A9AC', bg: t === type ? '#EEF4F5' : '#FFFFFF', pick: () => this.setState({ type: t }) })),
+      extras: ex, hasExtra: ex.length > 0,
+      err: { name: errors.name || '', email: errors.email || '', message: errors.message || '' },
+      a: { name: errors.name ? 'true' : 'false', email: errors.email ? 'true' : 'false', message: errors.message ? 'true' : 'false' },
+      line: { name: errors.name ? 'var(--state-error)' : '#A4A9AC', email: errors.email ? 'var(--state-error)' : '#A4A9AC', message: errors.message ? 'var(--state-error)' : '#A4A9AC' },
+      hasErrors: errorList.length > 0, errorList, errorTitle: errorList.length === 1 ? 'Please check 1 field' : 'Please check ' + errorList.length + ' fields',
+      onName: (e) => this.set('name', e.target.value), onEmail: (e) => this.set('email', e.target.value), onMessage: (e) => this.set('message', e.target.value),
+      summaryRef: (el) => { this.summaryEl = el; }, fsRef: (el) => { this.fsEl = el; if (el) this.syncRadios(); }, successRef: (el) => { if (el && this.focusSuccess) { el.focus(); this.focusSuccess = false; } },
+      submit: (e) => {
+        e.preventDefault();
+        const errs = this.validate(v);
+        if (Object.keys(errs).length) { this.setState({ errors: errs, tried: true, status: 'idle' }, () => this.summaryEl && this.summaryEl.focus()); return; }
+        this.focusSuccess = true; this.setState({ status: 'success', errors: {} });
+      },
+      reset: () => this.setState({ status: 'idle', v: { name: '', email: '', message: '' }, x: {}, tried: false, errors: {} })
+    };
+  }
+}
+</script>
+</body>
+</html>

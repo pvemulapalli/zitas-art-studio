@@ -1,0 +1,8 @@
+/* V2 type tokens — confirmed in the V1 client review: Marcellus (display, labels) + Mulish (body).
+   Overrides the design-system typography vars. --font-serif keeps its name for compatibility; it now holds Mulish. */
+@import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Mulish:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+:root:root{
+  --font-display:'Marcellus','Optima',Georgia,serif;
+  --font-serif:'Mulish','Helvetica Neue',Arial,sans-serif;
+  --font-body:'Mulish','Helvetica Neue',Arial,sans-serif;
+}

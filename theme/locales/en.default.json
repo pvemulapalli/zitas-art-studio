@@ -209,5 +209,15 @@
   },
   "exhibitions": {
     "series_link_prefix": "Explore the series · "
+  },
+  "contact": {
+    "email": "Email",
+    "phone_label": "Phone",
+    "name": "Name",
+    "message": "Message",
+    "optional": "optional",
+    "success_inquiry": "Inquiry",
+    "success_from": "From",
+    "continue_aria": "Continue browsing"
   }
 }

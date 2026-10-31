@@ -1,0 +1,89 @@
+/*
+ * ------------------------------------------------------------
+ * Contact — V2 alternate page template.
+ * Assign this template to the existing Contact page in Admin.
+ * Commission photo blocks use temporary SVG placeholders until
+ * Ranjeeta supplies photography (pre-launch replacement required).
+ * Trade statement copy is proposed and needs Ranjeeta's approval.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "contact_opening": {
+      "type": "zita-contact-opening",
+      "settings": {
+        "eyebrow": "Contact",
+        "heading": "Write to Ranjeeta.",
+        "intro": "<p>Please provide your contact information and share your questions or details for commission order below.</p>",
+        "email": "info@zitasartstudio.com",
+        "phone": "469-850-0196",
+        "phone_label_mobile": "Phone · tap to call"
+      }
+    },
+    "contact_commissions": {
+      "type": "zita-contact-commissions",
+      "blocks": {
+        "photo_1": {
+          "type": "photo",
+          "settings": {
+            "alt": "Temporary commission placeholder 1 — replace before launch"
+          }
+        },
+        "photo_2": {
+          "type": "photo",
+          "settings": {
+            "alt": "Temporary commission placeholder 2 — replace before launch"
+          }
+        },
+        "photo_3": {
+          "type": "photo",
+          "settings": {
+            "alt": "Temporary commission placeholder 3 — replace before launch"
+          }
+        }
+      },
+      "block_order": ["photo_1", "photo_2", "photo_3"],
+      "settings": {
+        "heading": "Trade & commission inquiries",
+        "statement": "<p>For trade and commission inquiries, contact me at <a href=\"mailto:info@zitasartstudio.com\">info@zitasartstudio.com</a> or fill out the contact form.</p>",
+        "quote": "I have been blessed to do a lot of commission paintings since I started doing abstract paintings in fluid form.",
+        "primary_label": "Start a commission inquiry",
+        "secondary_label": "Trade or designer inquiry"
+      }
+    },
+    "contact_form": {
+      "type": "zita-contact-form",
+      "settings": {
+        "heading": "Send a message",
+        "intro": "Choose what your message is about, and it will reach Ranjeeta with your words.",
+        "legend": "What is your message about?",
+        "type_general": "General inquiry",
+        "type_artwork": "Artwork inquiry",
+        "type_commission": "Commission inquiry",
+        "type_trade": "Trade / interior designer inquiry",
+        "label_artwork": "Artwork name",
+        "label_size": "Approximate size or wall space",
+        "label_colours": "Colours or mood you have in mind",
+        "label_company": "Company or studio",
+        "label_project": "Project or location",
+        "submit_label": "Send message",
+        "hint": "Name, email and message are needed.",
+        "success_eyebrow": "Message sent",
+        "success_heading": "Thank you. Your message has been sent to Ranjeeta.",
+        "success_note": "A copy of what you wrote is below.",
+        "reset_label": "Send another message",
+        "msg_name_empty": "Please enter your name.",
+        "msg_email_empty": "Please enter your email address.",
+        "msg_email_invalid": "Please enter an email address like name@example.com.",
+        "msg_message_empty": "Please write a short message.",
+        "msg_summary_title": "Please check [count] fields",
+        "msg_send_failure": "Your message couldn't be sent. Everything you wrote is still here. Please try again, or email ",
+        "failure_email": "info@zitasartstudio.com",
+        "continue_line": "Not ready to write yet?",
+        "continue_label": "Explore the originals",
+        "continue_link": "/collections/all"
+      }
+    }
+  },
+  "order": ["contact_opening", "contact_commissions", "contact_form"]
+}

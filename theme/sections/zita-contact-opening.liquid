@@ -1,0 +1,117 @@
+{{ 'zita-contact.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign eyebrow = section.settings.eyebrow
+  assign heading = section.settings.heading
+  assign intro = section.settings.intro
+  assign email = section.settings.email | default: settings.contact_email | strip
+  assign phone = section.settings.phone | default: settings.contact_phone | strip
+  assign phone_label_mobile = section.settings.phone_label_mobile | default: 'Phone · tap to call'
+  assign phone_digits = phone | remove: '-' | remove: ' ' | remove: '(' | remove: ')' | remove: '.' | remove: '+'
+  if phone_digits != blank
+    if phone_digits.size == 10
+      assign phone_digits = '1' | append: phone_digits
+    endif
+    assign phone_href = 'tel:+' | append: phone_digits
+  endif
+-%}
+
+<section class="contact-section contact-opening full-width" aria-labelledby="ContactOpeningHeading-{{ section.id }}">
+  <div class="contact-shell">
+    <div class="contact-grid contact-opening__grid">
+      <div class="contact-opening__copy">
+        {%- if eyebrow != blank -%}
+          <p class="contact-eyebrow">{{ eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if heading != blank -%}
+          <h1 id="ContactOpeningHeading-{{ section.id }}" class="contact-opening__title">{{ heading | escape }}</h1>
+        {%- endif -%}
+        {%- if intro != blank -%}
+          <div class="contact-opening__intro">{{ intro }}</div>
+        {%- elsif page.content != blank -%}
+          <div class="contact-opening__intro">{{ page.content }}</div>
+        {%- endif -%}
+      </div>
+
+      <div class="contact-opening__direct">
+        {%- if email != blank -%}
+          <a class="contact-direct__row" href="mailto:{{ email | escape }}">
+            <p class="contact-direct__label">{{ 'contact.email' | t }}</p>
+            <p class="contact-direct__value">{{ email | escape }}</p>
+          </a>
+        {%- endif -%}
+        {%- if phone != blank and phone_href != blank -%}
+          <a class="contact-direct__row" href="{{ phone_href }}">
+            <p class="contact-direct__label contact-direct__label--desktop">{{ 'contact.phone_label' | t }}</p>
+            <p class="contact-direct__label contact-direct__label--mobile">{{ phone_label_mobile | escape }}</p>
+            <p class="contact-direct__value">{{ phone | escape }}</p>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .contact-direct__label--mobile {
+    display: none;
+  }
+  @media (max-width: 749px) {
+    .contact-direct__label--desktop {
+      display: none;
+    }
+    .contact-direct__label--mobile {
+      display: block;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact opening",
+  "tag": "section",
+  "class": "section-contact-opening",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Contact"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Write to Ranjeeta."
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "<p>Please provide your contact information and share your questions or details for commission order below.</p>",
+      "info": "Leave blank to use the page body content."
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Public email",
+      "default": "info@zitasartstudio.com",
+      "info": "Shown on this page and used for mailto:. Defaults to theme contact email when blank."
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "469-850-0196",
+      "info": "Published with tap-to-call on mobile."
+    },
+    {
+      "type": "text",
+      "id": "phone_label_mobile",
+      "label": "Phone label (mobile)",
+      "default": "Phone · tap to call"
+    }
+  ],
+  "presets": [{ "name": "Contact opening" }]
+}
+{% endschema %}

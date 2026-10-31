@@ -1,0 +1,536 @@
+<script src="{{ 'zita-contact.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign heading = section.settings.heading
+  assign intro = section.settings.intro
+  assign type_general = section.settings.type_general
+  assign type_artwork = section.settings.type_artwork
+  assign type_commission = section.settings.type_commission
+  assign type_trade = section.settings.type_trade
+  assign label_artwork = section.settings.label_artwork
+  assign label_size = section.settings.label_size
+  assign label_colours = section.settings.label_colours
+  assign label_company = section.settings.label_company
+  assign label_project = section.settings.label_project
+  assign submit_label = section.settings.submit_label
+  assign hint = section.settings.hint
+  assign success_eyebrow = section.settings.success_eyebrow
+  assign success_heading = section.settings.success_heading
+  assign success_note = section.settings.success_note
+  assign continue_line = section.settings.continue_line
+  assign continue_label = section.settings.continue_label
+  assign continue_link = section.settings.continue_link | default: routes.all_products_collection_url
+  assign public_email = section.settings.failure_email | default: settings.contact_email | default: 'info@zitasartstudio.com' | strip
+  assign send_failure = section.settings.msg_send_failure | replace: '{{ email }}', public_email
+-%}
+
+<section
+  id="message"
+  class="contact-section contact-form-section full-width"
+  aria-labelledby="ContactFormHeading-{{ section.id }}"
+>
+  <div class="contact-shell">
+    <div class="contact-grid contact-form-section__grid">
+      <div class="contact-form-section__intro">
+        {%- if heading != blank -%}
+          <h2 id="ContactFormHeading-{{ section.id }}" class="contact-form-section__title">{{ heading | escape }}</h2>
+        {%- endif -%}
+        {%- if intro != blank -%}
+          <p class="contact-form-section__lede">{{ intro | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      <div class="contact-form-section__form-wrap">
+        {%- form 'contact', id: 'ContactForm', class: 'contact-form', novalidate: 'novalidate' -%}
+          <div
+            data-contact-form
+            data-posted="{% if form.posted_successfully? %}true{% else %}false{% endif %}"
+            data-server-errors="{% if form.errors %}true{% else %}false{% endif %}"
+            data-type-general="{{ type_general | escape }}"
+            data-type-artwork="{{ type_artwork | escape }}"
+            data-type-commission="{{ type_commission | escape }}"
+            data-type-trade="{{ type_trade | escape }}"
+            data-msg-name-empty="{{ section.settings.msg_name_empty | escape }}"
+            data-msg-email-empty="{{ section.settings.msg_email_empty | escape }}"
+            data-msg-email-invalid="{{ section.settings.msg_email_invalid | escape }}"
+            data-msg-message-empty="{{ section.settings.msg_message_empty | escape }}"
+            data-msg-summary-title="{{ section.settings.msg_summary_title | escape }}"
+          >
+            <input type="hidden" name="return_to" value="{{ request.path }}#message">
+            {%- if form.posted_successfully? -%}
+              <div
+                class="contact-success"
+                data-contact-success
+                role="status"
+                tabindex="-1"
+              >
+                {%- if success_eyebrow != blank -%}
+                  <p class="contact-success__eyebrow">{{ success_eyebrow | escape }}</p>
+                {%- endif -%}
+                {%- if success_heading != blank -%}
+                  <p class="contact-success__title">{{ success_heading | escape }}</p>
+                {%- endif -%}
+                {%- if success_note != blank -%}
+                  <p class="contact-success__note">{{ success_note | escape }}</p>
+                {%- endif -%}
+                <dl class="contact-success__meta">
+                  <div>
+                    <dt>{{ 'contact.success_inquiry' | t }}</dt>
+                    <dd data-contact-success-type>{{ type_general | escape }}</dd>
+                  </div>
+                  <div>
+                    <dt>{{ 'contact.success_from' | t }}</dt>
+                    <dd data-contact-success-from>
+                      {{- form.name | escape -}}
+                      {%- if form.email != blank %} · {{ form.email | escape }}{% endif -%}
+                    </dd>
+                  </div>
+                </dl>
+                <a class="contact-form__reset" href="{{ request.path }}#message">{{ section.settings.reset_label | escape }}</a>
+              </div>
+            {%- else -%}
+              {%- liquid
+                assign error_count = 0
+                if form.errors
+                  for error in form.errors
+                    assign error_count = error_count | plus: 1
+                  endfor
+                endif
+                assign summary_title = section.settings.msg_summary_title
+                if error_count > 0
+                  assign summary_title = summary_title | replace: '[count]', error_count
+                endif
+              -%}
+              <div
+                class="contact-form__summary"
+                data-contact-summary
+                role="alert"
+                tabindex="-1"
+                {% unless form.errors %}hidden{% endunless %}
+              >
+                <p class="contact-form__summary-title" data-contact-summary-title>
+                  {{- summary_title | escape -}}
+                </p>
+                <ul class="contact-form__summary-list" data-contact-summary-list>
+                  {%- if form.errors -%}
+                    {%- for error in form.errors -%}
+                      <li>{{ form.errors.messages[error] | escape }}</li>
+                    {%- endfor -%}
+                  {%- endif -%}
+                </ul>
+              </div>
+
+              <fieldset class="contact-form__fieldset">
+                <legend class="contact-form__legend">{{ section.settings.legend | escape }}</legend>
+                <div class="contact-form__tiles" role="presentation">
+                  {%- assign types = type_general | append: '||' | append: type_artwork | append: '||' | append: type_commission | append: '||' | append: type_trade | split: '||' -%}
+                  {%- for type_label in types -%}
+                    {%- assign type_id = 'ContactType-' | append: section.id | append: '-' | append: forloop.index -%}
+                    <label class="contact-form__tile" for="{{ type_id }}">
+                      <input
+                        id="{{ type_id }}"
+                        type="radio"
+                        name="contact[Inquiry type]"
+                        value="{{ type_label | escape }}"
+                        {% if forloop.first %}checked{% endif %}
+                      >
+                      <span class="contact-form__tile-label">{{ type_label | escape }}</span>
+                    </label>
+                  {%- endfor -%}
+                </div>
+              </fieldset>
+
+              <div class="contact-form__row">
+                <div class="contact-form__field">
+                  <label class="contact-form__label" for="ContactName-{{ section.id }}">{{ 'contact.name' | t }}</label>
+                  <input
+                    id="ContactName-{{ section.id }}"
+                    class="contact-form__input{% if form.errors contains 'name' %} is-invalid{% endif %}"
+                    type="text"
+                    name="contact[name]"
+                    autocomplete="name"
+                    value="{{ form.name | escape }}"
+                    {% if form.errors contains 'name' %}aria-invalid="true"{% endif %}
+                  >
+                  <p
+                    id="ContactNameError-{{ section.id }}"
+                    class="contact-form__error"
+                    data-contact-error="name"
+                    {% unless form.errors contains 'name' %}hidden{% endunless %}
+                  >
+                    {{- section.settings.msg_name_empty | escape -}}
+                  </p>
+                </div>
+                <div class="contact-form__field">
+                  <label class="contact-form__label" for="ContactEmail-{{ section.id }}">{{ 'contact.email' | t }}</label>
+                  <input
+                    id="ContactEmail-{{ section.id }}"
+                    class="contact-form__input{% if form.errors contains 'email' %} is-invalid{% endif %}"
+                    type="email"
+                    name="contact[email]"
+                    autocomplete="email"
+                    value="{{ form.email | escape }}"
+                    {% if form.errors contains 'email' %}aria-invalid="true"{% endif %}
+                  >
+                  <p
+                    id="ContactEmailError-{{ section.id }}"
+                    class="contact-form__error"
+                    data-contact-error="email"
+                    {% unless form.errors contains 'email' %}hidden{% endunless %}
+                  >
+                    {{- section.settings.msg_email_empty | escape -}}
+                  </p>
+                </div>
+              </div>
+
+              {%- comment -%} JS-driven optional fields (disabled when hidden) {%- endcomment -%}
+              <div
+                class="contact-form__optional-block contact-form__optional-block--single"
+                data-contact-optional="{{ type_artwork | escape }}"
+                hidden
+              >
+                <div class="contact-form__field">
+                  <label class="contact-form__label" for="ContactArtwork-{{ section.id }}">
+                    {{- label_artwork | escape -}}
+                    <span class="contact-form__optional"> ({{ 'contact.optional' | t }})</span>
+                  </label>
+                  <input
+                    id="ContactArtwork-{{ section.id }}"
+                    class="contact-form__input"
+                    type="text"
+                    name="contact[Artwork]"
+                    disabled
+                  >
+                </div>
+              </div>
+
+              <div
+                class="contact-form__optional-block"
+                data-contact-optional="{{ type_commission | escape }}"
+                hidden
+              >
+                <div class="contact-form__field">
+                  <label class="contact-form__label" for="ContactSize-{{ section.id }}">
+                    {{- label_size | escape -}}
+                    <span class="contact-form__optional"> ({{ 'contact.optional' | t }})</span>
+                  </label>
+                  <input id="ContactSize-{{ section.id }}" class="contact-form__input" type="text" name="contact[Size or space]" disabled>
+                </div>
+                <div class="contact-form__field">
+                  <label class="contact-form__label" for="ContactColours-{{ section.id }}">
+                    {{- label_colours | escape -}}
+                    <span class="contact-form__optional"> ({{ 'contact.optional' | t }})</span>
+                  </label>
+                  <input id="ContactColours-{{ section.id }}" class="contact-form__input" type="text" name="contact[Colours or mood]" disabled>
+                </div>
+              </div>
+
+              <div
+                class="contact-form__optional-block"
+                data-contact-optional="{{ type_trade | escape }}"
+                hidden
+              >
+                <div class="contact-form__field">
+                  <label class="contact-form__label" for="ContactCompany-{{ section.id }}">
+                    {{- label_company | escape -}}
+                    <span class="contact-form__optional"> ({{ 'contact.optional' | t }})</span>
+                  </label>
+                  <input id="ContactCompany-{{ section.id }}" class="contact-form__input" type="text" name="contact[Company]" disabled>
+                </div>
+                <div class="contact-form__field">
+                  <label class="contact-form__label" for="ContactProject-{{ section.id }}">
+                    {{- label_project | escape -}}
+                    <span class="contact-form__optional"> ({{ 'contact.optional' | t }})</span>
+                  </label>
+                  <input id="ContactProject-{{ section.id }}" class="contact-form__input" type="text" name="contact[Project]" disabled>
+                </div>
+              </div>
+
+              <noscript>
+                <div class="contact-form__noscript-optionals" style="display:grid;gap:20px;padding-top:20px;border-top:1px solid #cdd1d2">
+                  <div class="contact-form__noscript-group">
+                    <p class="contact-form__noscript-heading">{{ type_artwork | escape }}</p>
+                    <div class="contact-form__field">
+                      <label class="contact-form__label" for="ContactArtworkNoscript-{{ section.id }}">
+                        {{- label_artwork | escape -}}
+                        <span class="contact-form__optional"> ({{ 'contact.optional' | t }})</span>
+                      </label>
+                      <input id="ContactArtworkNoscript-{{ section.id }}" class="contact-form__input" type="text" name="contact[Artwork]">
+                    </div>
+                  </div>
+                  <div class="contact-form__noscript-group">
+                    <p class="contact-form__noscript-heading">{{ type_commission | escape }}</p>
+                    <div class="contact-form__row">
+                      <div class="contact-form__field">
+                        <label class="contact-form__label" for="ContactSizeNoscript-{{ section.id }}">
+                          {{- label_size | escape -}}
+                          <span class="contact-form__optional"> ({{ 'contact.optional' | t }})</span>
+                        </label>
+                        <input id="ContactSizeNoscript-{{ section.id }}" class="contact-form__input" type="text" name="contact[Size or space]">
+                      </div>
+                      <div class="contact-form__field">
+                        <label class="contact-form__label" for="ContactColoursNoscript-{{ section.id }}">
+                          {{- label_colours | escape -}}
+                          <span class="contact-form__optional"> ({{ 'contact.optional' | t }})</span>
+                        </label>
+                        <input id="ContactColoursNoscript-{{ section.id }}" class="contact-form__input" type="text" name="contact[Colours or mood]">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="contact-form__noscript-group">
+                    <p class="contact-form__noscript-heading">{{ type_trade | escape }}</p>
+                    <div class="contact-form__row">
+                      <div class="contact-form__field">
+                        <label class="contact-form__label" for="ContactCompanyNoscript-{{ section.id }}">
+                          {{- label_company | escape -}}
+                          <span class="contact-form__optional"> ({{ 'contact.optional' | t }})</span>
+                        </label>
+                        <input id="ContactCompanyNoscript-{{ section.id }}" class="contact-form__input" type="text" name="contact[Company]">
+                      </div>
+                      <div class="contact-form__field">
+                        <label class="contact-form__label" for="ContactProjectNoscript-{{ section.id }}">
+                          {{- label_project | escape -}}
+                          <span class="contact-form__optional"> ({{ 'contact.optional' | t }})</span>
+                        </label>
+                        <input id="ContactProjectNoscript-{{ section.id }}" class="contact-form__input" type="text" name="contact[Project]">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </noscript>
+
+              <div class="contact-form__field">
+                <label class="contact-form__label" for="ContactBody-{{ section.id }}">{{ 'contact.message' | t }}</label>
+                <textarea
+                  id="ContactBody-{{ section.id }}"
+                  class="contact-form__textarea{% if form.errors contains 'body' %} is-invalid{% endif %}"
+                  name="contact[body]"
+                  rows="6"
+                  {% if form.errors contains 'body' %}aria-invalid="true"{% endif %}
+                >{{ form.body }}</textarea>
+                <p
+                  id="ContactBodyError-{{ section.id }}"
+                  class="contact-form__error"
+                  data-contact-error="message"
+                  {% unless form.errors contains 'body' %}hidden{% endunless %}
+                >
+                  {{- section.settings.msg_message_empty | escape -}}
+                </p>
+              </div>
+
+              <p class="contact-form__send-error" data-contact-send-error role="alert" hidden>
+                {{- send_failure | escape -}}
+                {%- if public_email != blank -%}
+                  <a href="mailto:{{ public_email | escape }}">{{ public_email | escape }}</a>
+                {%- endif -%}
+              </p>
+
+              <div class="contact-form__submit-row">
+                <button type="submit" class="button contact-form__submit">{{ submit_label | escape }}</button>
+                {%- if hint != blank -%}
+                  <p class="contact-form__hint">{{ hint | escape }}</p>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- if continue_line != blank or continue_label != blank -%}
+  <section class="contact-section contact-continue full-width" aria-label="{{ 'contact.continue_aria' | t }}">
+    <div class="contact-shell contact-continue__inner">
+      {%- if continue_line != blank -%}
+        <p class="contact-continue__line">{{ continue_line | escape }}</p>
+      {%- endif -%}
+      {%- render 'label-link', url: continue_link, label: continue_label -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Contact form",
+  "tag": "section",
+  "class": "section-contact-form",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Send a message"
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "Choose what your message is about, and it will reach Ranjeeta with your words."
+    },
+    {
+      "type": "text",
+      "id": "legend",
+      "label": "Inquiry legend",
+      "default": "What is your message about?"
+    },
+    {
+      "type": "text",
+      "id": "type_general",
+      "label": "Type: General",
+      "default": "General inquiry"
+    },
+    {
+      "type": "text",
+      "id": "type_artwork",
+      "label": "Type: Artwork",
+      "default": "Artwork inquiry"
+    },
+    {
+      "type": "text",
+      "id": "type_commission",
+      "label": "Type: Commission",
+      "default": "Commission inquiry"
+    },
+    {
+      "type": "text",
+      "id": "type_trade",
+      "label": "Type: Trade",
+      "default": "Trade / interior designer inquiry"
+    },
+    {
+      "type": "text",
+      "id": "label_artwork",
+      "label": "Optional: Artwork name",
+      "default": "Artwork name"
+    },
+    {
+      "type": "text",
+      "id": "label_size",
+      "label": "Optional: Size or space",
+      "default": "Approximate size or wall space"
+    },
+    {
+      "type": "text",
+      "id": "label_colours",
+      "label": "Optional: Colours or mood",
+      "default": "Colours or mood you have in mind"
+    },
+    {
+      "type": "text",
+      "id": "label_company",
+      "label": "Optional: Company",
+      "default": "Company or studio"
+    },
+    {
+      "type": "text",
+      "id": "label_project",
+      "label": "Optional: Project",
+      "default": "Project or location"
+    },
+    {
+      "type": "text",
+      "id": "submit_label",
+      "label": "Submit button",
+      "default": "Send message"
+    },
+    {
+      "type": "text",
+      "id": "hint",
+      "label": "Submit hint",
+      "default": "Name, email and message are needed."
+    },
+    {
+      "type": "text",
+      "id": "success_eyebrow",
+      "label": "Success eyebrow",
+      "default": "Message sent"
+    },
+    {
+      "type": "text",
+      "id": "success_heading",
+      "label": "Success heading",
+      "default": "Thank you. Your message has been sent to Ranjeeta."
+    },
+    {
+      "type": "text",
+      "id": "success_note",
+      "label": "Success note",
+      "default": "A copy of what you wrote is below."
+    },
+    {
+      "type": "text",
+      "id": "reset_label",
+      "label": "Send another label",
+      "default": "Send another message"
+    },
+    {
+      "type": "text",
+      "id": "msg_name_empty",
+      "label": "Error: name empty",
+      "default": "Please enter your name."
+    },
+    {
+      "type": "text",
+      "id": "msg_email_empty",
+      "label": "Error: email empty",
+      "default": "Please enter your email address."
+    },
+    {
+      "type": "text",
+      "id": "msg_email_invalid",
+      "label": "Error: email invalid",
+      "default": "Please enter an email address like name@example.com."
+    },
+    {
+      "type": "text",
+      "id": "msg_message_empty",
+      "label": "Error: message empty",
+      "default": "Please write a short message."
+    },
+    {
+      "type": "text",
+      "id": "msg_summary_title",
+      "label": "Error summary title",
+      "default": "Please check [count] fields",
+      "info": "Use [count] where the error number should appear."
+    },
+    {
+      "type": "text",
+      "id": "msg_send_failure",
+      "label": "Send failure message",
+      "default": "Your message couldn't be sent. Everything you wrote is still here. Please try again, or email ",
+      "info": "Public email is appended as a mailto link."
+    },
+    {
+      "type": "text",
+      "id": "failure_email",
+      "label": "Send-failure email link",
+      "default": "info@zitasartstudio.com",
+      "info": "Defaults to theme public email when blank."
+    },
+    {
+      "type": "header",
+      "content": "Continue strip (hidden on mobile)"
+    },
+    {
+      "type": "text",
+      "id": "continue_line",
+      "label": "Continue line",
+      "default": "Not ready to write yet?"
+    },
+    {
+      "type": "text",
+      "id": "continue_label",
+      "label": "Continue link label",
+      "default": "Explore the originals"
+    },
+    {
+      "type": "url",
+      "id": "continue_link",
+      "label": "Continue link"
+    }
+  ],
+  "presets": [{ "name": "Contact form" }]
+}
+{% endschema %}

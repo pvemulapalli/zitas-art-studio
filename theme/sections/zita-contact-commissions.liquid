@@ -1,0 +1,176 @@
+{%- liquid
+  assign heading = section.settings.heading
+  assign statement = section.settings.statement
+  assign quote = section.settings.quote
+  assign primary_label = section.settings.primary_label
+  assign secondary_label = section.settings.secondary_label
+  assign photo_blocks = section.blocks | where: 'type', 'photo'
+  assign photo_count = 0
+  for block in photo_blocks
+    assign photo_count = photo_count | plus: 1
+  endfor
+  if photo_count > 3
+    assign photo_count = 3
+  endif
+-%}
+
+<section
+  id="commissions"
+  class="contact-section contact-section--band contact-band full-width"
+  aria-labelledby="ContactBandHeading-{{ section.id }}"
+>
+  <div class="contact-shell">
+    <div class="contact-grid contact-band__grid">
+      <div class="contact-band__copy">
+        {%- if heading != blank -%}
+          <h2 id="ContactBandHeading-{{ section.id }}" class="contact-band__heading">{{ heading | escape }}</h2>
+        {%- endif -%}
+        {%- if statement != blank -%}
+          <div class="contact-band__statement">{{ statement }}</div>
+        {%- endif -%}
+        {%- if quote != blank -%}
+          <blockquote class="contact-band__quote">{{ quote | escape | newline_to_br }}</blockquote>
+        {%- endif -%}
+        <div class="contact-band__actions">
+          {%- if primary_label != blank -%}
+            <a
+              class="button contact-band__primary"
+              href="{{ request.path }}?type=commission#message"
+              data-contact-preselect="commission"
+            >
+              {{- primary_label | escape -}}
+            </a>
+          {%- endif -%}
+          {%- if secondary_label != blank -%}
+            <a
+              class="contact-band__secondary"
+              href="{{ request.path }}?type=trade#message"
+              data-contact-preselect="trade"
+            >
+              {{- secondary_label | escape -}}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- if photo_count > 0 -%}
+        <div class="contact-band__photos contact-band__photos--count-{{ photo_count }}">
+          {%- for block in photo_blocks limit: 3 -%}
+            {%- liquid
+              assign photo = block.settings.image
+              assign alt = block.settings.alt
+              if alt == blank and photo != blank
+                assign alt = photo.alt
+              endif
+              if alt == blank
+                assign alt = 'Temporary commission placeholder — replace before launch'
+              endif
+              assign is_hero = false
+              if forloop.first and photo_count == 3
+                assign is_hero = true
+              endif
+              if photo_count == 1
+                assign is_hero = true
+              endif
+            -%}
+            <figure
+              class="contact-band__photo{% if is_hero %} contact-band__photo--hero{% else %} contact-band__photo--pair{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              {%- if photo != blank -%}
+                {{
+                  photo
+                  | image_url: width: 1600
+                  | image_tag:
+                    class: 'contact-band__img',
+                    loading: 'lazy',
+                    widths: '400, 600, 800, 1200, 1600',
+                    sizes: '(max-width: 749px) 50vw, 36vw',
+                    alt: alt
+                }}
+              {%- else -%}
+                {%- assign ph_index = forloop.index -%}
+                <img
+                  class="contact-band__img"
+                  src="{{ 'contact-commission-placeholder-' | append: ph_index | append: '.svg' | asset_url }}"
+                  alt="{{ alt | escape }}"
+                  width="{% if is_hero %}1200{% else %}800{% endif %}"
+                  height="{% if is_hero %}800{% else %}1000{% endif %}"
+                  loading="lazy"
+                >
+              {%- endif -%}
+            </figure>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact commissions",
+  "tag": "section",
+  "class": "section-contact-commissions",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Trade & commission inquiries"
+    },
+    {
+      "type": "richtext",
+      "id": "statement",
+      "label": "Statement",
+      "default": "<p>For trade and commission inquiries, contact me at <a href=\"mailto:info@zitasartstudio.com\">info@zitasartstudio.com</a> or fill out the contact form.</p>",
+      "info": "Proposed trade copy — confirm with Ranjeeta before launch. Use info@zitasartstudio.com, not a personal Gmail."
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Quote",
+      "default": "I have been blessed to do a lot of commission paintings since I started doing abstract paintings in fluid form."
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button label",
+      "default": "Start a commission inquiry"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label",
+      "default": "Trade or designer inquiry"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "photo",
+      "name": "Commission photo",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Temporary SVG placeholders show until replaced. Replace or remove before launch. Not Ranjeeta’s commission photography."
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text",
+          "default": "Temporary commission placeholder — replace before launch"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact commissions",
+      "blocks": [{ "type": "photo" }, { "type": "photo" }, { "type": "photo" }]
+    }
+  ]
+}
+{% endschema %}
