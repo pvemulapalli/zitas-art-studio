@@ -2,6 +2,7 @@
 
 /* --- Surface schemes (contrast-safe foregrounds) --- */
 .about-section {
+  --about-mobile-fix: 2;
   --about-bg: var(--color-gesso);
   --about-heading: var(--color-ink);
   --about-body: var(--color-ink);
@@ -146,21 +147,6 @@
   column-gap: clamp(16px, 2vw, 32px);
 }
 
-@media (max-width: 749px) {
-  /* Desktop 12-column tracks were left active on mobile, so each block only
-     occupied one column (~8% width) and text collapsed vertically. */
-  .about-grid {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 20px;
-  }
-
-  .about-grid > * {
-    grid-column: 1 / -1;
-    min-width: 0;
-    max-width: none;
-  }
-}
-
 .about-numeral {
   font-family: var(--font-display);
   font-size: 13px;
@@ -211,6 +197,9 @@
 /* Artwork plates: always gesso mat; hang shadow follows surface */
 .about-plate {
   aspect-ratio: 4 / 5;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   background: var(--color-gesso);
   padding: 11%;
   box-sizing: border-box;
@@ -521,11 +510,12 @@ html.about-reveal-ready [data-about-reveal].is-revealed {
 
   .about-words__row {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 20px;
   }
 
   .about-words__label {
-    grid-column: auto;
+    grid-column: 1 / -1;
     display: flex;
     gap: 12px;
     align-items: baseline;
@@ -537,9 +527,10 @@ html.about-reveal-ready [data-about-reveal].is-revealed {
   }
 
   .about-words__copy {
-    grid-column: auto;
+    grid-column: 1 / -1;
     gap: 20px;
     max-width: none;
+    min-width: 0;
   }
 
   .about-words .about-lead {
@@ -677,12 +668,16 @@ html.about-reveal-ready [data-about-reveal].is-revealed {
   .about-practice__return-photo,
   .about-practice__return-copy,
   .about-practice__pull,
-  .about-practice__plate {
-    grid-column: auto;
+  .about-practice__plate,
+  .about-practice:not(.has-glass-photo) .about-practice__intro,
+  .about-practice:not(.has-return-photo) .about-practice__return-copy {
+    grid-column: 1 / -1;
     grid-row: auto;
     margin-top: 0;
     padding-top: 0;
     max-width: none;
+    min-width: 0;
+    width: auto;
   }
 
   .about-practice__intro {
@@ -798,6 +793,7 @@ html.about-reveal-ready [data-about-reveal].is-revealed {
 
   .about-fullbleed__grid {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 20px;
   }
 
@@ -805,7 +801,9 @@ html.about-reveal-ready [data-about-reveal].is-revealed {
   .about-fullbleed__copy,
   .about-fullbleed__quote,
   .about-fullbleed__final {
-    grid-column: auto;
+    grid-column: 1 / -1;
+    min-width: 0;
+    max-width: none;
   }
 
   .about-fullbleed__label {
@@ -1111,12 +1109,15 @@ html.about-reveal-ready [data-about-reveal].is-revealed {
 
   .about-reflection__grid {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 20px;
   }
 
   .about-reflection__aside,
   .about-reflection__copy {
-    grid-column: auto;
+    grid-column: 1 / -1;
+    min-width: 0;
+    max-width: none;
   }
 
   .about-reflection__aside {
@@ -1304,5 +1305,81 @@ html.about-reveal-ready [data-about-reveal].is-revealed {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
+  }
+}
+
+/*
+  Mobile grid fortification (must stay last in this file).
+
+  1. Keep every .about-grid on a single track so desktop span-N placements cannot
+     create implicit columns that crush copy to ~1 character and overflow the page.
+  2. Beat later desktop modifiers (atlas count, practice missing-photo spans).
+  3. Contain plates/figures so one oversized child cannot widen document scrollWidth
+     (which makes iOS appear to show a ~40% content column with empty space).
+*/
+@media (max-width: 749px) {
+  .about-section,
+  .about-shell,
+  .about-grid,
+  .about-figure,
+  .about-plate {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .about-grid,
+  .about-shell.about-grid,
+  .about-practice__shell.about-grid,
+  .about-words__row,
+  .about-fullbleed__grid,
+  .about-atlas__plates,
+  .about-atlas__mid,
+  .about-reflection__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+  }
+
+  .about-grid > *,
+  .about-practice__shell.about-grid > *,
+  .about-practice:not(.has-glass-photo) .about-practice__intro,
+  .about-practice:not(.has-return-photo) .about-practice__return-copy,
+  .about-atlas--count-2 .about-atlas__plate--a,
+  .about-atlas--count-2 .about-atlas__plate--b,
+  .about-atlas--count-1 .about-atlas__plate--a {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .about-practice__plate,
+  .about-practice__plate .about-plate {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .about-practice__return-photo {
+    width: 64%;
+    max-width: 64%;
+    justify-self: end;
+  }
+
+  .about-atlas__plate--b {
+    width: 72%;
+    max-width: 72%;
+    justify-self: end;
+  }
+
+  .about-atlas__plate--c {
+    width: 58%;
+    max-width: 58%;
+    justify-self: start;
+  }
+
+  .about-reflection__yin {
+    width: 62%;
+    max-width: 62%;
+    justify-self: center;
   }
 }
