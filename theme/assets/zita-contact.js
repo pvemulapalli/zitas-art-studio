@@ -253,21 +253,16 @@
       return;
     }
     saveDraft();
+    const submitBtn = form.querySelector('[type="submit"]');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.setAttribute('aria-busy', 'true');
+    }
   });
 
   applyTypeFromQuery();
   restoreDraft();
   syncOptionalFields();
-
-  if (window.location.hash === '#message') {
-    requestAnimationFrame(() => {
-      scrollToForm();
-      if (TYPE_MAP[(new URLSearchParams(window.location.search).get('type') || '').toLowerCase()]) {
-        const active = radios.find((r) => r.checked);
-        active?.focus({ preventScroll: true });
-      }
-    });
-  }
 
   if (success) {
     const draft = readDraft();
@@ -279,7 +274,22 @@
       if (parts.length) fromEl.textContent = parts.join(' · ');
     }
     clearDraft();
-    success.focus({ preventScroll: true });
+    // Bring server-rendered success into view after Shopify's redirect.
+    if (window.location.hash !== '#message') {
+      history.replaceState(null, '', `${window.location.pathname}${window.location.search}#message`);
+    }
+    requestAnimationFrame(() => {
+      scrollToForm();
+      success.focus({ preventScroll: true });
+    });
+  } else if (window.location.hash === '#message') {
+    requestAnimationFrame(() => {
+      scrollToForm();
+      if (TYPE_MAP[(new URLSearchParams(window.location.search).get('type') || '').toLowerCase()]) {
+        const active = radios.find((r) => r.checked);
+        active?.focus({ preventScroll: true });
+      }
+    });
   }
 
   if (tried && root.dataset.serverErrors === 'true') {

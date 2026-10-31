@@ -315,8 +315,17 @@ a.contact-direct__row:hover .contact-direct__value {
 }
 
 .contact-form {
+  display: block;
+}
+
+/*
+  Field stack lives inside [data-contact-form], not as direct children of <form>
+  (Shopify injects hidden inputs on the form). Gap must be on the inner wrapper.
+*/
+.contact-form [data-contact-form] {
   display: grid;
   gap: 28px;
+  align-content: start;
 }
 
 .contact-form__summary {
@@ -570,8 +579,9 @@ a.contact-direct__row:hover .contact-direct__value {
 .contact-success {
   display: grid;
   gap: 20px;
-  padding-top: 28px;
+  padding: 28px 0 8px;
   border-top: 1px solid var(--color-ink);
+  scroll-margin-top: 24px;
 }
 
 .contact-success__eyebrow {

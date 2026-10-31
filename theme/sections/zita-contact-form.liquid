@@ -56,12 +56,19 @@
             data-msg-message-empty="{{ section.settings.msg_message_empty | escape }}"
             data-msg-summary-title="{{ section.settings.msg_summary_title | escape }}"
           >
-            <input type="hidden" name="return_to" value="{{ request.path }}#message">
+            {%- comment -%}
+              return_to must be a path without a hash. A fragment in return_to drops
+              Shopify's form.posted_successfully? flash after the redirect.
+              Scroll/focus to #message is handled in zita-contact.js on success.
+            {%- endcomment -%}
+            <input type="hidden" name="return_to" value="{{ request.path }}">
             {%- if form.posted_successfully? -%}
               <div
+                id="ContactSuccess-{{ section.id }}"
                 class="contact-success"
                 data-contact-success
                 role="status"
+                aria-live="polite"
                 tabindex="-1"
               >
                 {%- if success_eyebrow != blank -%}
@@ -413,8 +420,8 @@
     {
       "type": "text",
       "id": "label_colours",
-      "label": "Optional: Colours or mood",
-      "default": "Colours or mood you have in mind"
+      "label": "Optional: Colors or mood",
+      "default": "Colors or mood you have in mind"
     },
     {
       "type": "text",
@@ -450,13 +457,13 @@
       "type": "text",
       "id": "success_heading",
       "label": "Success heading",
-      "default": "Thank you. Your message has been sent to Ranjeeta."
+      "default": "Thank you for reaching out."
     },
     {
       "type": "text",
       "id": "success_note",
       "label": "Success note",
-      "default": "A copy of what you wrote is below."
+      "default": "Your message has been sent successfully. Ranjeeta will be in touch."
     },
     {
       "type": "text",
