@@ -24,7 +24,7 @@
   endif
 
   assign series_url = blank
-  if collection != blank
+  if collection != blank and collection.url != blank
     assign series_url = collection.url
   elsif section.settings.series_url != blank
     assign series_url = section.settings.series_url
@@ -44,6 +44,11 @@
   assign is_dark = false
   if background == 'night'
     assign is_dark = true
+  endif
+
+  assign link_tone = 'light'
+  if is_dark
+    assign link_tone = 'dark'
   endif
 
   assign eyebrow_suffix = blank
@@ -96,6 +101,23 @@
     aria-labelledby="{{ title_id }}"
   >
     <div class="portfolio-shell">
+      <div class="portfolio-room__rule" aria-hidden="true"></div>
+
+      <header class="portfolio-room__identity">
+        <p class="portfolio-room__eyebrow">
+          <span class="portfolio-room__eyebrow-label">Room </span>
+          <span class="portfolio-room__numeral" aria-hidden="true"></span>
+          {%- if eyebrow_suffix != blank -%}
+            <span class="portfolio-room__eyebrow-suffix">{{ eyebrow_suffix | escape }}</span>
+          {%- endif -%}
+        </p>
+        {%- if room_title != blank -%}
+          <h2 id="{{ title_id }}" class="portfolio-room__title">{{ room_title | escape }}</h2>
+        {%- else -%}
+          <h2 id="{{ title_id }}" class="visually-hidden">Portfolio room</h2>
+        {%- endif -%}
+      </header>
+
       {%- case effective_composition -%}
         {%- when 'dark_room' -%}
           <div class="portfolio-grid portfolio-room__grid portfolio-room__grid--dark">
@@ -125,36 +147,17 @@
                 -%}
               {%- endfor -%}
             </div>
-            {%- render 'portfolio-room-text',
-              eyebrow_suffix: eyebrow_suffix,
-              title: room_title,
-              title_id: title_id,
-              work_title: work_title,
-              reflection: reflection,
-              series_url: series_url,
-              series_label: series_label,
-              view_url: view_url,
-              view_work_title: work_title,
-              is_dark: is_dark,
-              stack_class: 'portfolio-room__text--dark'
-            -%}
+            {%- if work_title != blank or reflection != blank -%}
+              {%- render 'portfolio-room-text',
+                work_title: work_title,
+                reflection: reflection,
+                stack_class: 'portfolio-room__text--dark'
+              -%}
+            {%- endif -%}
           </div>
 
         {%- when 'pair' -%}
           <div class="portfolio-grid portfolio-room__grid portfolio-room__grid--pair">
-            <header class="portfolio-room__pair-header">
-              <p class="portfolio-room__eyebrow">
-                <span class="portfolio-room__eyebrow-label">Room </span>
-                <span class="portfolio-room__numeral" aria-hidden="true"></span>
-                {%- if eyebrow_suffix != blank -%}
-                  <span class="portfolio-room__eyebrow-suffix">{{ eyebrow_suffix | escape }}</span>
-                {%- endif -%}
-              </p>
-              {%- if room_title != blank -%}
-                <h2 id="{{ title_id }}" class="portfolio-room__title">{{ room_title | escape }}</h2>
-              {%- endif -%}
-            </header>
-
             <div class="portfolio-room__pair-main">
               {%- if primary != blank -%}
                 {%- render 'portfolio-artwork',
@@ -188,22 +191,7 @@
 
             <div class="portfolio-room__pair-copy">
               {%- if reflection != blank -%}
-                <blockquote class="portfolio-room__reflection">{{ reflection }}</blockquote>
-              {%- endif -%}
-              {%- if series_url != blank or view_url != blank -%}
-                <div class="portfolio-room__links portfolio-room__links--stack">
-                  {%- if series_url != blank and series_label != blank -%}
-                    {%- render 'label-link',
-                      url: series_url,
-                      label: series_label,
-                      tone: 'light',
-                      class: 'portfolio-room__series-link'
-                    -%}
-                  {%- endif -%}
-                  {%- if view_url != blank and work_title != blank -%}
-                    <a class="portfolio-room__view-link" href="{{ view_url }}">View <em>{{ work_title | escape }}</em></a>
-                  {%- endif -%}
-                </div>
+                <blockquote class="portfolio-room__reflection portfolio-room__reflection--pair">{{ reflection }}</blockquote>
               {%- endif -%}
             </div>
 
@@ -252,21 +240,31 @@
                 -%}
               {%- endfor -%}
             </div>
-            {%- render 'portfolio-room-text',
-              eyebrow_suffix: eyebrow_suffix,
-              title: room_title,
-              title_id: title_id,
-              work_title: work_title,
-              reflection: reflection,
-              series_url: series_url,
-              series_label: series_label,
-              view_url: view_url,
-              view_work_title: work_title,
-              is_dark: is_dark,
-              stack_class: 'portfolio-room__text--hang'
-            -%}
+            {%- if work_title != blank or reflection != blank -%}
+              {%- render 'portfolio-room-text',
+                work_title: work_title,
+                reflection: reflection,
+                stack_class: 'portfolio-room__text--hang'
+              -%}
+            {%- endif -%}
           </div>
       {%- endcase -%}
+
+      {%- if series_url != blank or view_url != blank -%}
+        <div class="portfolio-room__actions">
+          {%- if series_url != blank and series_label != blank -%}
+            {%- render 'label-link',
+              url: series_url,
+              label: series_label,
+              tone: link_tone,
+              class: 'portfolio-room__series-link'
+            -%}
+          {%- endif -%}
+          {%- if view_url != blank and work_title != blank -%}
+            <a class="portfolio-room__view-link" href="{{ view_url }}">View <em>{{ work_title | escape }}</em></a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
     </div>
   </section>
 {%- elsif request.design_mode -%}
@@ -333,7 +331,8 @@
     {
       "type": "collection",
       "id": "collection",
-      "label": "Collection"
+      "label": "Collection",
+      "info": "Preferred destination for Explore the series."
     },
     {
       "type": "text",
@@ -344,8 +343,8 @@
     {
       "type": "url",
       "id": "series_url",
-      "label": "Series link override",
-      "info": "Optional when no collection is selected."
+      "label": "Series link fallback",
+      "info": "Used when no collection is selected. Leave blank rather than linking to a missing page."
     },
     {
       "type": "text",

@@ -176,6 +176,36 @@
   padding: clamp(96px, 10vw, 168px) 0;
 }
 
+/* Divider only between consecutive rooms (not after the last). */
+.portfolio-room__rule {
+  display: none;
+  height: 1px;
+  width: 100%;
+  margin: 0 0 clamp(40px, 5vw, 72px);
+  background: var(--portfolio-rule);
+}
+
+.section-portfolio-room + .section-portfolio-room .portfolio-room__rule {
+  display: block;
+}
+
+.portfolio-room__identity {
+  display: grid;
+  gap: 12px;
+  margin-bottom: clamp(28px, 3.5vw, 48px);
+  min-width: 0;
+}
+
+.portfolio-room--pair .portfolio-room__identity {
+  border-top: 1px solid var(--color-ink);
+  padding-top: 24px;
+  margin-bottom: clamp(24px, 3vw, 40px);
+}
+
+.portfolio-room--pair[data-surface='night'] .portfolio-room__identity {
+  border-top-color: var(--portfolio-rule);
+}
+
 .portfolio-room__eyebrow {
   margin: 0;
   font-family: var(--font-display);
@@ -202,6 +232,18 @@
 .portfolio-room--dark_room .portfolio-room__title {
   font-size: clamp(34px, 3.4vw, 54px);
   line-height: 1.05;
+}
+
+.portfolio-room__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 32px;
+  margin-top: clamp(28px, 3.5vw, 48px);
+}
+
+.portfolio-room__actions .portfolio-room__series-link {
+  color: var(--portfolio-link);
 }
 
 .portfolio-room__work {
@@ -234,20 +276,6 @@
 
 .portfolio-room__reflection p + p {
   margin-top: 0.75em;
-}
-
-.portfolio-room__links {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 32px;
-  margin-top: 8px;
-}
-
-.portfolio-room__links--stack {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
 }
 
 .portfolio-room__view-link {
@@ -293,9 +321,12 @@
   line-height: 1.6;
 }
 
-.portfolio-room__text--dark .portfolio-room__links {
-  margin-top: 4px;
-  gap: 12px 32px;
+.portfolio-room__reflection--pair {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+  font-size: 20px;
+  line-height: 1.55;
 }
 
 /* --- Artwork figures --- */
@@ -434,7 +465,7 @@
   justify-items: center;
 }
 
-.portfolio-room--pos-center .portfolio-room__grid--hang .portfolio-room__links {
+.portfolio-room--pos-center .portfolio-room__actions {
   justify-content: center;
 }
 
@@ -477,20 +508,6 @@
   align-items: start;
 }
 
-.portfolio-room__pair-header {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 12px 32px;
-  padding-top: 24px;
-  border-top: 1px solid var(--color-ink);
-}
-
-.portfolio-room[data-surface='night'] .portfolio-room__pair-header {
-  border-top-color: var(--portfolio-rule);
-}
-
 .portfolio-room__pair-main {
   grid-column: 1 / span 5;
   padding-top: clamp(16px, 3vw, 48px);
@@ -509,14 +526,6 @@
   align-content: end;
   padding-bottom: 8px;
   min-width: 0;
-}
-
-.portfolio-room__pair-copy .portfolio-room__reflection {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: 0;
-  font-size: 20px;
-  line-height: 1.55;
 }
 
 .portfolio-room__pair-extra {
@@ -685,13 +694,21 @@
     row-gap: 14px;
   }
 
+  .portfolio-room__identity {
+    margin-bottom: 18px;
+  }
+
+  .portfolio-room--pair .portfolio-room__identity {
+    border-top: 0;
+    padding-top: 0;
+  }
+
   .portfolio-room__media--hang,
   .portfolio-room__media--dark,
   .portfolio-room__pair-main,
   .portfolio-room__pair-secondary,
   .portfolio-room__pair-copy,
   .portfolio-room__pair-extra,
-  .portfolio-room__pair-header,
   .portfolio-room__text--hang,
   .portfolio-room__text--dark {
     grid-column: 1 / -1 !important;
@@ -716,118 +733,15 @@
     max-height: 520px;
   }
 
-  .portfolio-room__pair-header {
-    display: contents;
-  }
-
-  .portfolio-room__pair-header .portfolio-room__eyebrow {
-    grid-column: 1 / -1;
-    order: 2;
-  }
-
-  .portfolio-room__pair-header .portfolio-room__title {
-    grid-column: 1 / -1;
-    order: 3;
-  }
-
-  .portfolio-room__pair-main {
-    order: 1;
-  }
-
-  .portfolio-room__pair-copy {
-    order: 4;
-    display: contents;
-  }
-
-  .portfolio-room__pair-copy .portfolio-room__reflection {
-    grid-column: 1 / -1;
-    order: 5;
-    font-size: 18px;
-  }
-
-  .portfolio-room__pair-copy .portfolio-room__links {
-    grid-column: 1 / -1;
-    order: 6;
-  }
-
   .portfolio-room__pair-secondary {
     display: none;
   }
 
   .portfolio-room--show-secondary-mobile .portfolio-room__pair-secondary {
     display: grid;
-    order: 1;
     max-width: 70%;
     justify-self: end;
     margin-top: 8px;
-  }
-
-  .portfolio-room__grid--hang .portfolio-room__media--hang {
-    order: 1;
-  }
-
-  .portfolio-room__grid--hang .portfolio-room__text--hang {
-    order: 2;
-    display: contents;
-  }
-
-  .portfolio-room__grid--hang .portfolio-room__eyebrow {
-    grid-column: 1 / -1;
-    order: 2;
-  }
-
-  .portfolio-room__grid--hang .portfolio-room__title {
-    grid-column: 1 / -1;
-    order: 3;
-  }
-
-  .portfolio-room__grid--hang .portfolio-room__work {
-    grid-column: 1 / -1;
-    order: 4;
-  }
-
-  .portfolio-room__grid--hang .portfolio-room__reflection {
-    grid-column: 1 / -1;
-    order: 5;
-  }
-
-  .portfolio-room__grid--hang .portfolio-room__links {
-    grid-column: 1 / -1;
-    order: 6;
-  }
-
-  .portfolio-room__grid--dark .portfolio-room__media--dark {
-    order: 1;
-  }
-
-  .portfolio-room__grid--dark .portfolio-room__text--dark {
-    order: 2;
-    display: contents;
-  }
-
-  .portfolio-room__grid--dark .portfolio-room__eyebrow {
-    grid-column: 1 / -1;
-    order: 2;
-  }
-
-  .portfolio-room__grid--dark .portfolio-room__title {
-    grid-column: 1 / -1;
-    order: 3;
-  }
-
-  .portfolio-room__grid--dark .portfolio-room__work {
-    grid-column: 1 / -1;
-    order: 4;
-  }
-
-  .portfolio-room__grid--dark .portfolio-room__reflection {
-    grid-column: 1 / -1;
-    order: 5;
-  }
-
-  .portfolio-room__grid--dark .portfolio-room__links {
-    grid-column: 1 / -1;
-    order: 6;
   }
 
   .portfolio-room__eyebrow {
@@ -849,12 +763,15 @@
     padding-top: 16px;
   }
 
-  .portfolio-room__links,
-  .portfolio-room__links--stack {
+  .portfolio-room__reflection--pair {
+    font-size: 18px;
+  }
+
+  .portfolio-room__actions {
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    margin-top: 8px;
+    margin-top: 16px;
   }
 
   .portfolio-room__series-link,

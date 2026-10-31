@@ -1,60 +1,18 @@
 {% doc %}
-  Portfolio room editorial text stack: eyebrow, title, work title, reflection, links.
+  Portfolio room editorial body: work title and reflection only.
+  Room identity and series actions are rendered by the room section.
 
-  @param {string} eyebrow_suffix - Optional " · Current series"
-  @param {string} title - Room / series title
-  @param {string} title_id - id for aria-labelledby / H2
   @param {string} work_title - Italic work title
   @param {string} reflection - Rich text HTML (already sanitized by Shopify)
-  @param {string} series_url - Collection URL
-  @param {string} series_label - Explore link label
-  @param {string} view_url - Product URL
-  @param {string} view_work_title - Work title for the View link
-  @param {boolean} is_dark - Dark surface link tones
   @param {string} [stack_class] - Extra class on the stack
 {% enddoc %}
 
-{%- liquid
-  assign tone = 'light'
-  if is_dark
-    assign tone = 'dark'
-  endif
--%}
-
 <div class="portfolio-room__text {{ stack_class }}">
-  <p class="portfolio-room__eyebrow">
-    <span class="portfolio-room__eyebrow-label">Room </span>
-    <span class="portfolio-room__numeral" aria-hidden="true"></span>
-    {%- if eyebrow_suffix != blank -%}
-      <span class="portfolio-room__eyebrow-suffix">{{ eyebrow_suffix | escape }}</span>
-    {%- endif -%}
-  </p>
-
-  {%- if title != blank -%}
-    <h2 id="{{ title_id }}" class="portfolio-room__title">{{ title | escape }}</h2>
-  {%- endif -%}
-
   {%- if work_title != blank -%}
     <p class="portfolio-room__work"><em>{{ work_title | escape }}</em></p>
   {%- endif -%}
 
   {%- if reflection != blank -%}
     <blockquote class="portfolio-room__reflection">{{ reflection }}</blockquote>
-  {%- endif -%}
-
-  {%- if series_url != blank or view_url != blank -%}
-    <div class="portfolio-room__links">
-      {%- if series_url != blank and series_label != blank -%}
-        {%- render 'label-link',
-          url: series_url,
-          label: series_label,
-          tone: tone,
-          class: 'portfolio-room__series-link'
-        -%}
-      {%- endif -%}
-      {%- if view_url != blank and view_work_title != blank -%}
-        <a class="portfolio-room__view-link" href="{{ view_url }}">View <em>{{ view_work_title | escape }}</em></a>
-      {%- endif -%}
-    </div>
   {%- endif -%}
 </div>

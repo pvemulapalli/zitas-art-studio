@@ -8,6 +8,8 @@
  * Yang – The Dark Side, and Tangled were not confidently identified.
  * Collections Elements, Sand and Cloud, and BlackWhiteandGrey were not
  * found; Colored by Nature and Walking the Trail exist and are linked.
+ * Rooms without a series collection use series_url → v2-poc-original-artworks
+ * as a temporary Explore the series destination until those collections exist.
  * Rooms use temporary theme assets (fallback_asset) until products exist.
  * ------------------------------------------------------------
  */
@@ -40,6 +42,7 @@
         "background": "gesso",
         "position": "left",
         "title_override": "Elements",
+        "series_url": "shopify://collections/v2-poc-original-artworks",
         "series_label": "Explore the series",
         "reflection": "",
         "current_series": false,
@@ -76,6 +79,7 @@
         "background": "gesso",
         "position": "left",
         "title_override": "Sand and Cloud",
+        "series_url": "shopify://collections/v2-poc-original-artworks",
         "series_label": "Explore the series",
         "reflection": "<p>Gold sand and grey clouds makes me smile wherever I am. These paintings were inspired by such landscapes.</p>",
         "current_series": false,
@@ -131,6 +135,7 @@
         "background": "night",
         "position": "center",
         "title_override": "BlackWhiteandGrey",
+        "series_url": "shopify://collections/v2-poc-original-artworks",
         "series_label": "Explore the series",
         "reflection": "",
         "current_series": false,
