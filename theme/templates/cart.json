@@ -12,7 +12,7 @@
     "main": {
       "type": "cart",
       "settings": {
-        "eyebrow": "Bag",
+        "eyebrow": "Cart",
         "continue_label": "View originals",
         "continue_url": ""
       }

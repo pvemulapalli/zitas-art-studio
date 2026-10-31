@@ -224,7 +224,10 @@
         {%- render 'icon', name: 'check', size: 12 -%}
         {{- 'product.in_your_bag' | t -}}
       </span>
-      <a class="button pdp-bar__action" href="{{ routes.cart_url }}" data-view-bag>{{ 'product.view_bag' | t }}</a>
+      <a class="button pdp-bar__action" href="{{ routes.cart_url }}" data-view-bag>
+        {{- 'product.view_bag' | t -}}
+        <span class="pdp-bar__action-arrow" aria-hidden="true">&nbsp;→</span>
+      </a>
     {%- elsif product.available -%}
       <span class="pdp-bar__price" data-price>{{ price }}</span>
       <button type="submit" form="{{ form_id }}" class="button pdp-bar__action">{{ 'product.add_to_bag' | t }}</button>

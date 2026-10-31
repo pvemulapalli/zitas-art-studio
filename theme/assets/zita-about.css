@@ -146,6 +146,21 @@
   column-gap: clamp(16px, 2vw, 32px);
 }
 
+@media (max-width: 749px) {
+  /* Desktop 12-column tracks were left active on mobile, so each block only
+     occupied one column (~8% width) and text collapsed vertically. */
+  .about-grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 20px;
+  }
+
+  .about-grid > * {
+    grid-column: 1 / -1;
+    min-width: 0;
+    max-width: none;
+  }
+}
+
 .about-numeral {
   font-family: var(--font-display);
   font-size: 13px;

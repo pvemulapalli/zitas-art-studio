@@ -15,10 +15,10 @@
   },
   "cart": {
     "checkout": "Checkout",
-    "title": "Your bag",
-    "update": "Update bag",
+    "title": "Your Cart",
+    "update": "Update cart",
     "remove": "Remove",
-    "empty": "Your bag is empty. Explore original works when you are ready.",
+    "empty": "Your cart is empty. Explore original works when you are ready.",
     "quantity": "Quantity",
     "unit_price": "Unit price",
     "line_total": "Line total",
@@ -72,8 +72,8 @@
     "main_navigation": "Main",
     "search": "Search",
     "bag": {
-      "one": "Bag, {{ count }} item",
-      "other": "Bag, {{ count }} items"
+      "one": "Cart, {{ count }} item",
+      "other": "Cart, {{ count }} items"
     },
     "originals_count": {
       "one": "{{ count }} original",
@@ -153,11 +153,11 @@
     "available": "Available",
     "one_of_one": "one of one",
     "sold": "Sold",
-    "add_to_bag": "Add to bag",
-    "in_your_bag": "In your bag",
-    "view_bag": "View bag",
-    "added_to_bag": "{{ title }} added to your bag.",
-    "already_in_bag": "{{ title }} is in your bag.",
+    "add_to_bag": "Add to cart",
+    "in_your_bag": "In your cart",
+    "view_bag": "View cart",
+    "added_to_bag": "{{ title }} added to your cart.",
+    "already_in_bag": "{{ title }} is in your cart.",
     "just_collected": "This painting has just been collected.",
     "purchase": "Purchase",
     "images": "Artwork images",

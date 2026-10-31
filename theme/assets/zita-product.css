@@ -815,6 +815,10 @@ html:has(.pdp-viewer[open]) {
     padding: 0 16px;
   }
 
+  .pdp-bar__action-arrow {
+    white-space: nowrap;
+  }
+
   .pdp-sold--compact {
     gap: 8px;
     min-width: 74px;
