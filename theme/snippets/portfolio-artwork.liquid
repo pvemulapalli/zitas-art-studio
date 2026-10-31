@@ -1,0 +1,133 @@
+{% doc %}
+  Renders one Portfolio artwork figure from a room artwork block.
+
+  @param {object} block - Section artwork block
+  @param {string} [role] - 'primary' | 'secondary' | 'extra'
+  @param {string} [sizes] - Responsive sizes attribute
+  @param {string} [loading] - lazy | eager
+  @param {boolean} [shadow] - Apply hang shadow (light rooms)
+  @param {boolean} [cover] - Pair secondary cover crop
+  @param {string} [secondary_label] - Detail | In a room
+  @param {boolean} [link_enabled] - Honor block link_image when product URL exists
+  @param {boolean} [show_caption] - Show primary caption under the figure
+{% enddoc %}
+
+{%- liquid
+  assign product = block.settings.product
+  assign image = block.settings.image
+  if image == blank and product != blank and product.featured_media
+    assign image = product.featured_media.preview_image
+  endif
+
+  assign alt = block.settings.alt | strip
+  if alt == blank and image != blank
+    assign alt = image.alt
+  endif
+  if alt == blank and product != blank
+    assign alt = product.title
+  endif
+  if alt == blank
+    assign alt = 'Artwork'
+  endif
+
+  assign caption = block.settings.caption | strip
+  if caption == blank and product != blank
+    assign caption = product.title
+  endif
+
+  assign product_url = blank
+  if product != blank and product.url != blank
+    assign product_url = product.url
+  endif
+
+  assign fallback = block.settings.fallback_asset | strip
+  assign show_link = false
+  if link_enabled and block.settings.link_image and product_url != blank
+    assign show_link = true
+  endif
+
+  assign figure_class = 'portfolio-art'
+  if role == 'secondary'
+    assign figure_class = figure_class | append: ' portfolio-art--secondary'
+  elsif role == 'extra'
+    assign figure_class = figure_class | append: ' portfolio-art--extra'
+  else
+    assign figure_class = figure_class | append: ' portfolio-art--primary'
+  endif
+  if shadow
+    assign figure_class = figure_class | append: ' portfolio-art--shadow'
+  endif
+  if cover
+    assign figure_class = figure_class | append: ' portfolio-art--cover'
+  endif
+-%}
+
+{%- if image != blank or fallback != blank -%}
+  <figure class="{{ figure_class }}" {{ block.shopify_attributes }}>
+    {%- if show_link -%}
+      <a class="portfolio-art__link" href="{{ product_url }}">
+    {%- endif -%}
+
+    {%- if image != blank -%}
+      {%- if cover -%}
+        <div class="portfolio-art__cover">
+          {%- render 'responsive-image',
+            image: image,
+            alt: alt,
+            sizes: sizes,
+            widths: '400, 600, 800, 1000, 1200, 1600, 2000',
+            loading: loading,
+            class: 'portfolio-art__img portfolio-art__img--cover'
+          -%}
+        </div>
+      {%- else -%}
+        {%- render 'responsive-image',
+          image: image,
+          alt: alt,
+          sizes: sizes,
+          widths: '400, 600, 800, 1000, 1200, 1600, 2000',
+          loading: loading,
+          class: 'portfolio-art__img'
+        -%}
+      {%- endif -%}
+    {%- elsif fallback != blank -%}
+      {%- if cover -%}
+        <div class="portfolio-art__cover">
+          <img
+            class="portfolio-art__img portfolio-art__img--cover"
+            src="{{ fallback | asset_url }}"
+            alt="{{ alt | escape }}"
+            loading="{{ loading | default: 'lazy' }}"
+            decoding="async"
+            width="800"
+            height="1000"
+          >
+        </div>
+      {%- else -%}
+        <img
+          class="portfolio-art__img"
+          src="{{ fallback | asset_url }}"
+          alt="{{ alt | escape }}"
+          loading="{{ loading | default: 'lazy' }}"
+          decoding="async"
+          width="1200"
+          height="1500"
+        >
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if show_link -%}
+      </a>
+    {%- endif -%}
+
+    {%- if role == 'secondary' and secondary_label != blank -%}
+      <figcaption class="portfolio-art__secondary-label">{{ secondary_label | escape }}</figcaption>
+    {%- elsif role != 'secondary' and caption != blank and show_caption -%}
+      <figcaption class="portfolio-art__caption">{{ caption | escape }}</figcaption>
+    {%- endif -%}
+  </figure>
+{%- elsif request.design_mode -%}
+  <figure class="{{ figure_class }} portfolio-art--placeholder" {{ block.shopify_attributes }}>
+    <span class="editor-placeholder">{{ 'portfolio.editor.add_artwork' | t }}</span>
+  </figure>
+{%- endif -%}

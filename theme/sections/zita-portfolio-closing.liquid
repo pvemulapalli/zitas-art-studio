@@ -1,0 +1,104 @@
+{%- liquid
+  assign heading = section.settings.heading
+  assign button_label = section.settings.button_label
+  assign button_link = section.settings.button_link | default: routes.all_products_collection_url
+  assign about_label = section.settings.about_label
+  assign about_link = section.settings.about_link
+  assign contact_label = section.settings.contact_label
+  assign contact_link = section.settings.contact_link
+  if contact_link == blank
+    assign contact_link = pages.contact.url | default: '/pages/contact'
+  endif
+  if contact_link contains '#message'
+    assign contact_href = contact_link
+  else
+    assign contact_href = contact_link | append: '#message'
+  endif
+  if about_link == blank
+    assign about_link = pages.about.url | default: '/pages/about'
+  endif
+-%}
+
+<section
+  class="portfolio-section portfolio-closing full-width"
+  data-surface="vaayu_mist"
+  {% if heading != blank %}aria-labelledby="PortfolioClosingHeading-{{ section.id }}"{% endif %}
+>
+  <div class="portfolio-shell">
+    <div class="portfolio-grid portfolio-closing__grid">
+      <div class="portfolio-closing__lead">
+        {%- if heading != blank -%}
+          <h2 id="PortfolioClosingHeading-{{ section.id }}" class="portfolio-closing__heading">
+            {{ heading | escape }}
+          </h2>
+        {%- endif -%}
+        {%- if button_label != blank and button_link != blank -%}
+          <a class="button portfolio-closing__button" href="{{ button_link }}">
+            {{- button_label | escape -}}
+            {%- render 'icon', name: 'arrow-right', size: 16, class: 'portfolio-closing__button-arrow' -%}
+          </a>
+        {%- endif -%}
+      </div>
+      <div class="portfolio-closing__links">
+        {%- if about_label != blank and about_link != blank -%}
+          {%- render 'label-link', url: about_link, label: about_label, class: 'portfolio-closing__about' -%}
+        {%- endif -%}
+        {%- if contact_label != blank -%}
+          {%- render 'label-link', url: contact_href, label: contact_label -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Portfolio closing",
+  "tag": "section",
+  "class": "section-portfolio-closing",
+  "enabled_on": { "templates": ["page"] },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Every series is still part of the collection."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Primary button label",
+      "default": "Explore the originals"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "about_label",
+      "label": "About link label",
+      "default": "About Ranjeeta"
+    },
+    {
+      "type": "url",
+      "id": "about_link",
+      "label": "About link"
+    },
+    {
+      "type": "text",
+      "id": "contact_label",
+      "label": "Contact link label",
+      "default": "Write to Ranjeeta"
+    },
+    {
+      "type": "url",
+      "id": "contact_link",
+      "label": "Contact link",
+      "info": "Defaults to the Contact page. #message is appended automatically."
+    }
+  ],
+  "presets": [{ "name": "Portfolio closing" }]
+}
+{% endschema %}

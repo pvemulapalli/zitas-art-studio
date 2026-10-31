@@ -219,5 +219,11 @@
     "success_inquiry": "Inquiry",
     "success_from": "From",
     "continue_aria": "Continue browsing"
+  },
+  "portfolio": {
+    "editor": {
+      "add_artwork": "Add a product or temporary artwork image",
+      "configure_room": "Add a title and at least one artwork to this room"
+    }
   }
 }

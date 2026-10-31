@@ -1,0 +1,448 @@
+{%- liquid
+  assign background = section.settings.background | default: 'gesso'
+  assign composition = section.settings.composition | default: 'hang'
+  assign position = section.settings.position | default: 'left'
+  assign collection = section.settings.collection
+  assign title_override = section.settings.title_override | strip
+  assign reflection = section.settings.reflection
+  assign reflection_text = reflection | strip_html | strip
+  if reflection_text == blank
+    assign reflection = blank
+  endif
+  assign current_series = section.settings.current_series
+  assign series_label = section.settings.series_label | default: 'Explore the series'
+  assign show_view = section.settings.show_view_link
+  assign secondary_label_key = section.settings.secondary_label | default: 'detail'
+  assign show_secondary_mobile = section.settings.show_secondary_on_mobile
+
+  if title_override != blank
+    assign room_title = title_override
+  elsif collection != blank
+    assign room_title = collection.title
+  else
+    assign room_title = blank
+  endif
+
+  assign series_url = blank
+  if collection != blank
+    assign series_url = collection.url
+  elsif section.settings.series_url != blank
+    assign series_url = section.settings.series_url
+  endif
+
+  assign artworks = section.blocks | where: 'type', 'artwork'
+  assign art_count = 0
+  for block in artworks
+    assign art_count = art_count | plus: 1
+  endfor
+
+  assign effective_composition = composition
+  if composition == 'pair' and art_count < 2
+    assign effective_composition = 'hang'
+  endif
+
+  assign is_dark = false
+  if background == 'night'
+    assign is_dark = true
+  endif
+
+  assign eyebrow_suffix = blank
+  if current_series
+    assign eyebrow_suffix = ' · Current series'
+  endif
+
+  assign primary = artworks | first
+  assign secondary = blank
+  if art_count > 1
+    for block in artworks
+      if forloop.index == 2
+        assign secondary = block
+      endif
+    endfor
+  endif
+
+  assign work_title = blank
+  assign view_url = blank
+  if primary != blank
+    if primary.settings.caption != blank
+      assign work_title = primary.settings.caption
+    elsif primary.settings.product != blank
+      assign work_title = primary.settings.product.title
+    endif
+    if show_view and primary.settings.product != blank and primary.settings.product.url != blank
+      assign view_url = primary.settings.product.url
+    endif
+  endif
+
+  if secondary_label_key == 'room'
+    assign secondary_label = 'In a room'
+  else
+    assign secondary_label = 'Detail'
+  endif
+
+  assign title_id = 'PortfolioRoomTitle-' | append: section.id
+  assign skip_room = false
+  if room_title == blank and art_count == 0 and reflection == blank
+    assign skip_room = true
+  endif
+-%}
+
+{%- unless skip_room -%}
+  <section
+    class="portfolio-section portfolio-room full-width portfolio-room--{{ effective_composition }} portfolio-room--pos-{{ position }}{% if show_secondary_mobile %} portfolio-room--show-secondary-mobile{% endif %}"
+    data-surface="{{ background }}"
+    data-composition="{{ effective_composition }}"
+    data-position="{{ position }}"
+    aria-labelledby="{{ title_id }}"
+  >
+    <div class="portfolio-shell">
+      {%- case effective_composition -%}
+        {%- when 'dark_room' -%}
+          <div class="portfolio-grid portfolio-room__grid portfolio-room__grid--dark">
+            <div class="portfolio-room__media portfolio-room__media--dark">
+              {%- if primary != blank -%}
+                {%- render 'portfolio-artwork',
+                  block: primary,
+                  role: 'primary',
+                  sizes: '(min-width: 990px) 66vw, 100vw',
+                  loading: 'lazy',
+                  shadow: false,
+                  cover: false,
+                  link_enabled: true,
+                  show_caption: false
+                -%}
+              {%- endif -%}
+              {%- for block in artworks offset: 1 -%}
+                {%- render 'portfolio-artwork',
+                  block: block,
+                  role: 'extra',
+                  sizes: '(min-width: 990px) 66vw, 100vw',
+                  loading: 'lazy',
+                  shadow: false,
+                  cover: false,
+                  link_enabled: true,
+                  show_caption: false
+                -%}
+              {%- endfor -%}
+            </div>
+            {%- render 'portfolio-room-text',
+              eyebrow_suffix: eyebrow_suffix,
+              title: room_title,
+              title_id: title_id,
+              work_title: work_title,
+              reflection: reflection,
+              series_url: series_url,
+              series_label: series_label,
+              view_url: view_url,
+              view_work_title: work_title,
+              is_dark: is_dark,
+              stack_class: 'portfolio-room__text--dark'
+            -%}
+          </div>
+
+        {%- when 'pair' -%}
+          <div class="portfolio-grid portfolio-room__grid portfolio-room__grid--pair">
+            <header class="portfolio-room__pair-header">
+              <p class="portfolio-room__eyebrow">
+                <span class="portfolio-room__eyebrow-label">Room </span>
+                <span class="portfolio-room__numeral" aria-hidden="true"></span>
+                {%- if eyebrow_suffix != blank -%}
+                  <span class="portfolio-room__eyebrow-suffix">{{ eyebrow_suffix | escape }}</span>
+                {%- endif -%}
+              </p>
+              {%- if room_title != blank -%}
+                <h2 id="{{ title_id }}" class="portfolio-room__title">{{ room_title | escape }}</h2>
+              {%- endif -%}
+            </header>
+
+            <div class="portfolio-room__pair-main">
+              {%- if primary != blank -%}
+                {%- render 'portfolio-artwork',
+                  block: primary,
+                  role: 'primary',
+                  sizes: '(min-width: 990px) 42vw, 100vw',
+                  loading: 'lazy',
+                  shadow: true,
+                  cover: false,
+                  link_enabled: true,
+                  show_caption: true
+                -%}
+              {%- endif -%}
+            </div>
+
+            {%- if secondary != blank -%}
+              <div class="portfolio-room__pair-secondary">
+                {%- render 'portfolio-artwork',
+                  block: secondary,
+                  role: 'secondary',
+                  sizes: '(min-width: 750px) 25vw, 0px',
+                  loading: 'lazy',
+                  shadow: false,
+                  cover: true,
+                  secondary_label: secondary_label,
+                  link_enabled: true,
+                  show_caption: false
+                -%}
+              </div>
+            {%- endif -%}
+
+            <div class="portfolio-room__pair-copy">
+              {%- if reflection != blank -%}
+                <blockquote class="portfolio-room__reflection">{{ reflection }}</blockquote>
+              {%- endif -%}
+              {%- if series_url != blank or view_url != blank -%}
+                <div class="portfolio-room__links portfolio-room__links--stack">
+                  {%- if series_url != blank and series_label != blank -%}
+                    {%- render 'label-link',
+                      url: series_url,
+                      label: series_label,
+                      tone: 'light',
+                      class: 'portfolio-room__series-link'
+                    -%}
+                  {%- endif -%}
+                  {%- if view_url != blank and work_title != blank -%}
+                    <a class="portfolio-room__view-link" href="{{ view_url }}">View <em>{{ work_title | escape }}</em></a>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </div>
+
+            {%- for block in artworks offset: 2 -%}
+              <div class="portfolio-room__pair-extra">
+                {%- render 'portfolio-artwork',
+                  block: block,
+                  role: 'extra',
+                  sizes: '(min-width: 990px) 42vw, 100vw',
+                  loading: 'lazy',
+                  shadow: true,
+                  cover: false,
+                  link_enabled: true,
+                  show_caption: true
+                -%}
+              </div>
+            {%- endfor -%}
+          </div>
+
+        {%- else -%}
+          {%- comment -%} Hang (default), including Pair fallback {%- endcomment -%}
+          <div class="portfolio-grid portfolio-room__grid portfolio-room__grid--hang">
+            <div class="portfolio-room__media portfolio-room__media--hang">
+              {%- if primary != blank -%}
+                {%- render 'portfolio-artwork',
+                  block: primary,
+                  role: 'primary',
+                  sizes: '(min-width: 990px) 58vw, 100vw',
+                  loading: 'lazy',
+                  shadow: true,
+                  cover: false,
+                  link_enabled: true,
+                  show_caption: false
+                -%}
+              {%- endif -%}
+              {%- for block in artworks offset: 1 -%}
+                {%- render 'portfolio-artwork',
+                  block: block,
+                  role: 'extra',
+                  sizes: '(min-width: 990px) 58vw, 100vw',
+                  loading: 'lazy',
+                  shadow: true,
+                  cover: false,
+                  link_enabled: true,
+                  show_caption: false
+                -%}
+              {%- endfor -%}
+            </div>
+            {%- render 'portfolio-room-text',
+              eyebrow_suffix: eyebrow_suffix,
+              title: room_title,
+              title_id: title_id,
+              work_title: work_title,
+              reflection: reflection,
+              series_url: series_url,
+              series_label: series_label,
+              view_url: view_url,
+              view_work_title: work_title,
+              is_dark: is_dark,
+              stack_class: 'portfolio-room__text--hang'
+            -%}
+          </div>
+      {%- endcase -%}
+    </div>
+  </section>
+{%- elsif request.design_mode -%}
+  <section class="portfolio-section portfolio-room full-width" data-surface="{{ background }}">
+    <div class="portfolio-shell">
+      <p class="editor-placeholder">{{ 'portfolio.editor.configure_room' | t }}</p>
+    </div>
+  </section>
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Portfolio room",
+  "tag": "section",
+  "class": "section-portfolio-room",
+  "enabled_on": { "templates": ["page"] },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Composition"
+    },
+    {
+      "type": "select",
+      "id": "composition",
+      "label": "Composition",
+      "info": "Layout pattern. Independent of background color.",
+      "options": [
+        { "value": "hang", "label": "Hang" },
+        { "value": "pair", "label": "Pair" },
+        { "value": "dark_room", "label": "Dark room" }
+      ],
+      "default": "hang"
+    },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Background",
+      "info": "Independent of composition. Night is recommended for Dark room.",
+      "options": [
+        { "value": "gesso", "label": "Gallery White (Gesso)" },
+        { "value": "vaayu_mist", "label": "Vaayu Mist" },
+        { "value": "stone_mist", "label": "Stone Mist" },
+        { "value": "sand", "label": "Sand" },
+        { "value": "night", "label": "Night" }
+      ],
+      "default": "gesso"
+    },
+    {
+      "type": "select",
+      "id": "position",
+      "label": "Artwork position",
+      "info": "Left / center / right for Hang. Pair and Dark room use their approved structures; position still shifts emphasis.",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Series"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "title_override",
+      "label": "Title override",
+      "info": "Optional. Uses the collection title when blank."
+    },
+    {
+      "type": "url",
+      "id": "series_url",
+      "label": "Series link override",
+      "info": "Optional when no collection is selected."
+    },
+    {
+      "type": "text",
+      "id": "series_label",
+      "label": "Series link label",
+      "default": "Explore the series"
+    },
+    {
+      "type": "richtext",
+      "id": "reflection",
+      "label": "Reflection",
+      "info": "Leave blank to hide the reflection and its hairline rule."
+    },
+    {
+      "type": "checkbox",
+      "id": "current_series",
+      "label": "Mark as current series",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_link",
+      "label": "Show “View {work}” link",
+      "default": true,
+      "info": "Only appears when the first artwork has a product."
+    },
+    {
+      "type": "header",
+      "content": "Pair options"
+    },
+    {
+      "type": "select",
+      "id": "secondary_label",
+      "label": "Second image label",
+      "options": [
+        { "value": "detail", "label": "Detail" },
+        { "value": "room", "label": "In a room" }
+      ],
+      "default": "detail"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_on_mobile",
+      "label": "Show Pair second image on mobile",
+      "default": false,
+      "info": "Approved design hides it on mobile. Enable only if desired."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "artwork",
+      "name": "Artwork",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image override",
+          "info": "Optional. Uses the product image when blank."
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text",
+          "info": "Required when using an override or temporary asset."
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption override",
+          "info": "Optional. Defaults to the product title."
+        },
+        {
+          "type": "checkbox",
+          "id": "link_image",
+          "label": "Link image to product",
+          "default": false,
+          "info": "Approved design keeps images unlinked by default."
+        },
+        {
+          "type": "text",
+          "id": "fallback_asset",
+          "label": "Temporary theme asset filename",
+          "info": "Used only when no product or image is set. Replace before launch (e.g. portfolio-jal-water.png)."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Portfolio room",
+      "blocks": [{ "type": "artwork" }]
+    }
+  ]
+}
+{% endschema %}

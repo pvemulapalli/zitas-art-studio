@@ -1,0 +1,192 @@
+/*
+ * ------------------------------------------------------------
+ * Portfolio — V2 alternate page template.
+ * Assign this template to the Portfolio page in Admin.
+ *
+ * Catalog note (dev store, 2026-03-31):
+ * Products for Jal – Water, Melting away, Colored by Nature – Purple,
+ * Yang – The Dark Side, and Tangled were not confidently identified.
+ * Collections Elements, Sand and Cloud, and BlackWhiteandGrey were not
+ * found; Colored by Nature and Walking the Trail exist and are linked.
+ * Rooms use temporary theme assets (fallback_asset) until products exist.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "portfolio_opening": {
+      "type": "zita-portfolio-opening",
+      "settings": {
+        "eyebrow": "Portfolio",
+        "display_line": "From the first series to the current one, one painting from each.",
+        "supporting_line": "Ranjeeta paints in series. Each room below holds one work from one body of work."
+      }
+    },
+    "portfolio_room_elements": {
+      "type": "zita-portfolio-room",
+      "blocks": {
+        "artwork_jal": {
+          "type": "artwork",
+          "settings": {
+            "alt": "Jal – Water: blue and gold poured paint flowing across a white ground",
+            "caption": "Jal – Water",
+            "link_image": false,
+            "fallback_asset": "portfolio-jal-water.png"
+          }
+        }
+      },
+      "block_order": ["artwork_jal"],
+      "settings": {
+        "composition": "hang",
+        "background": "gesso",
+        "position": "left",
+        "title_override": "Elements",
+        "series_label": "Explore the series",
+        "reflection": "",
+        "current_series": false,
+        "show_view_link": true,
+        "secondary_label": "detail",
+        "show_secondary_on_mobile": false
+      }
+    },
+    "portfolio_room_sand": {
+      "type": "zita-portfolio-room",
+      "blocks": {
+        "artwork_melting": {
+          "type": "artwork",
+          "settings": {
+            "alt": "Melting away: soft sand and cloud tones poured across white",
+            "caption": "Melting away",
+            "link_image": false,
+            "fallback_asset": "portfolio-melting-away.webp"
+          }
+        },
+        "artwork_melting_detail": {
+          "type": "artwork",
+          "settings": {
+            "alt": "Detail of Melting away",
+            "caption": "Melting away",
+            "link_image": false,
+            "fallback_asset": "portfolio-melting-away.webp"
+          }
+        }
+      },
+      "block_order": ["artwork_melting", "artwork_melting_detail"],
+      "settings": {
+        "composition": "pair",
+        "background": "gesso",
+        "position": "left",
+        "title_override": "Sand and Cloud",
+        "series_label": "Explore the series",
+        "reflection": "<p>Gold sand and grey clouds makes me smile wherever I am. These paintings were inspired by such landscapes.</p>",
+        "current_series": false,
+        "show_view_link": true,
+        "secondary_label": "detail",
+        "show_secondary_on_mobile": false
+      }
+    },
+    "portfolio_room_colored": {
+      "type": "zita-portfolio-room",
+      "blocks": {
+        "artwork_purple": {
+          "type": "artwork",
+          "settings": {
+            "alt": "Colored by Nature – Purple: violet and white poured paint",
+            "caption": "Colored by Nature – Purple",
+            "link_image": false,
+            "fallback_asset": "portfolio-colored-by-nature-purple.jpg"
+          }
+        }
+      },
+      "block_order": ["artwork_purple"],
+      "settings": {
+        "composition": "hang",
+        "background": "gesso",
+        "position": "right",
+        "collection": "colored-by-nature",
+        "title_override": "Colored by Nature",
+        "series_label": "Explore the series",
+        "reflection": "",
+        "current_series": false,
+        "show_view_link": true,
+        "secondary_label": "detail",
+        "show_secondary_on_mobile": false
+      }
+    },
+    "portfolio_room_bwg": {
+      "type": "zita-portfolio-room",
+      "blocks": {
+        "artwork_yang": {
+          "type": "artwork",
+          "settings": {
+            "alt": "Yang – The Dark Side: white poured paint curling in two arcs across a black ground",
+            "caption": "Yang – The Dark Side",
+            "link_image": false,
+            "fallback_asset": "portfolio-yang-dark-side.png"
+          }
+        }
+      },
+      "block_order": ["artwork_yang"],
+      "settings": {
+        "composition": "dark_room",
+        "background": "night",
+        "position": "center",
+        "title_override": "BlackWhiteandGrey",
+        "series_label": "Explore the series",
+        "reflection": "",
+        "current_series": false,
+        "show_view_link": true,
+        "secondary_label": "detail",
+        "show_secondary_on_mobile": false
+      }
+    },
+    "portfolio_room_trail": {
+      "type": "zita-portfolio-room",
+      "blocks": {
+        "artwork_tangled": {
+          "type": "artwork",
+          "settings": {
+            "alt": "Tangled: tall vertical painting, deep green lines winding through pale green with flecks of red",
+            "caption": "Tangled",
+            "link_image": false,
+            "fallback_asset": "portfolio-tangled.webp"
+          }
+        }
+      },
+      "block_order": ["artwork_tangled"],
+      "settings": {
+        "composition": "hang",
+        "background": "gesso",
+        "position": "left",
+        "collection": "walking-the-trail",
+        "title_override": "Walking the Trail",
+        "series_label": "Explore the series",
+        "reflection": "",
+        "current_series": true,
+        "show_view_link": true,
+        "secondary_label": "detail",
+        "show_secondary_on_mobile": false
+      }
+    },
+    "portfolio_closing": {
+      "type": "zita-portfolio-closing",
+      "settings": {
+        "heading": "Every series is still part of the collection.",
+        "button_label": "Explore the originals",
+        "button_link": "shopify://collections/v2-poc-original-artworks",
+        "about_label": "About Ranjeeta",
+        "about_link": "shopify://pages/about",
+        "contact_label": "Write to Ranjeeta",
+        "contact_link": "shopify://pages/contact"
+      }
+    }
+  },
+  "order": [
+    "portfolio_opening",
+    "portfolio_room_elements",
+    "portfolio_room_sand",
+    "portfolio_room_colored",
+    "portfolio_room_bwg",
+    "portfolio_room_trail",
+    "portfolio_closing"
+  ]
+}

@@ -1,0 +1,61 @@
+{{ 'zita-portfolio.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign eyebrow = section.settings.eyebrow | default: 'Portfolio'
+  assign display = section.settings.display_line
+  assign support = section.settings.supporting_line
+-%}
+
+<section
+  class="portfolio-section portfolio-opening full-width"
+  data-surface="gesso"
+  aria-labelledby="PortfolioOpeningHeading-{{ section.id }}"
+>
+  <div class="portfolio-shell">
+    <div class="portfolio-grid portfolio-opening__grid">
+      <div class="portfolio-opening__lead">
+        {%- if eyebrow != blank -%}
+          <h1 id="PortfolioOpeningHeading-{{ section.id }}" class="portfolio-opening__eyebrow">
+            {{ eyebrow | escape }}
+          </h1>
+        {%- endif -%}
+        {%- if display != blank -%}
+          <p class="portfolio-opening__display">{{ display | escape }}</p>
+        {%- endif -%}
+      </div>
+      {%- if support != blank -%}
+        <p class="portfolio-opening__support">{{ support | escape }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Portfolio opening",
+  "tag": "section",
+  "class": "section-portfolio-opening",
+  "enabled_on": { "templates": ["page"] },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow (H1)",
+      "default": "Portfolio"
+    },
+    {
+      "type": "textarea",
+      "id": "display_line",
+      "label": "Display line",
+      "default": "From the first series to the current one, one painting from each."
+    },
+    {
+      "type": "textarea",
+      "id": "supporting_line",
+      "label": "Supporting line",
+      "default": "Ranjeeta paints in series. Each room below holds one work from one body of work."
+    }
+  ],
+  "presets": [{ "name": "Portfolio opening" }]
+}
+{% endschema %}
