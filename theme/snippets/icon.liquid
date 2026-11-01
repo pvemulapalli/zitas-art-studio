@@ -1,7 +1,7 @@
 {% doc %}
   Renders a decorative outline icon (1.25px stroke). Icon geometry is from Lucide (ISC licence).
 
-  @param {string} name - search | instagram | shopping-bag | chevron-down | arrow-right | arrow-left | pause | play | sliders-horizontal | x | check | mail | maximize | zoom-in | zoom-out
+  @param {string} name - search | instagram | shopping-bag | shopping-bag-plus | chevron-down | arrow-right | arrow-left | pause | play | sliders-horizontal | x | check | mail | maximize | zoom-in | zoom-out
   @param {number} [size] - Rendered width and height in pixels (default 20)
   @param {string} [class] - Extra class names
 
@@ -30,6 +30,8 @@
       <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
     {%- when 'shopping-bag' -%}
       <path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/>
+    {%- when 'shopping-bag-plus' -%}
+      <path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/><path d="M12 14v4"/><path d="M10 16h4"/>
     {%- when 'chevron-down' -%}
       <path d="m6 9 6 6 6-6"/>
     {%- when 'arrow-right' -%}

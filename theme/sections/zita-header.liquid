@@ -483,6 +483,36 @@
 </header>
 
 {% stylesheet %}
+  /*
+    Sticky must live on the Shopify section shell, not `.site-header`.
+    `.shopify-section.section-header` is only as tall as the header; sticky on the
+    inner header can only stick within that short parent and scrolls away with it.
+    Announcement remains a separate sibling above and scrolls off normally.
+  */
+  .shopify-section.section-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 20;
+    transition: transform var(--duration-base) var(--ease-pour);
+  }
+
+  .shopify-section.section-header.is-scroll-hidden {
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
+
+  .shopify-section.section-header.is-scroll-hidden:has(:focus-within),
+  .shopify-section.section-header.is-nav-locked {
+    transform: none;
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shopify-section.section-header {
+      transition: none;
+    }
+  }
+
   .site-header {
     position: relative;
     z-index: 20;
@@ -772,6 +802,7 @@
     }
 
     /* Above sticky page chrome such as the collection toolbar and filter drawer. */
+    .shopify-section.section-header:has(.mobile-menu > details[open]),
     .site-header:has(.mobile-menu > details[open]) {
       z-index: 70;
     }

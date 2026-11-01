@@ -258,26 +258,54 @@
     </div>
   </div>
 
-  <div class="pdp-bar" role="region" aria-label="{{ 'product.purchase' | t }}" data-pdp-region="bar">
+  {%- liquid
+    assign bar_image = current_variant.featured_image | default: product.featured_image
+  -%}
+  <div
+    class="pdp-bar"
+    role="region"
+    aria-label="{{ 'product.purchase' | t }}"
+    data-pdp-region="bar"
+    data-pdp-sticky-bar
+  >
+    {%- if bar_image -%}
+      <div class="pdp-bar__media" aria-hidden="true">
+        {%- render 'responsive-image',
+          image: bar_image,
+          widths: '80, 120, 160',
+          sizes: '72px',
+          class: 'pdp-bar__image',
+          decorative: true,
+          loading: 'lazy'
+        -%}
+      </div>
+    {%- endif -%}
+    <div class="pdp-bar__meta">
+      <span class="pdp-bar__title">{{ product.title | escape }}</span>
+      {%- if product.available and in_bag -%}
+        <span class="pdp-in-bag pdp-in-bag--compact">
+          {%- render 'icon', name: 'check', size: 12 -%}
+          {{- 'product.in_your_bag' | t -}}
+        </span>
+      {%- elsif product.available -%}
+        <span class="pdp-bar__price" data-price>{{ price }}</span>
+      {%- else -%}
+        <span class="pdp-sold pdp-sold--compact">{{ 'product.sold' | t }}</span>
+      {%- endif -%}
+    </div>
     {%- if product.available and in_bag -%}
-      <span class="pdp-in-bag pdp-in-bag--compact">
-        {%- render 'icon', name: 'check', size: 12 -%}
-        {{- 'product.in_your_bag' | t -}}
-      </span>
       <a class="button pdp-bar__action" href="{{ routes.cart_url }}" data-view-bag>
         {{- 'product.view_bag' | t -}}
         <span class="pdp-bar__action-arrow" aria-hidden="true">&nbsp;→</span>
       </a>
     {%- elsif product.available -%}
-      <span class="pdp-bar__price" data-price>{{ price }}</span>
-      <button type="submit" form="{{ form_id }}" class="button pdp-bar__action">{{ 'product.add_to_bag' | t }}</button>
-    {%- else -%}
-      <span class="pdp-sold pdp-sold--compact">{{ 'product.sold' | t }}</span>
-      {%- if section.settings.available_label != blank -%}
-        <a class="button button--secondary pdp-bar__action" href="{{ available_url }}">
-          {{- section.settings.available_label | escape -}}
-        </a>
-      {%- endif -%}
+      <button type="submit" form="{{ form_id }}" class="button pdp-bar__action" data-add-button>
+        {{- 'product.add_to_bag' | t -}}
+      </button>
+    {%- elsif section.settings.available_label != blank -%}
+      <a class="button button--secondary pdp-bar__action" href="{{ available_url }}">
+        {{- section.settings.available_label | escape -}}
+      </a>
     {%- endif -%}
   </div>
 

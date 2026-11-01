@@ -8,10 +8,13 @@
   padding-block-end: clamp(96px, 10vw, 160px);
 }
 
-/* Toolbar */
+/* Toolbar
+   Sit under the sticky site header while it is visible. When the header is
+   scroll-hidden (`html.is-header-hidden`), reclaim the top edge so Filter & Sort
+   does not leave a blank band or fight the header for the same slot. */
 .collection-toolbar {
   position: sticky;
-  inset-block-start: 0;
+  inset-block-start: var(--header-height);
   z-index: 10;
   display: flex;
   flex-wrap: wrap;
@@ -20,6 +23,17 @@
   gap: 12px 24px;
   padding-block: 16px;
   background: var(--color-gesso);
+  transition: inset-block-start var(--duration-base) var(--ease-pour);
+}
+
+html.is-header-hidden .collection-toolbar {
+  inset-block-start: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collection-toolbar {
+    transition: none;
+  }
 }
 
 .collection-toolbar:has(.filter-drawer[open]) {
@@ -507,7 +521,8 @@
     display: none;
   }
 
-  .collection-toolbar {
+  .collection-toolbar,
+  html.is-header-hidden .collection-toolbar {
     order: 2;
     inset-block: auto 0;
     z-index: 20;
@@ -516,6 +531,7 @@
     padding: 12px 16px calc(22px + env(safe-area-inset-bottom));
     border-top: 1px solid var(--color-stone-mist);
     background: rgb(248 248 246 / 0.96);
+    transition: none;
   }
 
   .collection-toolbar__start {

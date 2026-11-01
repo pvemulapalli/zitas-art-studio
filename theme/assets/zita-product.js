@@ -318,10 +318,91 @@
           this.addEventListener('submit', (event) => this.onSubmit(event), { signal });
           this.addEventListener('change', (event) => this.onChange(event), { signal });
           this.syncVariantState({ updateUrl: false });
+          this.setupStickyBar(signal);
+          wideQuery.addEventListener('change', () => this.setupStickyBar(signal), { signal });
         }
 
         disconnectedCallback() {
           this.controller?.abort();
+          this.stickyObserver?.disconnect();
+          this.previewChromeObserver?.disconnect();
+        }
+
+        setupStickyBar(signal) {
+          this.stickyObserver?.disconnect();
+          this.stickyObserver = null;
+          const bar = this.querySelector('[data-pdp-sticky-bar]');
+          if (!bar) return;
+
+          this.syncPreviewChromeOffset(signal);
+
+          // Phones keep the always-visible bar; desktop/tablet reveal only after buy controls leave view.
+          if (!wideQuery.matches) {
+            bar.classList.remove('is-visible');
+            return;
+          }
+
+          const target =
+            this.querySelector('[data-purchase-actions]') || this.querySelector('[data-pdp-region="buy"]');
+          if (!target || typeof IntersectionObserver !== 'function') {
+            bar.classList.add('is-visible');
+            return;
+          }
+
+          const syncVisibility = (isIntersecting) => {
+            bar.classList.toggle('is-visible', !isIntersecting);
+          };
+
+          this.stickyObserver = new IntersectionObserver(
+            (entries) => {
+              const entry = entries[0];
+              if (!entry) return;
+              syncVisibility(entry.isIntersecting);
+            },
+            { root: null, threshold: 0, rootMargin: '0px' }
+          );
+          this.stickyObserver.observe(target);
+
+          // Synchronous first paint: IO callbacks are async and can lag behind programmatic scroll.
+          const rect = target.getBoundingClientRect();
+          syncVisibility(rect.bottom > 0 && rect.top < window.innerHeight);
+
+          if (signal) {
+            signal.addEventListener('abort', () => this.stickyObserver?.disconnect(), { once: true });
+          }
+        }
+
+        syncPreviewChromeOffset(signal) {
+          const root = document.documentElement;
+          const apply = () => {
+            const chrome = document.getElementById('PBarNextFrameWrapper');
+            const height = chrome ? Math.ceil(chrome.getBoundingClientRect().height) : 0;
+            if (height > 0) {
+              root.style.setProperty('--pdp-preview-chrome', `${height}px`);
+            } else {
+              root.style.removeProperty('--pdp-preview-chrome');
+            }
+          };
+
+          apply();
+
+          const chrome = document.getElementById('PBarNextFrameWrapper');
+          if (!chrome || typeof ResizeObserver !== 'function') return;
+
+          this.previewChromeObserver?.disconnect();
+          this.previewChromeObserver = new ResizeObserver(apply);
+          this.previewChromeObserver.observe(chrome);
+          if (signal) {
+            signal.addEventListener(
+              'abort',
+              () => {
+                this.previewChromeObserver?.disconnect();
+                this.previewChromeObserver = null;
+                root.style.removeProperty('--pdp-preview-chrome');
+              },
+              { once: true }
+            );
+          }
         }
 
         parseIdSet(value) {
@@ -455,10 +536,8 @@
           const unavailableNote = this.querySelector('[data-variant-unavailable]');
           const addWrap = this.querySelector('[data-purchase-add]');
           const inBagWrap = this.querySelector('[data-purchase-in-bag]');
-          const addButton = this.querySelector('[data-add-button]');
           const status = this.querySelector('[data-availability-status]');
           const statusLabel = this.querySelector('[data-availability-label]');
-          const bar = this.querySelector('[data-pdp-region="bar"]');
 
           if (priceFormatted) {
             this.querySelectorAll('[data-price]').forEach((element) => {
@@ -474,14 +553,11 @@
           }
           if (status) status.hidden = false;
 
-          if (addButton) addButton.disabled = !available || inBag;
+          this.querySelectorAll('[data-add-button]').forEach((button) => {
+            button.disabled = !available || inBag;
+          });
           if (addWrap) addWrap.hidden = inBag;
           if (inBagWrap) inBagWrap.hidden = !inBag;
-
-          if (bar) {
-            const barAdd = bar.querySelector('button[type="submit"]');
-            if (barAdd) barAdd.disabled = !available || inBag;
-          }
         }
 
         syncVariantState({ updateUrl }) {
@@ -495,12 +571,11 @@
             const inBag = this.cartVariantIds.has(String(idInput.value));
             const addWrap = this.querySelector('[data-purchase-add]');
             const inBagWrap = this.querySelector('[data-purchase-in-bag]');
-            const addButton = this.querySelector('[data-add-button]');
-            const barAdd = this.querySelector('[data-pdp-region="bar"] button[type="submit"]');
             if (addWrap) addWrap.hidden = inBag;
             if (inBagWrap) inBagWrap.hidden = !inBag;
-            if (addButton) addButton.disabled = inBag;
-            if (barAdd) barAdd.disabled = inBag;
+            this.querySelectorAll('[data-add-button]').forEach((button) => {
+              button.disabled = inBag;
+            });
             return;
           }
 

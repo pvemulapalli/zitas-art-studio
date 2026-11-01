@@ -104,7 +104,13 @@
     "sold": "Sold",
     "swipe_room": "Swipe · room",
     "room_view": "Room view",
-    "artwork_and_room": "{{ title }}: artwork and room view"
+    "artwork_and_room": "{{ title }}: artwork and room view",
+    "quick_add": "Add",
+    "quick_add_label": "Add {{ title }} to cart",
+    "quick_add_options_label": "View options for {{ title }}",
+    "quick_add_adding": "Adding…",
+    "quick_add_added": "Added",
+    "quick_add_error": "Could not add this artwork. Please try again."
   },
   "plp": {
     "series_nav": "Series",
@@ -194,7 +200,14 @@
     "email_placeholder": "Your email address",
     "join": "Join",
     "newsletter_success": "Thank you. You’re on the list.",
-    "contact": "Contact"
+    "contact": "Contact",
+    "legal": "Legal",
+    "legal_navigation": "Legal"
+  },
+  "policies": {
+    "eyebrow": "Policies",
+    "on_this_page": "On this page",
+    "other_policies": "Other policies"
   },
   "editor": {
     "add_slide_image": "Add a slide image. Slides without an image are hidden from visitors.",

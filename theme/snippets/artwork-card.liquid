@@ -46,6 +46,12 @@
   if room_image and room_swipe
     assign card_classes = card_classes | append: ' artwork-card--swipe'
   endif
+
+  assign quick_variant = product.selected_or_first_available_variant
+  assign quick_add_direct = false
+  if product.available and product.has_only_default_variant and quick_variant.available
+    assign quick_add_direct = true
+  endif
 -%}
 
 {%- capture dimensions -%}
@@ -53,16 +59,52 @@
 {%- endcapture -%}
 
 <div class="{{ card_classes }}">
-  {%- render 'artwork-plate',
-    image: primary_image,
-    room_image: room_image,
-    room_swipe: room_swipe,
-    region_label: region_label,
-    alt: artwork_alt,
-    sizes: sizes,
-    loading: loading,
-    fetchpriority: fetchpriority
-  -%}
+  <div class="artwork-card__media">
+    {%- render 'artwork-plate',
+      image: primary_image,
+      room_image: room_image,
+      room_swipe: room_swipe,
+      region_label: region_label,
+      alt: artwork_alt,
+      sizes: sizes,
+      loading: loading,
+      fetchpriority: fetchpriority
+    -%}
+
+    {%- if product.available -%}
+      {%- if quick_add_direct -%}
+        <button
+          type="button"
+          class="artwork-card__quick-add"
+          data-quick-add
+          data-variant-id="{{ quick_variant.id }}"
+          data-product-title="{{ product.title | escape }}"
+          data-add-label="{{ 'artwork.quick_add' | t | escape }}"
+          data-adding-label="{{ 'artwork.quick_add_adding' | t | escape }}"
+          data-added-label="{{ 'artwork.quick_add_added' | t | escape }}"
+          data-error-label="{{ 'artwork.quick_add_error' | t | escape }}"
+          aria-label="{{ 'artwork.quick_add_label' | t: title: product.title | escape }}"
+        >
+          <span class="artwork-card__quick-add-icon" aria-hidden="true">
+            {%- render 'icon', name: 'shopping-bag-plus', size: 18 -%}
+          </span>
+          <span class="artwork-card__quick-add-text">{{ 'artwork.quick_add' | t }}</span>
+        </button>
+      {%- else -%}
+        <a
+          class="artwork-card__quick-add"
+          href="{{ product.url }}"
+          data-quick-add-options
+          aria-label="{{ 'artwork.quick_add_options_label' | t: title: product.title | escape }}"
+        >
+          <span class="artwork-card__quick-add-icon" aria-hidden="true">
+            {%- render 'icon', name: 'shopping-bag-plus', size: 18 -%}
+          </span>
+          <span class="artwork-card__quick-add-text">{{ 'artwork.quick_add' | t }}</span>
+        </a>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
 
   <a class="artwork-card__link" href="{{ product.url }}">
     <div class="artwork-card__caption">
@@ -100,6 +142,7 @@
       {%- endif -%}
     </div>
   </a>
+  <p class="visually-hidden" aria-live="polite" data-quick-add-live></p>
 </div>
 
 {% stylesheet %}
@@ -109,6 +152,132 @@
     flex-direction: column;
     min-width: 0;
     color: var(--color-text);
+  }
+
+  .artwork-card__media {
+    position: relative;
+    min-width: 0;
+  }
+
+  .artwork-card__quick-add {
+    position: absolute;
+    inset-block-end: 12px;
+    inset-inline-end: 12px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgb(248 248 246 / 0.96);
+    color: var(--color-ink);
+    box-shadow: 0 1px 2px rgb(13 20 26 / 0.08), 0 10px 24px -16px rgb(13 20 26 / 0.35);
+    text-decoration: none;
+    cursor: pointer;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(4px);
+    pointer-events: none;
+    transition:
+      width var(--duration-base) var(--ease-pour),
+      padding var(--duration-base) var(--ease-pour),
+      gap var(--duration-base) var(--ease-pour),
+      opacity var(--duration-fast) var(--ease-pour),
+      transform var(--duration-fast) var(--ease-pour),
+      background-color var(--duration-fast) var(--ease-pour),
+      color var(--duration-fast) var(--ease-pour);
+  }
+
+  .artwork-card__quick-add-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+  }
+
+  .artwork-card__quick-add-text {
+    flex: none;
+    max-width: 0;
+    margin: 0;
+    overflow: hidden;
+    font-family: var(--font-display);
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0;
+    transition:
+      max-width var(--duration-base) var(--ease-pour),
+      opacity var(--duration-fast) var(--ease-pour),
+      padding var(--duration-base) var(--ease-pour);
+  }
+
+  .artwork-card:hover .artwork-card__quick-add,
+  .artwork-card:focus-within .artwork-card__quick-add,
+  .artwork-card__quick-add:focus-visible {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .artwork-card__quick-add:hover,
+  .artwork-card__quick-add:focus-visible,
+  .artwork-card__quick-add.is-expanded {
+    width: auto;
+    padding-inline-end: 14px;
+    gap: 0;
+  }
+
+  .artwork-card__quick-add:hover .artwork-card__quick-add-text,
+  .artwork-card__quick-add:focus-visible .artwork-card__quick-add-text,
+  .artwork-card__quick-add.is-expanded .artwork-card__quick-add-text {
+    max-width: 4.5rem;
+    padding-inline-end: 2px;
+    opacity: 1;
+  }
+
+  .artwork-card__quick-add:hover,
+  .artwork-card__quick-add:focus-visible {
+    background: var(--color-gesso);
+    color: var(--color-teal);
+  }
+
+  .artwork-card__quick-add:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .artwork-card__quick-add.is-busy,
+  .artwork-card__quick-add.is-added {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .artwork-card__quick-add.is-added {
+    color: var(--color-available);
+  }
+
+  @media (hover: none) {
+    .artwork-card__quick-add {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .artwork-card__quick-add,
+    .artwork-card__quick-add-text {
+      transition: none;
+    }
   }
 
   .artwork-card__link {
@@ -121,7 +290,7 @@
     color: inherit;
   }
 
-  /* Stretches the link over the whole card, plate included. */
+  /* Stretches the link over the whole card, plate included. Quick Add sits above (z-index 2). */
   .artwork-card__link::before {
     content: '';
     position: absolute;
@@ -239,6 +408,10 @@
     .artwork-card--swipe .artwork-card__link:focus-visible {
       outline: 2px solid var(--color-focus);
       outline-offset: 3px;
+    }
+
+    .artwork-card--swipe .artwork-card__quick-add {
+      inset-block-end: 18px;
     }
   }
 

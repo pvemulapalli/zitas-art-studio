@@ -1,9 +1,83 @@
-/* Header: Originals mega menu (hover or click) and the compact-header menu overlay. */
+/* Header: Originals mega menu (hover or click), compact-header menu overlay, and scroll-aware sticky bar. */
 (() => {
   const desktopHeader = window.matchMedia('(min-width: 1000px)');
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const OPEN_DELAY = 80;
   const CLOSE_DELAY = 120;
+  const SCROLL_DELTA = 8;
+  const TOP_REVEAL = 24;
+
+  const initStickyHeader = () => {
+    const header = document.querySelector('.site-header');
+    if (!header) return;
+
+    // Stick the Shopify section shell — sticky on `.site-header` fails because the
+    // section parent is only header-tall and becomes the sticky containing block.
+    const shell = header.closest('.shopify-section') || header;
+    if (shell.dataset.stickyBound === 'true') return;
+    shell.dataset.stickyBound = 'true';
+
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    const isNavLocked = () => {
+      if (header.matches(':focus-within')) return true;
+      if (header.querySelector('.mobile-menu > details[open]')) return true;
+      if (header.querySelector('zita-mega-menu details[open]')) return true;
+      return false;
+    };
+
+    const syncLockClass = () => {
+      shell.classList.toggle('is-nav-locked', isNavLocked());
+      syncPageHeaderState();
+    };
+
+    // Lets other sticky chrome (e.g. PLP filter toolbar) sit below the header when it is shown,
+    // and reclaim the top edge only while the header is scroll-hidden.
+    const syncPageHeaderState = () => {
+      const hidden =
+        shell.classList.contains('is-scroll-hidden') &&
+        !shell.classList.contains('is-nav-locked') &&
+        !header.matches(':focus-within');
+      document.documentElement.classList.toggle('is-header-hidden', hidden);
+    };
+
+    const update = () => {
+      ticking = false;
+      const y = Math.max(0, window.scrollY);
+      const delta = y - lastY;
+      syncLockClass();
+
+      if (reduceMotion.matches || y <= TOP_REVEAL || isNavLocked()) {
+        shell.classList.remove('is-scroll-hidden');
+        syncPageHeaderState();
+        lastY = y;
+        return;
+      }
+
+      if (Math.abs(delta) < SCROLL_DELTA) return;
+
+      shell.classList.toggle('is-scroll-hidden', delta > 0);
+      syncPageHeaderState();
+      lastY = y;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    // Some browsers coalesce programmatic scrolls; scrollend keeps direction state honest.
+    window.addEventListener('scrollend', update, { passive: true });
+    header.addEventListener('toggle', syncLockClass, true);
+    header.addEventListener('focusin', syncLockClass);
+    header.addEventListener('focusout', () => window.setTimeout(syncLockClass, 0));
+    syncLockClass();
+    syncPageHeaderState();
+  };
 
   class ZitaMegaMenu extends HTMLElement {
     connectedCallback() {
@@ -210,4 +284,18 @@
 
   if (!customElements.get('zita-mega-menu')) customElements.define('zita-mega-menu', ZitaMegaMenu);
   if (!customElements.get('zita-mobile-menu')) customElements.define('zita-mobile-menu', ZitaMobileMenu);
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initStickyHeader, { once: true });
+  } else {
+    initStickyHeader();
+  }
+
+  // Theme Editor section reloads replace the shell; allow a fresh bind.
+  document.addEventListener('shopify:section:load', (event) => {
+    if (!event.target?.querySelector?.('.site-header')) return;
+    const shell = event.target.closest?.('.shopify-section') || event.target;
+    if (shell?.dataset) delete shell.dataset.stickyBound;
+    initStickyHeader();
+  });
 })();
