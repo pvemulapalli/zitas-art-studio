@@ -582,7 +582,6 @@ html:has(.pdp-viewer[open]) {
 
 .pdp-purchase-error {
   margin: 4px 0 0;
-  max-width: 36ch;
   font-size: 15px;
   line-height: 1.45;
   color: var(--color-sold);
