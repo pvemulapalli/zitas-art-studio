@@ -1,10 +1,12 @@
 # Zita's Art Studio — Project Status
 
-**Last updated:** 1 November 2026 (Curated nav approved: mega-menu Featured/Explore More; footer Explore Art / The Studio).
+**Last updated:** 1 November 2026 (Footer CONTACT column removed; legal bar Contact Me → Contact page; launch checklist quick wins verified on `#192367558949`).
 
 This is the **only** canonical record of project progress, current work, next steps and environment state. Other documents link here rather than tracking status themselves.
 
 Launch task detail and priorities: [`docs/launch-readiness-checklist.md`](launch-readiness-checklist.md).
+Phase 4 evidence: [`docs/qa/final-development-qa.md`](qa/final-development-qa.md).
+Policy implementation: [`docs/qa/policy-page-implementation.md`](qa/policy-page-implementation.md).
 
 ---
 
@@ -12,11 +14,11 @@ Launch task detail and priorities: [`docs/launch-readiness-checklist.md`](launch
 
 | Item | State |
 |---|---|
-| **Current** | Development catalog **browseable**; curated Originals mega-menu + footer visually approved. |
-| **Just finished** | Finalize curated collection navigation (Featured Series / Explore More; footer Explore Art / The Studio). |
-| **Prior catalog** | Stage 2B–3B: 30 Active/published artworks; seven series + Originals; menus wired on `#192367558949`. |
-| **Next** | Broader storefront/commerce QA; Portfolio series pickers; Bundles L-PDP-17 deploy if still pending; content/SEO launch path. |
-| **Provisional effort** | **~15–30 hours** focused work remaining to launch — estimate only; excludes redesigns, unexpected migration issues, and waits on owner decisions. |
+| **Current** | Phase 4 QA **partial**: policy/footer Claude Design live; footer simplified (no CONTACT column); Contact Me points to `/pages/contact`. |
+| **Just finished** | Footer CONTACT column removed; `footer-legal` Contact Information → **Contact Me** (`/pages/contact`); Other Policies hides Contact Information policy; checklist quick wins verified (favicon, 404, password, sticky header). |
+| **Prior** | Native `/policies/*` editorial layout + footer legal bar; sticky header / PDP bar / Quick Add / favicon + Admin policies; Stage 2B–3B catalog. |
+| **Next** | Owner policy content + visual sign-off; CAPTCHA/contact submit verify; `water-ii` inventory; production cutover path. |
+| **Provisional effort** | **~12–25 hours** focused work remaining to launch — estimate only; excludes redesigns, unexpected migration issues, and waits on owner decisions. |
 
 ---
 
@@ -36,17 +38,17 @@ Recovery detail: [architecture/v2-recovery-audit-2026-10-23.md](architecture/v2-
 ## Launch critical path
 
 1. Project documentation refresh — **done**.
-2. Fix Shopify Bundles inventory / availability error messaging — **implemented in theme**; **dev-store verification + deploy still pending**.
-3. Prepare and execute **Stage 2B** controlled development trial import (`buddha-the-awakened-one`, `dissolution`, `clouds`, `turquoise-waters` as **Draft**; do not overwrite PoC/QA/`artwork-bundle`).
-4. Validate imported products, images, pricing, inventory, and PDP behavior on development.
-5. Extract and migrate relevant production **collections** (membership not in product CSVs).
-6. Complete approved **Active** product migration (30 products / 84 images in current exports) with preserved availability.
-7. Essential content, commerce, mobile, accessibility, and SEO QA (incl. favicon + MerchantSignals).
+2. Fix Shopify Bundles inventory / availability error messaging — **implemented + deployed** on `#192367558949`; **live storefront verification still pending** (password + Draft `artwork-bundle`).
+3. Stage 2B controlled development trial import — **done**.
+4. Validate imported products, images, pricing, inventory on development — **Admin PASS**; **storefront PDP/cart still pending** password session.
+5. Extract and migrate relevant production **collections** — **done on development** (Stage 3B).
+6. Complete approved **Active** product migration on development (30 / published) — **done**; **production cutover not started**.
+7. Essential content, commerce, mobile, accessibility, and SEO QA (incl. favicon + MerchantSignals) — **in progress** (Phase 4 partial).
 8. Ranjeeta’s final approval.
 9. Deploy to production with verified backup / rollback.
 10. Production smoke testing.
 
-Parallel where safe: content approvals (About portrait, Portfolio art/copy, Contact placeholders, policies), Shop Pay decision, series editorial copy — do not block starting Stage 2B after the Bundles messaging fix unless a dependency appears.
+Parallel where safe: content approvals (About portrait, Portfolio art/copy, Contact placeholders, policies), Shop Pay decision, series editorial copy, collection featured images, `water-ii` inventory decision.
 
 ---
 
@@ -56,9 +58,9 @@ Distinguish **implemented** (code exists) from **tested**, **owner-approved**, a
 
 | Surface | Implemented | Tested (dev) | Owner-approved | Launch-ready |
 |---|---|---|---|---|
-| Homepage + shell (header/footer/announcement) | Yes | Partial / regression open | Design generally approved (teal homepage) | **No** — content/SEO/nav QA |
-| Originals / series PLP | Yes | Admin membership verified; HTML smoke password-gated | Design accepted direction | **No** — owner visual QA + editorial polish |
-| Original artwork PDP | Yes | Strong on PoC + QA fixtures | **Not** final PDP approval | **No** |
+| Homepage + shell (header/footer/announcement) | Yes | Admin menus PASS; HTML **BLOCKED** (password) | Design generally approved (teal homepage) | **No** — content/SEO/visual QA |
+| Originals / series PLP | Yes | Admin membership **Verified** (30 + series counts); HTML smoke **BLOCKED** | Design accepted direction | **No** — owner visual QA + editorial polish |
+| Original artwork PDP | Yes | Strong on PoC + QA fixtures; migrated Admin data PASS; live HTML **BLOCKED** | **Not** final PDP approval | **No** |
 | Default product template | Yes (V2 artwork layout) | Partial | — | **No** |
 | Cart (`/cart`) | Yes | Owner functional preview; broader regression open | Preview passed (not full regression) | **No** |
 | About | Yes (published M2) | Local + hosted; portrait still missing | Biography / portrait **not** signed off | **No** |
@@ -66,8 +68,8 @@ Distinguish **implemented** (code exists) from **tested**, **owner-approved**, a
 | Contact | Yes | Prefill verified; full CAPTCHA POST **Requires verification** | Layout approved; commission placeholders remain | **No** |
 | Portfolio | Yes | Hosted visual QA open | Copy / real art **not** approved | **No** |
 | 404 | Yes (published M2) | Local verified | — | Near-ready pending full-site QA |
-| Policies (V2) | **No** | — | Decisions pending | **No** |
-| Favicon | **No** | — | Asset decision pending | **No** |
+| Policies (V2) | Admin bodies **Yes**; Claude Design layout **implemented** on `#192367558949` (native URLs; TOC; Other policies; footer legal bar) | Browser **Verified** (authenticated); Contact Information has no TOC (&lt;3 headings) | Owner content + final visual sign-off **open** | **No** |
+| Favicon | Yes (Z monogram assets + Theme setting + meta-tags on `#192367558949`) | Asset deploy **Verified**; browser tab **BLOCKED** (password) | Monogram acceptable pending owner visual OK | **No** — password QA + optional Theme Editor pin |
 
 ---
 
@@ -80,12 +82,13 @@ Distinguish **implemented** (code exists) from **tested**, **owner-approved**, a
 | Price / availability sync on variant change | Implemented; verified on fixtures |
 | Add to Cart | Implemented; verified on fixtures / available bundles |
 | Cart line display | Implemented; bundle `item_components` on cart **Verified** (dev) |
-| Shopify Bundles (dev) | **Installed**; available parent ATC verified; **L-PDP-17 messaging Implemented** in theme (confirmed vs ambiguous conflict copy; no false Sold from 422) — **Requires verification** on live `artwork-bundle` |
+| Shopify Bundles (dev) | **Installed**; available parent ATC verified earlier; **L-PDP-17 on live theme** (parity with `335d890`) — **Requires verification** on Draft `artwork-bundle` behind password |
 | Shopify Bundles (production) | **Not installed** |
 | Artwork inquiry → Contact | Implemented + prefill verified (`c11f7e1`) |
 | Contact form submit / CAPTCHA | **Requires verification** |
-| Mobile sticky ATC | Implemented; full mobile QA open |
-| Checkout | **Not** end-to-end verified for launch |
+| Mobile sticky ATC | Implemented; desktop/tablet floating bar added (IO); full responsive QA open |
+| Collection Quick Add | Implemented on artwork cards (single-variant direct add) |
+| Checkout | **Not** end-to-end verified; Phase 4 storefront cart/checkout **BLOCKED** |
 
 ---
 
@@ -145,7 +148,7 @@ Ranjeeta: migrate only production products marked **Active**.
 | Originals membership | **30** migrated artworks (QA/bundle excluded; owner-confirmed) |
 | Series collections | Walking the Trail 5 · Colored by Nature 5 · Sand and Cloud 6 · Reverence 4 · Elements 6 · Good Things Come in Pair 6 · New Works 2 |
 | Navigation | `main-menu`: Featured Series (first 3) + Explore More (rest); All Originals → Originals collection |
-| Footer | `footer-art` (Explore Art) + `footer-studio` (The Studio) on theme `#192367558949` |
+| Footer | `footer-art` (Explore Art) + `footer-studio` (The Studio) only in main columns (no CONTACT details column); `footer-legal` bottom bar: Shipping · Returns · Privacy · Terms · **Contact Me** → `/pages/contact` |
 | Results | `stage-3b-implementation-results.md` |
 | Production | **Untouched** |
 
@@ -186,7 +189,7 @@ Still authoritative for V2 completion (supersedes earlier “on hold” where no
 | Contact email | **`info@zitasartstudio.com`** customer-facing |
 | Policies | Owner decisions before publish |
 | Product data | Active-only first migration; no catalog writes until authorized |
-| Deferred | Cart drawer, currency selector, predictive search overlay, optional PLP quick-add |
+| Deferred | Cart drawer, currency selector, predictive search overlay |
 
 ---
 
@@ -211,9 +214,9 @@ Plain-language migration checklist: `data/catalog-migration/reports/stage-2a/ran
 
 ## Remaining before launch (summary)
 
-**P0 themes:** Bundles messaging fix · Stage 2B trial · Active catalog + inventory preserve · collections · commerce/checkout QA · critical content (About portrait, Portfolio art/copy, Contact placeholders, policies) · favicon · MerchantSignals / critical SEO · a11y/responsive on purchase paths · production backup/rollback · owner approvals.
+**P0 themes:** Password-session storefront/commerce QA · `water-ii` inventory decision · L-PDP-17 live verify · production catalog/collections/metafields cutover · checkout/payments smoke · critical content (About portrait, Portfolio art/copy, Contact placeholders, policies) · favicon · MerchantSignals / critical SEO · a11y/responsive on purchase paths · production backup/rollback · owner approvals.
 
-**P1 polish:** Sticky desktop/tablet header (**L-UX-01**) · floating desktop/tablet PDP purchase bar (**L-UX-02**) · Shop Pay decision/impl · noncritical SEO/alts · series blurbs · performance samples · owner-editability QA.
+**P1 polish:** Sticky header + floating PDP bar + Quick Add **implemented** — manual QA/sign-off open (`docs/qa/ux-refinements.md`) · Shop Pay decision/impl · noncritical SEO/alts · series blurbs · performance samples · owner-editability QA.
 
 **P2 post-launch:** Future bundle merchandising expansions · extra editorial/animation · expanded SEO monitoring · archive legacy products after confidence window.
 
@@ -224,7 +227,7 @@ Full prioritized list: [`launch-readiness-checklist.md`](launch-readiness-checkl
 ## Explicitly deferred until after launch
 
 - Cart drawer (C2), predictive search overlay (C4), country/currency selector (C5)
-- PLP quick-add / image browsing
+- PLP image browsing (Quick Add shipped as V2 polish)
 - Extra layout variants beyond approved Claude designs
 - Automatic conversion of paired listings into Shopify Bundles
 - Inactive (draft/archived/unlisted) product migration
@@ -233,6 +236,19 @@ Full prioritized list: [`launch-readiness-checklist.md`](launch-readiness-checkl
 ---
 
 ## Milestone history (keep for evidence)
+
+### Policy Page + Footer Legal Navigation — Claude Design Handoff Received (1 Nov 2026)
+
+| Item | Status |
+|---|---|
+| **Handoff directory** | `references/claude-design/handoff/policies/` |
+| **Primary spec** | `Policy Pages Implementation Handoff.md` (+ package `README.md`) |
+| **Design references** | `reference/source/Policy Page.dc.html`, `Zita Footer.dc.html` (+ shell/runtime/`zita-v2.css`/`_ds`) |
+| **Screenshots** | `references/claude-design/screenshots/v2/policy-*.jpg` (**8** files: desktop ×2, mobile ×4, footer desktop/mobile) |
+| **Shopify constraints** | Native policy URLs only; Shopify-managed policy HTML; no duplicate Pages / no `templates/policy.json`; detect `request.page_type == 'policy'`; CSS adapt `.shopify-policy__*`; minimal JS for “On this page”; footer legal bar (no Legal column): Shipping · Returns · Privacy · Terms · Contact information |
+| **Prototype exclusions** | Orange specimen notice must not ship; duplicate “On this page” in stitched shots is a capture artefact — render one nav per breakpoint |
+| **Visual approval** | Operator confirmed design screenshot; live theme browser QA **Pass** (owner final sign-off still open) |
+| **Cursor implementation** | **Done** on `#192367558949` — see [`docs/qa/policy-page-implementation.md`](qa/policy-page-implementation.md) |
 
 ### M3 Exhibitions (23 Oct 2026)
 

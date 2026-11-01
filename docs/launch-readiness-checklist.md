@@ -1,7 +1,7 @@
 # Zita V2 — Launch Readiness Checklist
 
 **Created:** 31 October 2026
-**Updated:** 1 November 2026 (tracked P1 UX polish: sticky desktop/tablet header L-UX-01; floating PDP purchase bar L-UX-02; Stage 2B not authorized)
+**Updated:** 1 November 2026 (footer CONTACT column removed; Contact Me legal link; favicon/404/password/sticky-header checklist verification)
 **Authority:** Pre-launch work tracking. Environment and milestone truth: [`docs/project-status.md`](project-status.md).
 **Evidence basis:** Git `main` / `origin/main`, architecture docs, owner decisions, Partner-dev QA through 1 November 2026, M6 offline catalog reports.
 **Production store:** Untouched (Phase B). Partner-dev proof ≠ production cutover.
@@ -153,8 +153,8 @@ Related P1 UX (not blockers): sticky header **L-UX-01** and desktop/tablet float
 
 | Task ID | Priority | Task | Owner | Status | Dependencies | Verification / acceptance |
 |---|---|---|---|---|---|---|
-| L-BR-01 | P0 | Deliver `favicon.ico` + supporting icons (incl. apple-touch as needed) | Ranjeeta / designer | **Not started** | Asset decision | Files approved for production brand |
-| L-BR-02 | P0 | Wire favicon in theme / Theme settings | Praveen | **Not started** | L-BR-01 | No favicon assets or layout references found in theme audit (31 Oct) |
+| L-BR-01 | P0 | Deliver `favicon.ico` + supporting icons (incl. apple-touch as needed) | Ranjeeta / designer | **Implemented** (Z monogram PNG/SVG on `#192367558949`); owner brand approval still open | Asset decision | Files approved for production brand |
+| L-BR-02 | P0 | Wire favicon in theme / Theme settings | Praveen | **Implemented** + **Verified** (dev HTML: `favicon-32.png`, `favicon-180.png`, `favicon.png` via `meta-tags`) | L-BR-01 | Theme setting + asset fallback; browser tab icon still subject to owner visual OK |
 | L-BR-03 | P1 | Confirm logo / wordmark assets on header across breakpoints | Praveen | **Requires verification** | — | Visual QA on published theme |
 
 ---
@@ -169,7 +169,7 @@ Related P1 UX (not blockers): sticky header **L-UX-01** and desktop/tablet float
 | L-SEO-04 | P0 | Production handle inventory + redirect plan (legacy → V2) | Praveen | **Not started** | Production export; Active handle list | No soft-404s; critical URLs 301 as planned |
 | L-SEO-05 | P1 | Sitemap / Search Console / robots at cutover | Praveen | **Not started** | Password removed only at launch | Production sitemap healthy (legacy audit saw `/sitemap.xml` **500** — **reverify**) |
 | L-SEO-06 | P1 | Image alt + filename hygiene on migrated media | Ranjeeta + Praveen | **Not started** | L-CAT-03 | Artwork alts descriptive; blank alt ≠ missing image; purchasing-critical a11y remains P0 via L-A11Y-01 |
-| L-SEO-07 | P2 | Dev store remains password-protected until launch | Praveen | **Requires verification** | — | Must stay non-indexable pre-launch |
+| L-SEO-07 | P2 | Dev store remains password-protected until launch | Praveen | **Verified** (1 Nov 2026) | — | Preview bar still labels store password-protected; public HTML remains gated |
 
 ---
 
@@ -195,7 +195,8 @@ Related P1 UX (not blockers): sticky header **L-UX-01** and desktop/tablet float
 | L-CNT-03 | P0 | Portfolio temporary artwork replacement | Ranjeeta + Praveen | **Not started** | L-PF-02 | Same gate as Portfolio section |
 | L-CNT-04 | P0 | Portfolio copy approval | Ranjeeta | **Not started** | L-PF-03 | — |
 | L-CNT-05 | P1 | Exhibitions missing imagery / optional links | Ranjeeta | **Requires verification** | Theme Editor | Devi / Indulgence / Adiyogi slots (status doc); hosted visual QA |
-| L-CNT-06 | P0 | Policies: refunds, shipping, commissions, privacy, terms | Ranjeeta | **Not started** | Owner decisions | Drafts reviewed; V2 policy templates published only after approval |
+| L-CNT-06 | P0 | Policies: refunds, shipping, commissions, privacy, terms | Ranjeeta | **Partial** — Claude Design layout **implemented**; footer Contact Information demoted to Contact Me → `/pages/contact`; native Contact Information policy **kept** in Admin (Terms/Privacy/checkout refs); owner content + visual sign-off open | Owner decisions + visual approval | Drafts reviewed; native `/policies/*` styled per handoff; no duplicate policy Pages; published only after approval |
+| L-CNT-06a | P1 | Footer contact disclosure / Contact page path | Praveen | **Verified** (1 Nov 2026) | L-CNT-06; Contact page | Main nav + The Studio + Contact Me → `/pages/contact`; page shows email, phone, form; oversized footer CONTACT column removed |
 | L-CNT-07 | P1 | Series descriptions (Colored by Nature, BlackWhiteandGrey, Walking the Trail, …) | Ranjeeta | **Not started** | Collections | Shown on PLP editorial where designed |
 | L-CNT-08 | P1 | Public email `info@zitasartstudio.com` saved in Theme settings | Praveen | **Implemented** (schema default); **Requires verification** (saved remote) | Theme Editor; avoid pushing `settings_data.json` blindly | Footer + Contact + mailto Ask use production email |
 | L-CNT-09 | P1 | Footer email / newsletter field verification | Praveen | **Requires verification** | Customer accounts / Shopify Email / form destination | Submit test; confirm merchant receipt or list behavior |
@@ -228,8 +229,8 @@ Related P1 UX (not blockers): sticky header **L-UX-01** and desktop/tablet float
 
 | Task ID | Priority | Task | Owner | Status | Dependencies | Verification / acceptance |
 |---|---|---|---|---|---|---|
-| L-UX-01 | P1 | Sticky desktop/tablet header for persistent nav + cart while scrolling | Praveen | **Not started** | Approved V2 header/nav; mobile menu behavior | Compact sticky state OK; avoid excessive viewport obstruction; preserve dropdowns, mobile behavior, keyboard access, anchor positioning; respect `prefers-reduced-motion`; verify desktop + tablet breakpoints — **not a launch blocker** |
-| L-UX-02 | P1 | Desktop/tablet floating PDP purchase bar after primary buy controls leave the viewport | Praveen | **Not started** | Existing PDP purchase logic (`zita-product.js` / purchase snippets); L-PDP-17 messaging; mobile sticky bar already exists — preserve it | Compact bar: artwork thumbnail, title, selected price, purchase action; sync selected variant + inventory; Add to Cart / View Cart; sold-out + bundle-error states; reuse existing purchase logic; no footer/content overlap; a11y + responsive; art-first V2 language — **not a launch blocker** |
+| L-UX-01 | P1 | Sticky desktop/tablet header for persistent nav + cart while scrolling | Praveen | **Implemented** + **Verified** (dev: `.shopify-section.section-header` `position: sticky`, 1 Nov 2026) | Approved V2 header/nav; mobile menu behavior | Compact sticky state OK; avoid excessive viewport obstruction; preserve dropdowns, mobile behavior, keyboard access, anchor positioning; respect `prefers-reduced-motion`; verify desktop + tablet breakpoints — **not a launch blocker** |
+| L-UX-02 | P1 | Desktop/tablet floating PDP purchase bar after primary buy controls leave the viewport | Praveen | **Implemented** on `#192367558949`; **Requires verification** (owner visual) | Existing PDP purchase logic (`zita-product.js` / purchase snippets); L-PDP-17 messaging; mobile sticky bar already exists — preserve it | Compact bar: artwork thumbnail, title, selected price, purchase action; sync selected variant + inventory; Add to Cart / View Cart; sold-out + bundle-error states; reuse existing purchase logic; no footer/content overlap; a11y + responsive; art-first V2 language — **not a launch blocker** |
 
 ---
 
@@ -264,12 +265,12 @@ Related P1 UX (not blockers): sticky header **L-UX-01** and desktop/tablet float
 
 | Review item | Primary IDs | Status snapshot |
 |---|---|---|
-| Favicon.ico + supporting icons | L-BR-01, L-BR-02 | **Not started** (P0) |
+| Favicon.ico + supporting icons | L-BR-01, L-BR-02 | **Implemented** on `#192367558949`; HTML **Verified**; owner brand OK open |
 | MerchantSignals SEO audit | L-SEO-01 | **Not started** (P0) |
 | Bundles inventory messaging | L-PDP-17 | **Implemented** on `#192367558949`; live QA / wrap polish landed (`67cd095`, `96f9e2e`) — confirm closed after owner sign-off |
 | Bundles ATC 422 path | L-PDP-14 | **Verified** (dev) — distinct from L-PDP-17 |
-| Sticky desktop/tablet header | L-UX-01 | **Not started** (P1 polish) |
-| Floating desktop/tablet PDP purchase bar | L-UX-02 | **Not started** (P1 polish) |
+| Sticky desktop/tablet header | L-UX-01 | **Implemented** + **Verified** (dev sticky shell) |
+| Floating desktop/tablet PDP purchase bar | L-UX-02 | **Implemented**; owner visual **Requires verification** |
 | Active catalog prep | L-CAT-08, L-CAT-09 | **Complete** (offline) |
 | Trial + full Active migration | L-CAT-10–12, L-CAT-01–05 | **Not started** / pending decisions |
 | Collection extraction | L-COL-05, L-COL-01–02 | **Not started** |
@@ -304,12 +305,12 @@ Related P1 UX (not blockers): sticky header **L-UX-01** and desktop/tablet float
 | Default product | `832d509` | V2 artwork layout — QA on non-original types open |
 | Cart | `3ecb3d2`, copy `3d31d13`, `item_components` | Implemented; bundle components display **Verified** on dev; broader regression **Requires verification** |
 | About | `6837063`, mobile fixes | Implemented; content **Blocked** / approval open |
-| 404 | `bed8e62` | Implemented |
+| 404 | `bed8e62` | Implemented; HTTP **404** + “This room is empty” **Verified** (1 Nov 2026) |
 | Exhibitions | `9697dba` | Implemented; content/assets gaps |
-| Contact | `cc109f4` … `57a71d4` | Implemented; placeholders + CAPTCHA open |
+| Contact | `cc109f4` … `57a71d4` | Implemented; email/phone/form **Verified**; placeholders + CAPTCHA open |
 | Portfolio | `6153066`, `326258d` | Implemented; temporary art + copy approval open |
-| Policies | — | **Not started** |
-| Favicon | — | **Not started** |
+| Policies | Claude Design on `#192367558949` | Layout **Implemented** + browser **Verified**; owner content open; Contact Information demoted from custom nav |
+| Favicon | Monogram assets + `meta-tags` | **Implemented** + HTML **Verified**; owner brand OK open |
 
 ---
 
