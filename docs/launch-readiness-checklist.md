@@ -1,26 +1,67 @@
 # Zita V2 — Launch Readiness Checklist
 
 **Created:** 31 October 2026
-**Updated:** 1 November 2026 (Bundles ATC fix + artwork inquiry Contact deep-link)
-**Authority:** Pre-launch work tracking only. Progress and environment state remain canonical in [`docs/project-status.md`](project-status.md) (that file was **not** updated by this document).
-**Evidence basis:** Git `main`, architecture docs, owner decisions in project status, and live Partner-dev QA notes through 1 November 2026.
-**Production store:** Untouched (Phase B). Do not treat Partner-dev proof as production cutover.
+**Updated:** 1 November 2026 (project status refresh; M6 Stage 1 + 2A recorded; Bundles messaging remains open; Stage 2B not authorized)
+**Authority:** Pre-launch work tracking. Environment and milestone truth: [`docs/project-status.md`](project-status.md).
+**Evidence basis:** Git `main` / `origin/main`, architecture docs, owner decisions, Partner-dev QA through 1 November 2026, M6 offline catalog reports.
+**Production store:** Untouched (Phase B). Partner-dev proof ≠ production cutover.
+
+---
+
+## Launch critical path
+
+```text
+1. Documentation refresh                          [DONE — 1 Nov 2026]
+2. Fix Bundles inventory/availability messaging  [P0 — next theme task]
+3. M6 Stage 2B Draft trial import (dev only)     [Not authorized]
+4. Validate trial products / images / inventory  [After 2B]
+5. Extract + migrate production collections      [P0 — data gap]
+6. Complete Active catalog migration (30 / 84)   [After trial + decisions]
+7. Essential content, commerce, mobile, a11y, SEO QA
+8. Ranjeeta final approval
+9. Production deploy with backup + rollback
+10. Production smoke test
+```
+
+**Can run in parallel (non-blocking for starting Step 2–3):** About portrait upload, Portfolio art/copy, Contact placeholders, policy drafts, favicon asset, Shop Pay decision, series editorial copy — still required before launch where marked P0 below.
+
+Ordinary variant UX is implemented on dev fixtures. **Remaining Bundles PDP messaging** and **Active catalog migration** are the near-term gates. Production Bundles **app install** is required only if launch sells Bundles parents; paired works may ship as single SKUs pending owner decision (**clarify** — see L-PDP-09).
+
+---
+
+## Open work by priority (1 Nov 2026)
+
+Counts = rows that are **not** fully closed (excludes pure **Implemented + Verified** / **Approved** completion). Items that are Implemented but still **Requires verification**, **Not started**, **Blocked**, or **Needs clarification** are counted as open.
+
+| Priority | Open (approx.) | Role |
+|---|---:|---|
+| **P0** | **42** | Launch blockers / must-complete before public launch |
+| **P1** | **24** | Launch polish — complete if possible; not every row blocks cutover |
+| **P2** | **4** | Post-launch / near-term backlog |
+
+Recount from tables below when statuses change. Do not treat “open” as “unstarted” — many P0 rows are **Requires verification**.
+
+### Top launch blockers (now)
+
+1. **Bundles inventory / availability messaging** still unclear when a component is already in cart or unavailable (L-PDP-17) — next theme fix.
+2. **Active catalog + inventory migration** with preserved availability (L-CAT-08–12, L-COM-06) — Stage 2B not started.
+3. **Collection extraction + membership** (L-COL-01–02) — not in product CSVs.
+4. **Owner identity / inventory decisions** (duplicates, zero-stock Actives, `water-ii`, paired model).
+5. **Production cutover safety** — backup, unpublished theme parity, rollback, checkout smoke, Ranjeeta go/no-go (L-DEP-*, L-COM-02, L-CNT-10).
 
 ---
 
 ## Project status summary (1 Nov 2026)
 
-V2 core storefront pages are largely **implemented** on Partner development (`zitas-art-studio-development.myshopify.com`, published theme `#192367558949`) and on `origin/main`: Homepage, header/footer, PLP, original PDP, cart, About, 404, Exhibitions, Contact, Portfolio.
+V2 core storefront pages are **implemented** on Partner development (`zitas-art-studio-development.myshopify.com`, theme `#192367558949`) and on `origin/main`: Homepage, header/footer, PLP, original PDP, default product layout, cart, About, 404, Exhibitions, Contact, Portfolio.
 
-**PDP commerce:** Description under price and variant selection (`3ae754a`) remain **implemented**. Manual QA has confirmed Size/Finish selectors and variant Add to Cart on published QA fixtures. Shopify Bundles is **installed on the development store** with test product `artwork-bundle`; parent `/cart/add.js` works for available combinations. A theme defect mishandled Bundles inventory **422** responses (wrong “in bag” messaging / stale variant section HTML); corrected so sold-out/conflict states disable ATC and announce Shopify’s description. Cart Liquid now surfaces `item.item_components` when present.
+**PDP commerce:** Description under price + variants (`3ae754a`) **Implemented** / fixture-**Verified**. Shopify Bundles **installed on development** (`artwork-bundle`). Parent ATC for available combinations works. Commit `c11f7e1` fixed a **422** path that dropped `?variant=` and falsely announced “already in bag.” **A separate Bundles inventory/availability messaging defect remains open** (unclear PDP messaging when a component is already in the cart or unavailable) — **do not treat L-PDP-14 as closing that gap.**
 
-**Inquiry CTA:** PDP “Ask Ranjeeta About This Artwork” now deep-links to Contact with `type=artwork`, title, URL, and optional variant — **implemented**; native form submit/CAPTCHA confirmation still **Requires verification** on a full POST.
+**Inquiry CTA:** Deep-link to Contact **Implemented** + prefill **Verified**; full form POST/CAPTCHA **Requires verification**.
 
-**Still open:** Production Bundles install, fuller bundle checkout QA, diptych listing model, Shop Pay decision, Ranjeeta PDP approval, catalog migration, favicon, MerchantSignals, content approvals, production cutover.
+**Catalog (M6):** Stage 1 audit **complete** (56 products / 67 variants; offline). Stage 2A **complete** — **30 Active** products, **84** images, inventory reconciled offline; **no imports**. Stage 2B trial **not authorized**.
 
-**Not launch-ready:** Catalog and collection migration to production, metafield mapping on the merchant store, inventory/diptych model decision, favicon, MerchantSignals SEO audit, content approvals (About portrait/biography, Portfolio temporary art and copy, Contact commission placeholders), full commerce/checkout QA, policies, production backup/rollback, and final owner approval.
-
-**Note:** `docs/project-status.md` last stamped **23 Oct 2026** still lists Contact/Portfolio/PDP polish as unfinished; Git and theme evidence supersede those rows for **implementation** status. Prefer this checklist for remaining launch tasks until project-status is deliberately refreshed.
+**Not launch-ready:** Production catalog/collections, production metafields, inventory identity decisions, Bundles messaging fix, favicon, MerchantSignals, content approvals, checkout QA, policies, backup/rollback, final owner approval.
 
 ### Status vocabulary
 
@@ -32,32 +73,9 @@ V2 core storefront pages are largely **implemented** on Partner development (`zi
 | **Blocked** | Waiting on access, decision, content, or dependency |
 | **Not started** | No meaningful work yet |
 | **Requires verification** | Claimed or partial; must be re-checked before treating as done |
+| **Needs clarification** | Severity or launch-blocking status uncertain — do not silently downgrade |
 
-Priorities: **P0** launch-blocking · **P1** should complete before public launch · **P2** important polish / near-term post-cutover.
-
----
-
-## Critical path
-
-```text
-Catalog migration (products + metafields + inventory)
-        ↓
-Collection migration + nav / URL plan
-        ↓
-PDP + cart verification on real catalog (incl. multi-variant & diptych rules)
-        ↓
-Content completion (About, Portfolio art/copy, Contact media, policies, email)
-        ↓
-SEO (MerchantSignals audit + structured data + redirects)
-        ↓
-Final QA (a11y, responsive, performance, checkout, CAPTCHA, links)
-        ↓
-Production backup → deploy → rollback drill → post-launch verification
-        ↓
-Ranjeeta final approval → Launch
-```
-
-Ordinary variant UX no longer blocks starting catalog prep, but **shared-inventory / diptych decision** and **published multi-variant QA** remain launch gates for originals that sell as related units.
+Priorities: **P0** launch-blocking · **P1** launch polish · **P2** post-launch backlog.
 
 ---
 
@@ -73,14 +91,15 @@ Ordinary variant UX no longer blocks starting catalog prep, but **shared-invento
 | L-PDP-06 | P0 | URL `?variant=` updates on change | Praveen | **Implemented** + **Verified** (dev) | L-PDP-02 | Observed on Essence temporary variants |
 | L-PDP-07 | P0 | Two-option variant matrix + unavailable combination testing | Praveen | **Verified** (dev, Size/Finish QA product + manual QA) | Published QA fixtures | Size × Finish selectors and ATC confirmed; missing-combo edge cases still **Requires verification** if any matrix holes remain |
 | L-PDP-08 | P0 | Published multi-variant product QA on Online Store channel | Praveen | **Verified** (dev fixtures live) | — | Handles `v2-variant-qa-size-finish`, `v2-variant-qa-diptych` storefront-reachable; keep as **dev-only** fixtures (see § QA fixtures) |
-| L-PDP-09 | P0 | Shared inventory / diptych commerce model (Bundles vs variants vs workflow) | Praveen + Ranjeeta | **Implemented** (dev Bundles) + **Requires verification** (production / checkout) | Owner listing decision; production Bundles install | Dev: Bundles app + `artwork-bundle` ATC for available combos **Verified**; component conflict/sold-out messaging **Verified** after theme fix; production install **Not started**; checkout handoff **Requires verification** |
-| L-PDP-14 | P0 | Bundle PDP Add to Cart reliability (theme + Shopify response handling) | Praveen | **Implemented** + **Verified** (dev) | Shopify Bundles parent variants | Root cause: 422 sold-out/conflict path dropped `?variant=` and announced “already in bag”. Fix keeps variant, marks unavailable, announces Shopify description |
+| L-PDP-09 | P0 | Shared inventory / diptych commerce model (Bundles vs variants vs workflow) | Praveen + Ranjeeta | **Needs clarification** + partial | Owner listing decision; may defer production Bundles install if pairs stay single-SKU at launch | Dev Bundles app + `artwork-bundle` available ATC **Verified**; owner model for Active paired listings **Pending**; production Bundles install **Not started** (P1/P2 if launch without Bundles parents — **clarify**) |
+| L-PDP-14 | P0 | Bundle PDP Add to Cart reliability (422 / wrong “in bag” path) | Praveen | **Implemented** + **Verified** (dev) | Shopify Bundles parent variants; `c11f7e1` | 422 sold-out/conflict keeps `?variant=`, marks unavailable, announces Shopify description — **does not close L-PDP-17** |
+| L-PDP-17 | P0 | Bundles inventory / availability **error messaging** when a component is already in cart or unavailable | Praveen | **Not started** | L-PDP-14; `artwork-bundle` | PDP must show clear unavailable/conflict messaging — **next theme task after docs** |
 | L-PDP-15 | P1 | Artwork inquiry CTA → Contact deep-link with title/URL/variant | Praveen | **Implemented** + **Verified** (prefills on Contact) | Contact page | Label “Ask Ranjeeta About This Artwork”; query `type`, `title`, `url`, `variant`; no customer PII in query |
 | L-PDP-16 | P1 | Contact form submit + CAPTCHA + success with artwork prefill | Praveen | **Requires verification** | L-PDP-15; CAPTCHA | Prefill + type selection verified; full native POST/success not re-run in this pass |
 | L-PDP-10 | P1 | Accelerated checkout / Shop Pay on original PDP | Praveen | **Not started** | Payments enabled on store; design placement | `payment_button` absent on `zita-product-artwork`; only skeleton `product.liquid` has it — **decision required** |
-| L-PDP-11 | P0 | Final PDP visual + commerce approval | Ranjeeta | **Not started** | L-PDP-01–06 verified; ideally L-PDP-07–08 | Written approval of description placement, selectors, sold state, mobile |
+| L-PDP-11 | P0 | Final PDP visual + commerce approval | Ranjeeta | **Not started** | L-PDP-01–06 verified; ideally L-PDP-07–08; L-PDP-17 if Bundles used at launch | Written approval of description placement, selectors, sold state, mobile |
 | L-PDP-12 | P1 | Variant featured-media gallery sync | Praveen | **Implemented**; **Requires verification** | Variant featured media on real products | Code path exists; PoC fixtures lacked distinct media — retest on catalog |
-| L-PDP-13 | P2 | Hide Year / Framing; Medium / Surface / Size / COA trim per owner | Praveen + Ranjeeta | **Requires verification** | Metafield display rules; Surface render gap | Confirm PDP facts match Oct 2026 owner decisions on live products |
+| L-PDP-13 | P1 | Hide Year / Framing; Medium / Surface / Size / COA trim per owner | Praveen + Ranjeeta | **Requires verification** | Metafield display rules; Surface render gap | Confirm PDP facts match Oct 2026 owner decisions on live products — was P2; raised to P1 (owner PDP decisions) |
 
 ---
 
@@ -88,13 +107,19 @@ Ordinary variant UX no longer blocks starting catalog prep, but **shared-invento
 
 | Task ID | Priority | Task | Owner | Status | Dependencies | Verification / acceptance |
 |---|---|---|---|---|---|---|
-| L-CAT-01 | P0 | Complete artwork catalog workbook from production export | Ranjeeta + Praveen | **Not started** | [`product-cleanup-import-spec.md`](architecture/product-cleanup-import-spec.md) | One row per sellable SKU; handles preserved where required |
-| L-CAT-02 | P0 | Product metafield mapping (width/height, story, certificate, ready_to_hang, etc.) | Praveen | **Implemented** (defs on **dev** only) | Phase B metafield provisioning on production | Definitions match [`metafield-definitions.md`](architecture/metafield-definitions.md); values filled per product |
-| L-CAT-03 | P0 | Migrate / create V2 products as Draft on production | Praveen + Ranjeeta | **Not started** | L-CAT-01; unpublished V2 theme on merchant store | Draft products use `original` (or agreed) template; media attached |
-| L-CAT-04 | P0 | Inventory and variant validation (qty, track, deny policy, prices) | Praveen + Ranjeeta | **Requires verification** | L-CAT-03; L-PDP-09 for pairs | One-of-ones typically qty 1 + deny; multi-SKU matrices complete |
-| L-CAT-05 | P0 | Map legacy description → short buy-box description + `artwork_story` | Ranjeeta | **Not started** | L-PDP-01 | No empty buy-box where story exists; no harmful duplication without approval |
-| L-CAT-06 | P1 | SEO title / meta description / image alt per product | Ranjeeta + agency | **Not started** | L-CAT-03 | Unique titles/descriptions; descriptive alt |
+| L-CAT-08 | P0 | M6 Stage 1 catalog audit (production + development exports) | Praveen | **Verified** (offline complete) | Source CSVs; reports under `data/catalog-migration/reports/` | 56 products / 67 variants audited; no Shopify writes |
+| L-CAT-09 | P0 | M6 Stage 2A Active-only migration preparation | Praveen | **Verified** (offline complete) | Ranjeeta Active-only decision; Stage 1 | 30 Active / 26 excluded / 84 images; stage-2a reports; no Shopify writes |
+| L-CAT-10 | P0 | M6 Stage 2B controlled Draft trial import on **development** | Praveen | **Not started** | L-PDP-17 preferred first; trial plan; owner OK | Import `buddha-the-awakened-one`, `dissolution`, `clouds`, `turquoise-waters` as Draft; no overwrite of PoC/QA/`artwork-bundle` |
+| L-CAT-11 | P0 | Validate trial import (media, price, Available/On hand, PDP sold/available) | Praveen | **Not started** | L-CAT-10 | Counts match Stage 2A; Available never auto-reset to 1 |
+| L-CAT-01 | P0 | Complete artwork catalog workbook from production Active export | Ranjeeta + Praveen | **Not started** (spec + Stage 2A scope exist) | [`product-cleanup-import-spec.md`](architecture/product-cleanup-import-spec.md); Stage 2A CSVs | One row per sellable Active SKU; handles preserved |
+| L-CAT-02 | P0 | Product metafield mapping (width/height, story, certificate, ready_to_hang, etc.) | Praveen | **Implemented** (defs on **dev** only) | Phase B metafield provisioning on production | Definitions match [`metafield-definitions.md`](architecture/metafield-definitions.md); values filled per product — **do not invent dimensions from titles** |
+| L-CAT-12 | P0 | Resolve Active identity / inventory owner decisions before full import | Ranjeeta + Praveen | **Blocked** / pending | Stage 2A `ranjeeta-decisions.md` | `copy` handles, Essence/CBN-Blue, zero-Available Actives, `water-ii`, paired model |
+| L-CAT-03 | P0 | Migrate / create V2 Active products (Draft first) on agreed store | Praveen + Ranjeeta | **Not started** | L-CAT-01; L-CAT-10–11; L-CAT-12 | Draft products use `original` (or agreed) template; media via source URLs; PoC/QA untouched |
+| L-CAT-04 | P0 | Inventory and variant validation (preserve production Available; track; deny policy; prices) | Praveen + Ranjeeta | **Requires verification** | L-CAT-03; L-PDP-09 for pairs | **Never** auto-set originals to qty 1; match export Available/On hand; flag `orangedelight` On hand≠Available |
+| L-CAT-05 | P0 | Map legacy description → short buy-box description + `artwork_story` | Ranjeeta | **Not started** | L-PDP-01 | No empty buy-box where story exists; **do not auto-copy** Body into story |
+| L-CAT-06 | P1 | SEO title / meta description / image alt per product | Ranjeeta + agency | **Not started** | L-CAT-03 | Unique titles/descriptions; descriptive alt (Active export SEO currently blank) |
 | L-CAT-07 | P1 | Activate V2 products only at controlled cutover | Praveen | **Not started** | Final QA; redirects | No premature Active+indexed duplicates vs legacy |
+| L-CAT-13 | P2 | Migrate inactive (draft/archived/unlisted) products | Praveen + Ranjeeta | **Not started** | Post Active cutover | Explicitly **out of** initial Active scope |
 
 ---
 
@@ -102,8 +127,9 @@ Ordinary variant UX no longer blocks starting catalog prep, but **shared-invento
 
 | Task ID | Priority | Task | Owner | Status | Dependencies | Verification / acceptance |
 |---|---|---|---|---|---|---|
-| L-COL-01 | P0 | Define production series / Originals collections and handles | Ranjeeta + Praveen | **Not started** | Catalog plan | Matches nav mega-menu and Portfolio “Explore the series” URLs |
-| L-COL-02 | P0 | Migrate collection membership + editorial metafields | Praveen | **Not started** | L-CAT-03; PLP templates | Filters/sort work; editorial band populated where designed |
+| L-COL-05 | P0 | Read-only extract production collection metadata + membership | Praveen | **Not started** | Stage 2A `collection-data-extraction-plan.md` | Handles, type, rules, membership, sort, images, SEO — **no tag inference** |
+| L-COL-01 | P0 | Define production series / Originals collections and handles | Ranjeeta + Praveen | **Not started** | L-COL-05 | Matches nav mega-menu and Portfolio “Explore the series” URLs |
+| L-COL-02 | P0 | Migrate collection membership + editorial metafields | Praveen | **Not started** | L-CAT-03; PLP templates; defs on target store | Filters/sort work; editorial band populated where designed |
 | L-COL-03 | P1 | Replace Portfolio temporary series destinations with real collections | Praveen | **Not started** | L-COL-01 | Portfolio room links resolve to live series (today: fallbacks noted in `page.portfolio.json`) |
 | L-COL-04 | P1 | Collection SEO titles/descriptions | Ranjeeta + agency | **Not started** | L-COL-02 | No thin duplicate series pages |
 
@@ -113,7 +139,7 @@ Ordinary variant UX no longer blocks starting catalog prep, but **shared-invento
 
 | Task ID | Priority | Task | Owner | Status | Dependencies | Verification / acceptance |
 |---|---|---|---|---|---|---|
-| L-PF-01 | P0 | Portfolio page theme implementation | Praveen | **Implemented** | `6153066`, `326258d` | `page.portfolio.json` + room sections on `main` |
+| L-PF-01 | P0 | Portfolio page theme implementation | Praveen | **Implemented** + **Verified** (theme on main/dev) | `6153066`, `326258d` | `page.portfolio.json` + room sections on `main` — content replacement remains L-PF-02 |
 | L-PF-02 | P0 | Replace temporary theme artwork assets with real products/media | Ranjeeta + Praveen | **Not started** | Catalog products or approved Files | No `fallback_asset` / placeholder figures in published Portfolio |
 | L-PF-03 | P0 | Portfolio copy approval (room identities, series text, closing) | Ranjeeta | **Not started** | L-PF-01 | Written approval; Theme Editor editable without code |
 | L-PF-04 | P1 | Owner-editability QA (add/reorder rooms, 1–2 images, Explore links) | Praveen + Ranjeeta | **Requires verification** | Theme Editor access | Merchant can edit without developer; document limits |
@@ -138,9 +164,9 @@ Ordinary variant UX no longer blocks starting catalog prep, but **shared-invento
 | L-SEO-01 | P0 | MerchantSignals SEO audit (full storefront pass) | Agency / Praveen | **Not started** | Indexable storefront or staging plan; password rules | Written findings + remediations closed or accepted |
 | L-SEO-02 | P0 | Product structured data verification (`product \| structured_data`) | Praveen | **Implemented**; **Requires verification** | Live PDP HTML | Rich Results / MerchantSignals confirm Product JSON-LD; variants OK |
 | L-SEO-03 | P0 | Titles, meta descriptions, canonicals per key template | Praveen + agency | **Requires verification** | [`v2-seo-foundation.md`](architecture/v2-seo-foundation.md) | Homepage, PDP, collections, About, Exhibitions, Portfolio, Contact, policies, 404 |
-| L-SEO-04 | P0 | Production handle inventory + redirect plan (legacy → V2) | Praveen | **Not started** | Production export | No soft-404s; critical URLs 301 as planned |
+| L-SEO-04 | P0 | Production handle inventory + redirect plan (legacy → V2) | Praveen | **Not started** | Production export; Active handle list | No soft-404s; critical URLs 301 as planned |
 | L-SEO-05 | P1 | Sitemap / Search Console / robots at cutover | Praveen | **Not started** | Password removed only at launch | Production sitemap healthy (legacy audit saw `/sitemap.xml` **500** — **reverify**) |
-| L-SEO-06 | P1 | Image alt + filename hygiene on migrated media | Ranjeeta + Praveen | **Not started** | L-CAT-03 | Artwork alts descriptive; no generic “image1” |
+| L-SEO-06 | P1 | Image alt + filename hygiene on migrated media | Ranjeeta + Praveen | **Not started** | L-CAT-03 | Artwork alts descriptive; blank alt ≠ missing image; purchasing-critical a11y remains P0 via L-A11Y-01 |
 | L-SEO-07 | P2 | Dev store remains password-protected until launch | Praveen | **Requires verification** | — | Must stay non-indexable pre-launch |
 
 ---
@@ -154,7 +180,7 @@ Ordinary variant UX no longer blocks starting catalog prep, but **shared-invento
 | L-COM-03 | P0 | Shipping rates, tax settings, payment providers review | Ranjeeta | **Requires verification** | Shopify Admin | Documented settings match owner policy decisions |
 | L-COM-04 | P1 | Shop Pay / accelerated checkout decision + implementation if yes | Praveen + Ranjeeta | **Not started** | L-PDP-10; eligibility | Either present where eligible **or** explicit deferral recorded |
 | L-COM-05 | P1 | Cart / PDP copy consistency (“Add to cart” / “View cart”) | Praveen | **Implemented**; **Requires verification** | `3d31d13` locale pass | Spot-check header, sticky bar, cart page, empty states |
-| L-COM-06 | P0 | Sold / available inventory edge cases on migrated catalog | Praveen | **Not started** | L-CAT-04 | Cannot oversell originals; sold PDP messaging correct |
+| L-COM-06 | P0 | Sold / available inventory edge cases on migrated catalog | Praveen | **Not started** | L-CAT-04; L-CAT-11 | Cannot oversell originals; sold PDP messaging correct; preserve Available=0 Actives |
 
 ---
 
@@ -179,7 +205,7 @@ Ordinary variant UX no longer blocks starting catalog prep, but **shared-invento
 
 | Task ID | Priority | Task | Owner | Status | Dependencies | Verification / acceptance |
 |---|---|---|---|---|---|---|
-| L-A11Y-01 | P0 | Keyboard / focus / landmarks on primary templates | Praveen | **Requires verification** | — | Skip link, menus, PDP gallery/viewer, cart, forms |
+| L-A11Y-01 | P0 | Keyboard / focus / landmarks on primary templates (incl. purchase controls) | Praveen | **Requires verification** | — | Skip link, menus, PDP gallery/viewer, cart, forms — **purchasing a11y is P0** (unlike decorative alt polish) |
 | L-A11Y-02 | P0 | Responsive QA: mobile, tablet, desktop for all V2 pages | Praveen | **Requires verification** | Published theme | About mobile grids fixed (`6cf8bee` / `3d31d13`); full-site pass still needed |
 | L-A11Y-03 | P1 | Contrast on night / dark Exhibition and About surfaces | Praveen | **Requires verification** | `8b1b127` Night fix | Spot-check remaining dark sections |
 | L-A11Y-04 | P1 | Contact form labels, errors, success (incl. CAPTCHA path) | Praveen | **Implemented**; **Requires verification** | L-FRM-01 | Thank-you via Shopify flash (`57a71d4`) — retest with CAPTCHA |
@@ -204,7 +230,7 @@ Ordinary variant UX no longer blocks starting catalog prep, but **shared-invento
 | L-DEP-02 | P0 | Unpublished V2 theme on merchant store; parity with Git | Praveen | **Not started** | Collaborator access | File diff Git ↔ remote; no accidental `settings_data` overwrite |
 | L-DEP-03 | P0 | Documented rollback: republish Flora (or backup) within agreed RTO | Praveen | **Not started** | L-DEP-01 | Drill once on non-peak window |
 | L-DEP-04 | P0 | Cutover runbook (DNS/password, menus, redirects, password off, monitoring) | Praveen | **Not started** | L-SEO-04; Admin checklist | Single document owners can follow |
-| L-DEP-05 | P1 | Metafield definitions provisioned on production | Praveen | **Not started** | [`metafield-definitions.md`](architecture/metafield-definitions.md) | Match proven Admin order from Partner store |
+| L-DEP-05 | P0 | Metafield definitions provisioned on production | Praveen | **Not started** | [`metafield-definitions.md`](architecture/metafield-definitions.md) | Match proven Admin order from Partner store |
 | L-DEP-06 | P0 | Navigation: About, Exhibitions, Contact, Portfolio; remove News; series submenu | Ranjeeta + Praveen | **Requires verification** | Menus API historically denied — often manual | No broken primary links; owner series submenu correct |
 
 ---
@@ -219,24 +245,27 @@ Ordinary variant UX no longer blocks starting catalog prep, but **shared-invento
 | L-POST-04 | P1 | Search Console / analytics / Merchant Center wiring | Agency + Praveen | **Not started** | Indexable site | Property verified; sitemap submitted |
 | L-POST-05 | P1 | Archive legacy products only after confidence window | Ranjeeta + Praveen | **Not started** | Stable V2 | Per implementation plan §24 H — archive first, delete later |
 | L-POST-06 | P1 | Monitor sold/inventory incidents first week | Ranjeeta + Praveen | **Not started** | L-PDP-09 | No double-sold panels |
+| L-POST-07 | P2 | Expand Bundles / paired merchandising beyond launch single-SKU pairs | Ranjeeta + Praveen | **Not started** | Owner model; production Bundles if needed | Post-launch enhancement — do not block Active single-SKU launch without justification |
 
 ---
 
-## Cross-cutting outstanding items (Oct 31 review)
-
-These were called out explicitly in the 31 October 2026 project review and are mapped above:
+## Cross-cutting outstanding items
 
 | Review item | Primary IDs | Status snapshot |
 |---|---|---|
-| Favicon.ico + supporting icons | L-BR-01, L-BR-02 | **Not started** |
-| MerchantSignals SEO audit | L-SEO-01 | **Not started** |
-| Product + collection migration | L-CAT-*, L-COL-* | **Not started** (workbook/spec only) |
+| Favicon.ico + supporting icons | L-BR-01, L-BR-02 | **Not started** (P0) |
+| MerchantSignals SEO audit | L-SEO-01 | **Not started** (P0) |
+| Bundles inventory messaging | L-PDP-17 | **Not started** (P0) — next theme task |
+| Bundles ATC 422 path | L-PDP-14 | **Verified** (dev) — distinct from L-PDP-17 |
+| Active catalog prep | L-CAT-08, L-CAT-09 | **Complete** (offline) |
+| Trial + full Active migration | L-CAT-10–12, L-CAT-01–05 | **Not started** / pending decisions |
+| Collection extraction | L-COL-05, L-COL-01–02 | **Not started** |
 | Product metafield mapping | L-CAT-02, L-DEP-05 | Dev defs **Implemented**; production **Not started** |
-| Inventory and variant validation | L-CAT-04, L-COM-06, L-PDP-07–09, L-PDP-14 | Dev Size/Finish + Bundles conflict messaging verified; production catalog still open |
-| Portfolio temporary artwork replacement | L-PF-02, L-CNT-03 | **Not started** |
+| Inventory validation | L-CAT-04, L-COM-06 | Preserve production Available; Stage 2A flags ready |
+| Portfolio temporary artwork | L-PF-02, L-CNT-03 | **Not started** |
 | Portfolio copy approval | L-PF-03, L-CNT-04 | **Not started** |
-| Contact placeholder replacement | L-CNT-02 | **Not started** (SVG placeholders in theme) |
-| Shopify CAPTCHA reliability | L-FRM-01 (below), L-A11Y-04, L-POST-03 | **Requires verification** |
+| Contact placeholder replacement | L-CNT-02 | **Not started** |
+| Shopify CAPTCHA reliability | L-FRM-01, L-A11Y-04, L-POST-03 | **Requires verification** |
 | Footer email verification | L-CNT-08, L-CNT-09 | Schema default done; saved settings + submit **Requires verification** |
 | Navigation and broken links | L-DEP-06, L-COL-03 | **Requires verification** |
 | Product structured data | L-SEO-02 | Liquid present; live audit **Requires verification** |
@@ -258,7 +287,8 @@ These were called out explicitly in the 31 October 2026 project review and are m
 |---|---|---|
 | Homepage / shell | `3b1bf0f`, `dcee031` | Implemented — full visual/SEO QA still open |
 | PLP | `d00ba52` | Implemented — collection migration pending |
-| Original PDP | `f713471` … `3ae754a` + Bundles/inquiry follow-up | Description, Size/Finish, Bundles ATC + inquiry deep-link **Verified** on dev; Shop Pay / owner approval open |
+| Original PDP | `f713471` … `3ae754a` + `c11f7e1` | Description/variants/inquiry **Verified** on dev; **L-PDP-17 Bundles messaging open**; Shop Pay / owner approval open |
+| Default product | `832d509` | V2 artwork layout — QA on non-original types open |
 | Cart | `3ecb3d2`, copy `3d31d13`, `item_components` | Implemented; bundle components display **Verified** on dev; broader regression **Requires verification** |
 | About | `6837063`, mobile fixes | Implemented; content **Blocked** / approval open |
 | 404 | `bed8e62` | Implemented |
@@ -276,7 +306,8 @@ These were called out explicitly in the 31 October 2026 project review and are m
 |---|---|---|---|
 | `v2-variant-qa-size-finish` | V2 Variant QA — Size Finish | Two-option Size/Finish + price matrix | After commerce QA sign-off |
 | `v2-variant-qa-diptych` | V2 Variant QA — Diptych Sample | One-option multi-variant / sold-out sibling | After commerce QA sign-off |
-| `artwork-bundle` | Artwork Bundle | Shopify Bundles parent (includes Size Finish + Essence components) | After Bundles ATC/checkout QA; unpublish or delete **after** dependent cart tests |
+| `artwork-bundle` | Artwork Bundle | Shopify Bundles parent (includes Size Finish + Essence components) | After Bundles messaging + checkout QA; unpublish or delete **after** dependent cart tests |
+| `essence-v2` / `colored-by-nature-blue-v2` | V2 PoC artworks | Schema / sold-state proof | Do not overwrite during Active import |
 
 **Proposed cleanup order (after commerce QA complete):**
 
@@ -295,8 +326,9 @@ Do **not** delete these fixtures during active Bundles/variant QA.
 
 1. Do not mark a row **Verified** without an environment test note (date + store + what was exercised).
 2. Do not mark **Approved** without Ranjeeta (or named delegate) confirmation.
-3. Update statuses here as launch work proceeds; refresh [`project-status.md`](project-status.md) in a separate, deliberate edit when environment truth changes.
+3. Update statuses here as launch work proceeds; keep [`project-status.md`](project-status.md) aligned when environment truth changes.
 4. Keep production untouched until Phase B runbook tasks are complete.
+5. Do not silently delete open rows; reclassify with justification.
 
 ---
 
@@ -308,4 +340,5 @@ Do **not** delete these fixtures during active Bundles/variant QA.
 - [`docs/architecture/product-cleanup-import-spec.md`](architecture/product-cleanup-import-spec.md) — catalog workbook
 - [`docs/architecture/v2-seo-foundation.md`](architecture/v2-seo-foundation.md) — SEO baseline
 - [`docs/architecture/v2-recovery-audit-2026-10-23.md`](architecture/v2-recovery-audit-2026-10-23.md) — recovery findings
-- PDP commerce commit: `3ae754a`
+- Local M6 reports (gitignored): `data/catalog-migration/reports/`, `…/stage-2a/`
+- PDP commerce: `3ae754a` · Bundles ATC / inquiry: `c11f7e1`
