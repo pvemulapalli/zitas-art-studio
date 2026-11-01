@@ -1,17 +1,22 @@
 # Zita V2 — Launch Readiness Checklist
 
-**Created:** 31 October 2026  
-**Authority:** Pre-launch work tracking only. Progress and environment state remain canonical in [`docs/project-status.md`](project-status.md) (that file was **not** updated by this document).  
-**Evidence basis:** Git `main` through `3ae754a`, architecture docs, owner decisions in project status, and live Partner-dev QA notes from October 2026.  
+**Created:** 31 October 2026
+**Updated:** 1 November 2026 (Bundles ATC fix + artwork inquiry Contact deep-link)
+**Authority:** Pre-launch work tracking only. Progress and environment state remain canonical in [`docs/project-status.md`](project-status.md) (that file was **not** updated by this document).
+**Evidence basis:** Git `main`, architecture docs, owner decisions in project status, and live Partner-dev QA notes through 1 November 2026.
 **Production store:** Untouched (Phase B). Do not treat Partner-dev proof as production cutover.
 
 ---
 
-## Project status summary (31 Oct 2026)
+## Project status summary (1 Nov 2026)
 
 V2 core storefront pages are largely **implemented** on Partner development (`zitas-art-studio-development.myshopify.com`, published theme `#192367558949`) and on `origin/main`: Homepage, header/footer, PLP, original PDP, cart, About, 404, Exhibitions, Contact, Portfolio.
 
-**PDP commerce (commit `3ae754a`):** Description under price, native multi-option selectors, price/availability/`?variant=` sync, and selected-variant Add to Cart → cart line identity are **implemented and tested** on the development storefront (temporary multi-variant fixture on Essence, then restored). Two-option / unavailable-combination / published QA products, shared diptych inventory, Shop Pay, and Ranjeeta PDP approval remain **open**.
+**PDP commerce:** Description under price and variant selection (`3ae754a`) remain **implemented**. Manual QA has confirmed Size/Finish selectors and variant Add to Cart on published QA fixtures. Shopify Bundles is **installed on the development store** with test product `artwork-bundle`; parent `/cart/add.js` works for available combinations. A theme defect mishandled Bundles inventory **422** responses (wrong “in bag” messaging / stale variant section HTML); corrected so sold-out/conflict states disable ATC and announce Shopify’s description. Cart Liquid now surfaces `item.item_components` when present.
+
+**Inquiry CTA:** PDP “Ask Ranjeeta About This Artwork” now deep-links to Contact with `type=artwork`, title, URL, and optional variant — **implemented**; native form submit/CAPTCHA confirmation still **Requires verification** on a full POST.
+
+**Still open:** Production Bundles install, fuller bundle checkout QA, diptych listing model, Shop Pay decision, Ranjeeta PDP approval, catalog migration, favicon, MerchantSignals, content approvals, production cutover.
 
 **Not launch-ready:** Catalog and collection migration to production, metafield mapping on the merchant store, inventory/diptych model decision, favicon, MerchantSignals SEO audit, content approvals (About portrait/biography, Portfolio temporary art and copy, Contact commission placeholders), full commerce/checkout QA, policies, production backup/rollback, and final owner approval.
 
@@ -66,9 +71,12 @@ Ordinary variant UX no longer blocks starting catalog prep, but **shared-invento
 | L-PDP-04 | P0 | Availability / sold messaging + disabled ATC on unavailable variant | Praveen | **Implemented** + **Verified** (dev) | L-PDP-02 | Sold status, unavailable note, ATC disabled on sold Diptych |
 | L-PDP-05 | P0 | Selected variant ID submitted; cart line shows correct variant | Praveen | **Implemented** + **Verified** (dev) | L-PDP-02; cart page | ATC of Single panel → cart line `Essence V2 - Single panel` |
 | L-PDP-06 | P0 | URL `?variant=` updates on change | Praveen | **Implemented** + **Verified** (dev) | L-PDP-02 | Observed on Essence temporary variants |
-| L-PDP-07 | P0 | Two-option variant matrix + unavailable combination testing | Praveen | **Not started** (storefront) | Published multi-variant product | Size × Finish (or equivalent): missing combo blocked; price/ATC correct — **do not claim from code inspection** |
-| L-PDP-08 | P0 | Published multi-variant product QA on Online Store channel | Praveen / Admin | **Blocked** | Online Store publish scope; QA products currently 404 | `v2-variant-qa-diptych` / `v2-variant-qa-size-finish` ACTIVE in Admin but unpublished to storefront |
-| L-PDP-09 | P0 | Shared inventory / diptych commerce model (Bundles vs variants vs workflow) | Praveen + Ranjeeta | **Not started** | Owner listing decision; Bundles eligibility | Documented prototype + decision; no double-sell of physical panels |
+| L-PDP-07 | P0 | Two-option variant matrix + unavailable combination testing | Praveen | **Verified** (dev, Size/Finish QA product + manual QA) | Published QA fixtures | Size × Finish selectors and ATC confirmed; missing-combo edge cases still **Requires verification** if any matrix holes remain |
+| L-PDP-08 | P0 | Published multi-variant product QA on Online Store channel | Praveen | **Verified** (dev fixtures live) | — | Handles `v2-variant-qa-size-finish`, `v2-variant-qa-diptych` storefront-reachable; keep as **dev-only** fixtures (see § QA fixtures) |
+| L-PDP-09 | P0 | Shared inventory / diptych commerce model (Bundles vs variants vs workflow) | Praveen + Ranjeeta | **Implemented** (dev Bundles) + **Requires verification** (production / checkout) | Owner listing decision; production Bundles install | Dev: Bundles app + `artwork-bundle` ATC for available combos **Verified**; component conflict/sold-out messaging **Verified** after theme fix; production install **Not started**; checkout handoff **Requires verification** |
+| L-PDP-14 | P0 | Bundle PDP Add to Cart reliability (theme + Shopify response handling) | Praveen | **Implemented** + **Verified** (dev) | Shopify Bundles parent variants | Root cause: 422 sold-out/conflict path dropped `?variant=` and announced “already in bag”. Fix keeps variant, marks unavailable, announces Shopify description |
+| L-PDP-15 | P1 | Artwork inquiry CTA → Contact deep-link with title/URL/variant | Praveen | **Implemented** + **Verified** (prefills on Contact) | Contact page | Label “Ask Ranjeeta About This Artwork”; query `type`, `title`, `url`, `variant`; no customer PII in query |
+| L-PDP-16 | P1 | Contact form submit + CAPTCHA + success with artwork prefill | Praveen | **Requires verification** | L-PDP-15; CAPTCHA | Prefill + type selection verified; full native POST/success not re-run in this pass |
 | L-PDP-10 | P1 | Accelerated checkout / Shop Pay on original PDP | Praveen | **Not started** | Payments enabled on store; design placement | `payment_button` absent on `zita-product-artwork`; only skeleton `product.liquid` has it — **decision required** |
 | L-PDP-11 | P0 | Final PDP visual + commerce approval | Ranjeeta | **Not started** | L-PDP-01–06 verified; ideally L-PDP-07–08 | Written approval of description placement, selectors, sold state, mobile |
 | L-PDP-12 | P1 | Variant featured-media gallery sync | Praveen | **Implemented**; **Requires verification** | Variant featured media on real products | Code path exists; PoC fixtures lacked distinct media — retest on catalog |
@@ -224,7 +232,7 @@ These were called out explicitly in the 31 October 2026 project review and are m
 | MerchantSignals SEO audit | L-SEO-01 | **Not started** |
 | Product + collection migration | L-CAT-*, L-COL-* | **Not started** (workbook/spec only) |
 | Product metafield mapping | L-CAT-02, L-DEP-05 | Dev defs **Implemented**; production **Not started** |
-| Inventory and variant validation | L-CAT-04, L-COM-06, L-PDP-07–09 | Partial PoC only |
+| Inventory and variant validation | L-CAT-04, L-COM-06, L-PDP-07–09, L-PDP-14 | Dev Size/Finish + Bundles conflict messaging verified; production catalog still open |
 | Portfolio temporary artwork replacement | L-PF-02, L-CNT-03 | **Not started** |
 | Portfolio copy approval | L-PF-03, L-CNT-04 | **Not started** |
 | Contact placeholder replacement | L-CNT-02 | **Not started** (SVG placeholders in theme) |
@@ -250,8 +258,8 @@ These were called out explicitly in the 31 October 2026 project review and are m
 |---|---|---|
 | Homepage / shell | `3b1bf0f`, `dcee031` | Implemented — full visual/SEO QA still open |
 | PLP | `d00ba52` | Implemented — collection migration pending |
-| Original PDP | `f713471` … `3ae754a` | Description + basic variants **Verified** on dev; deeper commerce open |
-| Cart | `3ecb3d2`, copy `3d31d13` | Implemented; regression **Requires verification** |
+| Original PDP | `f713471` … `3ae754a` + Bundles/inquiry follow-up | Description, Size/Finish, Bundles ATC + inquiry deep-link **Verified** on dev; Shop Pay / owner approval open |
+| Cart | `3ecb3d2`, copy `3d31d13`, `item_components` | Implemented; bundle components display **Verified** on dev; broader regression **Requires verification** |
 | About | `6837063`, mobile fixes | Implemented; content **Blocked** / approval open |
 | 404 | `bed8e62` | Implemented |
 | Exhibitions | `9697dba` | Implemented; content/assets gaps |
@@ -262,21 +270,42 @@ These were called out explicitly in the 31 October 2026 project review and are m
 
 ---
 
+## Development-only QA fixtures (do not migrate)
+
+| Handle | Title | Purpose | Cleanup |
+|---|---|---|---|
+| `v2-variant-qa-size-finish` | V2 Variant QA — Size Finish | Two-option Size/Finish + price matrix | After commerce QA sign-off |
+| `v2-variant-qa-diptych` | V2 Variant QA — Diptych Sample | One-option multi-variant / sold-out sibling | After commerce QA sign-off |
+| `artwork-bundle` | Artwork Bundle | Shopify Bundles parent (includes Size Finish + Essence components) | After Bundles ATC/checkout QA; unpublish or delete **after** dependent cart tests |
+
+**Proposed cleanup order (after commerce QA complete):**
+
+1. Empty carts / abandon checkouts that reference these fixtures.
+2. Unpublish `artwork-bundle` from Online Store (or delete) so component inventory is no longer reserved by the parent.
+3. Unpublish or delete `v2-variant-qa-diptych`.
+4. Unpublish or delete `v2-variant-qa-size-finish`.
+5. Confirm Essence V2 and Colored by Nature-Blue V2 inventory/options restored to launch-intent state.
+6. **Do not** include these handles in catalog migration workbooks or production imports.
+
+Do **not** delete these fixtures during active Bundles/variant QA.
+
+---
+
 ## How to use this document
 
-1. Do not mark a row **Verified** without an environment test note (date + store + what was exercised).  
-2. Do not mark **Approved** without Ranjeeta (or named delegate) confirmation.  
-3. Update statuses here as launch work proceeds; refresh [`project-status.md`](project-status.md) in a separate, deliberate edit when environment truth changes.  
+1. Do not mark a row **Verified** without an environment test note (date + store + what was exercised).
+2. Do not mark **Approved** without Ranjeeta (or named delegate) confirmation.
+3. Update statuses here as launch work proceeds; refresh [`project-status.md`](project-status.md) in a separate, deliberate edit when environment truth changes.
 4. Keep production untouched until Phase B runbook tasks are complete.
 
 ---
 
 ## Related documents
 
-- [`docs/project-status.md`](project-status.md) — canonical environment / milestone status  
-- [`docs/architecture/shopify-implementation-plan.md`](architecture/shopify-implementation-plan.md) — Phase A–H cutover  
-- [`docs/architecture/phase-d-implementation-plan.md`](architecture/phase-d-implementation-plan.md) — commerce packages C1–C5  
-- [`docs/architecture/product-cleanup-import-spec.md`](architecture/product-cleanup-import-spec.md) — catalog workbook  
-- [`docs/architecture/v2-seo-foundation.md`](architecture/v2-seo-foundation.md) — SEO baseline  
-- [`docs/architecture/v2-recovery-audit-2026-10-23.md`](architecture/v2-recovery-audit-2026-10-23.md) — recovery findings  
+- [`docs/project-status.md`](project-status.md) — canonical environment / milestone status
+- [`docs/architecture/shopify-implementation-plan.md`](architecture/shopify-implementation-plan.md) — Phase A–H cutover
+- [`docs/architecture/phase-d-implementation-plan.md`](architecture/phase-d-implementation-plan.md) — commerce packages C1–C5
+- [`docs/architecture/product-cleanup-import-spec.md`](architecture/product-cleanup-import-spec.md) — catalog workbook
+- [`docs/architecture/v2-seo-foundation.md`](architecture/v2-seo-foundation.md) — SEO baseline
+- [`docs/architecture/v2-recovery-audit-2026-10-23.md`](architecture/v2-recovery-audit-2026-10-23.md) — recovery findings
 - PDP commerce commit: `3ae754a`

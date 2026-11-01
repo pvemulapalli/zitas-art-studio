@@ -71,10 +71,17 @@
   endfor
 
   assign ask_url = ''
-  assign ask_email = settings.contact_email | strip
-  if section.settings.show_ask and ask_email != blank
-    assign ask_subject = product.title | url_encode | replace: '+', '%20'
-    assign ask_url = 'mailto:' | append: ask_email | append: '?subject=' | append: ask_subject
+  if section.settings.show_ask
+    assign contact_path = pages.contact.url | default: '/pages/contact'
+    assign ask_title = product.title | url_encode | replace: '+', '%20'
+    assign ask_product_url = shop.url | append: product.url | url_encode | replace: '+', '%20'
+    assign ask_url = contact_path | append: '?type=artwork&title=' | append: ask_title | append: '&url=' | append: ask_product_url | append: '#message'
+    unless product.has_only_default_variant
+      assign ask_variant = current_variant.title | url_encode | replace: '+', '%20'
+      if ask_variant != blank and ask_variant != 'Default%20Title'
+        assign ask_url = ask_url | replace: '#message', '' | append: '&variant=' | append: ask_variant | append: '#message'
+      endif
+    endunless
   endif
 
   assign sold_series_note = ''
@@ -190,8 +197,11 @@
 
         <div class="pdp-secondary pdp-mobile-only" data-pdp-region="secondary">
           {%- if product.available -%}
-            {%- if ask_url != blank -%}
-              {%- render 'label-link', url: ask_url, label: section.settings.ask_label -%}
+            {%- if ask_url != blank and section.settings.ask_label != blank -%}
+              <a class="label-link" href="{{ ask_url | escape }}" data-ask-link>
+                {{- section.settings.ask_label | escape -}}
+                {%- render 'icon', name: 'arrow-right', size: 16, class: 'label-link__arrow' -%}
+              </a>
             {%- endif -%}
           {%- else -%}
             {%- render 'label-link', url: section.settings.commission_url, label: section.settings.commission_label -%}
@@ -278,13 +288,13 @@
       "id": "show_ask",
       "label": "Show “Ask Ranjeeta”",
       "default": true,
-      "info": "Opens an email with the artwork title as the subject, sent to the public email in Theme settings › Contact and social. Hidden when that email is empty."
+      "info": "Links to the Contact page as an Artwork inquiry with the product title and URL prefilled. Hidden when turned off."
     },
     {
       "type": "text",
       "id": "ask_label",
       "label": "“Ask Ranjeeta” label",
-      "default": "Ask Ranjeeta about this painting"
+      "default": "Ask Ranjeeta About This Artwork"
     },
     {
       "type": "header",

@@ -175,14 +175,14 @@
     }
   }
 
-  function restoreDraft() {
+  function restoreDraft({ allowType = true, allowMessage = true } = {}) {
     if (root.dataset.posted === 'true') return;
     const draft = readDraft();
     if (!draft) return;
-    if (draft.type) setType(draft.type);
+    if (allowType && draft.type) setType(draft.type);
     if (nameInput && !nameInput.value) nameInput.value = draft.name || '';
     if (emailInput && !emailInput.value) emailInput.value = draft.email || '';
-    if (bodyInput && !bodyInput.value) bodyInput.value = draft.message || '';
+    if (allowMessage && bodyInput && !bodyInput.value) bodyInput.value = draft.message || '';
     Object.entries(draft.optionals || {}).forEach(([name, value]) => {
       const el = form.querySelector(`[name="${CSS.escape(name)}"]`);
       if (el && !el.value) el.value = value;
@@ -199,15 +199,48 @@
     });
   }
 
+  function cleanParam(value, max) {
+    return String(value || '')
+      .replace(/[\u0000-\u001F<>]/g, '')
+      .trim()
+      .slice(0, max);
+  }
+
+  function safeProductUrl(raw) {
+    if (!raw) return '';
+    try {
+      const url = new URL(raw, window.location.origin);
+      if (url.origin !== window.location.origin) return '';
+      if (!url.pathname.startsWith('/products/')) return '';
+      return url.href;
+    } catch (_) {
+      return '';
+    }
+  }
+
   function applyTypeFromQuery() {
     const params = new URLSearchParams(window.location.search);
     const key = (params.get('type') || '').toLowerCase();
     const label = TYPE_MAP[key];
     if (label) setType(label);
-    const artwork = params.get('artwork');
-    if (artwork) {
-      const artInput = form.querySelector('[name="contact[Artwork]"]');
-      if (artInput && !artInput.value) artInput.value = artwork;
+
+    const title = cleanParam(params.get('title') || params.get('artwork'), 200);
+    const variant = cleanParam(params.get('variant'), 120);
+    const productUrl = safeProductUrl(params.get('url'));
+
+    const artInput = form.querySelector('[name="contact[Artwork]"]');
+    if (artInput && !artInput.value && title) {
+      artInput.value = variant ? `${title} (${variant})` : title;
+    }
+
+    // Prefill the message with artwork context only when the visitor has not typed yet.
+    if (bodyInput && !bodyInput.value && (title || productUrl)) {
+      const lines = [];
+      if (title) lines.push(`Artwork: ${title}`);
+      if (variant) lines.push(`Selection: ${variant}`);
+      if (productUrl) lines.push(`Link: ${productUrl}`);
+      lines.push('', '');
+      bodyInput.value = lines.join('\n');
     }
   }
 
@@ -258,8 +291,14 @@
     saveDraft();
   });
 
+  // URL inquiry params win over a saved draft so PDP deep-links stay intact.
+  const bootParams = new URLSearchParams(window.location.search);
+  const hasTypeQuery = Boolean(TYPE_MAP[(bootParams.get('type') || '').toLowerCase()]);
+  const hasArtworkQuery = Boolean(
+    bootParams.get('title') || bootParams.get('url') || bootParams.get('artwork')
+  );
+  restoreDraft({ allowType: !hasTypeQuery, allowMessage: !hasArtworkQuery });
   applyTypeFromQuery();
-  restoreDraft();
   syncOptionalFields();
 
   if (success) {

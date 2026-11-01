@@ -448,6 +448,26 @@
             url.searchParams.set('variant', String(variant.id));
             window.history.replaceState({}, '', url);
           }
+
+          this.updateAskLinks(variant);
+        }
+
+        updateAskLinks(variant) {
+          const links = this.querySelectorAll('[data-ask-link]');
+          if (!links.length) return;
+          const variantLabel = Array.isArray(variant?.options)
+            ? variant.options.filter(Boolean).join(' / ')
+            : '';
+          links.forEach((link) => {
+            try {
+              const url = new URL(link.href, window.location.origin);
+              if (variantLabel) url.searchParams.set('variant', variantLabel);
+              else url.searchParams.delete('variant');
+              link.href = `${url.pathname}${url.search}${url.hash}`;
+            } catch (error) {
+              // Leave the server-rendered href if URL parsing fails.
+            }
+          });
         }
 
         get headerSectionId() {
@@ -500,11 +520,37 @@
               this.render(data.sections, fromBar);
               announce(this.live, this.dataset.addedMessage);
             } else {
-              // Usually 422: the only unit is already in a bag. Show whatever the store now says.
-              const sections = await fetch(`${window.location.pathname}?sections=${sectionIds}`).then((r) => r.json());
+              // 422: sold out, inventory conflict (common with Bundles components), or already in cart.
+              const description = String(data?.description || data?.message || '');
+              const soldOut = /sold out|not available|cannot be added|inventory/i.test(description);
+
+              // Keep ?variant= so section HTML matches the selection that failed.
+              const sectionsUrl = new URL(window.location.href);
+              sectionsUrl.searchParams.set('sections', sectionIds);
+              const sections = await fetch(`${sectionsUrl.pathname}?${sectionsUrl.searchParams}`).then((r) =>
+                r.json()
+              );
               this.render(sections, fromBar);
-              const stillForSale = Boolean(this.querySelector('[data-product-form]'));
-              announce(this.live, stillForSale ? this.dataset.inBagMessage : this.dataset.soldMessage);
+
+              // Re-parse variants after render, then apply the cart response (Liquid can lag Bundles).
+              if (soldOut && Array.isArray(this.variants)) {
+                const sold = this.variants.find((entry) => Number(entry.id) === variantId);
+                if (sold) sold.available = false;
+              }
+
+              if (soldOut) {
+                this.syncVariantState({ updateUrl: false });
+                announce(this.live, description || this.dataset.soldMessage);
+              } else if (this.cartVariantIds.has(String(variantId))) {
+                this.syncVariantState({ updateUrl: false });
+                announce(this.live, this.dataset.inBagMessage);
+              } else {
+                const stillForSale = Boolean(this.querySelector('[data-product-form]'));
+                announce(
+                  this.live,
+                  description || (stillForSale ? this.dataset.inBagMessage : this.dataset.soldMessage)
+                );
+              }
             }
           } catch (error) {
             window.location.reload();

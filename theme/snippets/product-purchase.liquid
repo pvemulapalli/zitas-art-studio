@@ -10,7 +10,7 @@
   @param {variant} variant - Selected or first available variant
   @param {string} form_id - id of the product form, shared with the sticky bar
   @param {boolean} in_bag - The variant is already in the cart
-  @param {string} [ask_url] - mailto: link; the button is omitted when blank
+  @param {string} [ask_url] - Contact page link with artwork inquiry params; omitted when blank
   @param {string} [ask_label] - Ask button text
   @param {string} [sold_note] - First sold sentence
   @param {string} [sold_series_note] - Series sentence, already resolved, or blank
@@ -120,7 +120,7 @@
   {%- endform -%}
 
   {%- if ask_url != blank and ask_label != blank -%}
-    <a class="button button--large button--secondary pdp-buy__ask" href="{{ ask_url | escape }}">
+    <a class="button button--large button--secondary pdp-buy__ask" href="{{ ask_url | escape }}" data-ask-link>
       {%- render 'icon', name: 'mail', size: 19 -%}
       {{- ask_label | escape -}}
     </a>
