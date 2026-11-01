@@ -1,0 +1,26 @@
+{%- comment -%}
+  Secondary "Other policies" navigation for native Shopify policy pages.
+  Excludes the current policy and Contact Information (Contact page is used instead).
+{%- endcomment -%}
+{%- liquid
+  assign other_count = 0
+  for policy in shop.policies
+    unless policy.url == request.path or policy.url contains 'contact-information'
+      assign other_count = other_count | plus: 1
+    endunless
+  endfor
+-%}
+{%- if other_count > 0 -%}
+  <nav class="policy-other" aria-label="{{ 'policies.other_policies' | t }}">
+    <p class="policy-other__label">{{ 'policies.other_policies' | t }}</p>
+    <ul class="list-unstyled policy-other__list">
+      {%- for policy in shop.policies -%}
+        {%- unless policy.url == request.path or policy.url contains 'contact-information' -%}
+          <li>
+            <a href="{{ policy.url }}">{{ policy.title | escape }}</a>
+          </li>
+        {%- endunless -%}
+      {%- endfor -%}
+    </ul>
+  </nav>
+{%- endif -%}

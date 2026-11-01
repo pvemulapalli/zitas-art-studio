@@ -14,21 +14,42 @@
     {% # Load and preload the critical CSS %}
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
     {{ 'zita-base.css' | asset_url | stylesheet_tag }}
+    {%- if request.page_type == 'policy' -%}
+      {{ 'zita-policy.css' | asset_url | stylesheet_tag }}
+      <style>
+        .template-policy .shopify-policy__title::before {
+          content: {{ 'policies.eyebrow' | t | json }};
+        }
+      </style>
+    {%- endif -%}
 
     {{ content_for_header }}
   </head>
 
-  <body>
+  <body{% if request.page_type == 'policy' %} class="template-policy"{% endif %}>
     <a class="skip-link" href="#MainContent">{{ 'general.skip_to_content' | t }}</a>
 
     {% sections 'header-group' %}
 
-    <main id="MainContent" tabindex="-1">
-      {%- if request.page_type == 'index' -%}
-        <h1 class="visually-hidden">{{ page_title }}</h1>
-      {%- endif -%}
-      {{ content_for_layout }}
-    </main>
+    {%- if request.page_type == 'policy' -%}
+      <main id="MainContent" class="policy-shell" tabindex="-1">
+        <div
+          class="policy-grid"
+          data-on-this-page="{{ 'policies.on_this_page' | t | escape }}"
+        >
+          {{ content_for_layout }}
+          {% render 'policy-other-links' %}
+        </div>
+      </main>
+      <script src="{{ 'zita-policy.js' | asset_url }}" defer></script>
+    {%- else -%}
+      <main id="MainContent" tabindex="-1">
+        {%- if request.page_type == 'index' -%}
+          <h1 class="visually-hidden">{{ page_title }}</h1>
+        {%- endif -%}
+        {{ content_for_layout }}
+      </main>
+    {%- endif -%}
 
     {% sections 'footer-group' %}
   </body>

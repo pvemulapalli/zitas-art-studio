@@ -2,7 +2,10 @@
   assign menu_art = section.settings.menu_art
   assign menu_studio = section.settings.menu_studio
   assign legal_menu = section.settings.legal_menu
-  assign phone_digits = settings.contact_phone | remove: '-' | remove: ' ' | remove: '(' | remove: ')' | remove: '.'
+  assign has_legal_menu = false
+  if legal_menu != blank and legal_menu.links.size > 0
+    assign has_legal_menu = true
+  endif
 -%}
 
 <footer class="site-footer full-width">
@@ -67,32 +70,6 @@
           </nav>
         {%- endif -%}
       {%- endfor -%}
-
-      {%- if settings.contact_email != blank or settings.contact_phone != blank or settings.social_instagram_link != blank -%}
-        <div class="site-footer__column">
-          <h3 class="site-footer__column-heading">{{ 'footer.contact' | t }}</h3>
-          <ul class="list-unstyled site-footer__list">
-            {%- if settings.contact_email != blank -%}
-              <li>
-                <a class="site-footer__email" href="mailto:{{ settings.contact_email | strip }}">
-                  {{- settings.contact_email | escape -}}
-                </a>
-              </li>
-            {%- endif -%}
-            {%- if settings.contact_phone != blank -%}
-              <li><a href="tel:{{ phone_digits }}">{{ settings.contact_phone | escape }}</a></li>
-            {%- endif -%}
-            {%- if settings.social_instagram_link != blank -%}
-              <li>
-                <a class="site-footer__social" href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener">
-                  {%- render 'icon', name: 'instagram', size: 18 -%}
-                  {{- 'general.instagram' | t -}}
-                </a>
-              </li>
-            {%- endif -%}
-          </ul>
-        </div>
-      {%- endif -%}
     </div>
   </div>
 
@@ -103,18 +80,24 @@
       </a>
 
       <div class="site-footer__legal">
-        {%- if legal_menu.links.size > 0 -%}
-          <ul class="list-unstyled site-footer__legal-list">
-            {%- for link in legal_menu.links -%}
-              <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
-            {%- endfor -%}
-          </ul>
+        {%- if has_legal_menu -%}
+          <nav aria-label="{{ 'footer.legal_navigation' | t }}">
+            <ul class="list-unstyled site-footer__legal-list">
+              {%- for link in legal_menu.links -%}
+                <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </nav>
         {%- elsif shop.policies.size > 0 -%}
-          <ul class="list-unstyled site-footer__legal-list">
-            {%- for policy in shop.policies -%}
-              <li><a href="{{ policy.url }}">{{ policy.title | escape }}</a></li>
-            {%- endfor -%}
-          </ul>
+          <nav aria-label="{{ 'footer.legal_navigation' | t }}">
+            <ul class="list-unstyled site-footer__legal-list">
+              {%- for policy in shop.policies -%}
+                {%- unless policy.url contains 'contact-information' -%}
+                  <li><a href="{{ policy.url }}">{{ policy.title | escape }}</a></li>
+                {%- endunless -%}
+              {%- endfor -%}
+            </ul>
+          </nav>
         {%- endif -%}
         <p class="site-footer__copyright">
           &copy; {{ 'now' | date: '%Y' }}
@@ -231,9 +214,11 @@
 
   .site-footer__columns {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(2, minmax(140px, max-content));
+    justify-content: start;
     align-content: start;
-    gap: 32px;
+    column-gap: clamp(48px, 6vw, 96px);
+    row-gap: 32px;
   }
 
   .site-footer__column {
@@ -257,16 +242,6 @@
     gap: 12px;
     font-size: 17px;
     line-height: 1.45;
-  }
-
-  .site-footer__email {
-    overflow-wrap: anywhere;
-  }
-
-  .site-footer__social {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
   }
 
   .site-footer__bottom {
@@ -301,14 +276,22 @@
 
   .site-footer .site-footer__legal a {
     color: var(--color-stone-300);
+    text-decoration: none;
   }
 
   .site-footer .site-footer__legal a:hover {
     color: var(--color-gesso);
   }
 
+  .site-footer .site-footer__legal a:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
   .site-footer__copyright {
     margin: 0;
+    font-size: 15px;
+    color: var(--color-stone-300);
   }
 
   @media (max-width: 749px) {
@@ -322,20 +305,35 @@
       font-size: 24px;
     }
 
+    .site-footer__columns {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 24px;
+      row-gap: 28px;
+      justify-content: stretch;
+    }
+
     .site-footer__list {
       gap: 0;
     }
 
-    .site-footer__list a,
-    .site-footer__legal-list a {
+    .site-footer__list a {
       display: inline-flex;
       align-items: center;
       min-height: 44px;
     }
 
+    .site-footer__bottom-inner {
+      justify-content: flex-start;
+    }
+
     .site-footer__legal,
     .site-footer__legal-list {
-      gap: 0 24px;
+      justify-content: flex-start;
+      gap: 8px 24px;
+    }
+
+    .site-footer .site-footer__legal a {
+      padding-block: 4px;
     }
   }
 {% endstylesheet %}
@@ -374,7 +372,7 @@
     },
     {
       "type": "paragraph",
-      "content": "Each menu's title becomes its column heading. Contact details come from Theme settings > Contact and social."
+      "content": "Each menu's title becomes its column heading. Prefer Explore Art and The Studio. Contact lives in The Studio and the bottom legal bar."
     },
     {
       "type": "link_list",
@@ -389,8 +387,8 @@
     {
       "type": "link_list",
       "id": "legal_menu",
-      "label": "Policy menu",
-      "info": "Leave blank to list the store's policies automatically."
+      "label": "Footer legal menu",
+      "info": "Shown in the bottom bar (Shipping, Returns, Privacy, Terms, Contact Me). Leave blank to list published Shopify policies automatically (Contact Information policy is omitted)."
     },
     {
       "type": "text",
