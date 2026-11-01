@@ -30,3 +30,6 @@ references/artwork-hires/
 
 # Generated Claude Design exports
 references/claude-design/exports/
+
+# Product Data
+data/catalog-migration/
