@@ -1,6 +1,6 @@
 # Zita's Art Studio
 
-Redesign and Shopify development project for  
+Redesign and Shopify development project for
 [Zita's Art Studio](https://www.zitasartstudio.com/)
 
 ## Project Goal
@@ -16,6 +16,8 @@ The new site should feel like a bespoke digital gallery rather than a standard e
 ## Current Status
 
 See **[docs/project-status.md](docs/project-status.md)** — the only canonical record of what is complete, in progress and next, and of the state of each Shopify store.
+
+**[Launch Readiness & Owner Action Items](docs/launch-readiness-checklist.md)** — single source of truth for remaining launch work, including what is waiting on Ranjeeta and what Praveen will handle.
 
 ---
 
@@ -84,6 +86,7 @@ theme/                    Zita V2 Shopify theme (Online Store 2.0)
 | Document | Role |
 |---|---|
 | [Project Status](docs/project-status.md) | Completed, in progress, next, environments, open inputs |
+| [Launch Readiness & Owner Action Items](docs/launch-readiness-checklist.md) | Owner dashboard + detailed launch checklist (remaining work) |
 | [Project Brief](docs/project-brief.md) | Project charter: mission, constraints, principles |
 | [Shopify Implementation Plan](docs/architecture/shopify-implementation-plan.md) | Authoritative architecture reference |
 | [Phase D Implementation Plan](docs/architecture/phase-d-implementation-plan.md) | Editorial pages + commerce repair decisions and sequencing |
