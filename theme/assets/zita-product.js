@@ -313,12 +313,8 @@
           this.live = this.querySelector('[data-pdp-live]');
           this.controller = new AbortController();
           const { signal } = this.controller;
-          this.cartVariantIds = new Set(
-            (this.dataset.cartVariantIds || '')
-              .split(',')
-              .map((id) => id.trim())
-              .filter(Boolean)
-          );
+          this.cartVariantIds = this.parseIdSet(this.dataset.cartVariantIds);
+          this.bundleComponentIds = this.parseIdSet(this.dataset.bundleComponentIds);
           this.addEventListener('submit', (event) => this.onSubmit(event), { signal });
           this.addEventListener('change', (event) => this.onChange(event), { signal });
           this.syncVariantState({ updateUrl: false });
@@ -326,6 +322,15 @@
 
         disconnectedCallback() {
           this.controller?.abort();
+        }
+
+        parseIdSet(value) {
+          return new Set(
+            String(value || '')
+              .split(',')
+              .map((id) => id.trim())
+              .filter(Boolean)
+          );
         }
 
         get variants() {
@@ -343,7 +348,82 @@
 
         onChange(event) {
           if (!event.target.closest('[data-option-index], [data-variant-select]')) return;
+          this.clearPurchaseError();
           this.syncVariantState({ updateUrl: true });
+        }
+
+        clearPurchaseError() {
+          this.querySelectorAll('[data-purchase-error]').forEach((element) => {
+            element.hidden = true;
+            element.textContent = '';
+          });
+        }
+
+        showPurchaseError(message) {
+          const text = String(message || '').trim();
+          if (!text) {
+            this.clearPurchaseError();
+            return;
+          }
+          // One visible status near the purchase form (desktop + mobile). Avoid a second
+          // announcement through the visually-hidden live region.
+          if (this.live) this.live.textContent = '';
+          const targets = [...this.querySelectorAll('[data-purchase-error]')];
+          if (!targets.length) {
+            announce(this.live, text);
+            return;
+          }
+          targets.forEach((element) => {
+            element.hidden = false;
+            element.textContent = '';
+            window.setTimeout(() => {
+              element.textContent = text;
+            }, 50);
+          });
+        }
+
+        collectCartVariantIds(cart) {
+          const ids = new Set();
+          if (!Array.isArray(cart?.items)) return ids;
+          cart.items.forEach((item) => {
+            if (item?.id != null) ids.add(String(item.id));
+            if (item?.variant_id != null) ids.add(String(item.variant_id));
+            const components = item?.item_components;
+            if (!Array.isArray(components)) return;
+            components.forEach((component) => {
+              if (component?.variant_id != null) ids.add(String(component.variant_id));
+              if (component?.id != null) ids.add(String(component.id));
+            });
+          });
+          return ids;
+        }
+
+        async refreshCartVariantIds() {
+          try {
+            const response = await fetch(`${this.dataset.cartUrl || '/cart'}.js`, {
+              headers: { Accept: 'application/json' },
+            });
+            if (!response.ok) return this.cartVariantIds;
+            const cart = await response.json();
+            this.cartVariantIds = this.collectCartVariantIds(cart);
+            return this.cartVariantIds;
+          } catch (error) {
+            return this.cartVariantIds;
+          }
+        }
+
+        hasBundleComponentInCart(cartIds = this.cartVariantIds) {
+          if (!this.bundleComponentIds.size || !cartIds?.size) return false;
+          for (const id of this.bundleComponentIds) {
+            if (cartIds.has(id)) return true;
+          }
+          return false;
+        }
+
+        isInventoryConflictDescription(description) {
+          return /sold out|not available|cannot be added|can't add more|cannot find variant|inventory|in your cart|are in your cart/i.test(
+            description
+          );
         }
 
         resolveVariant() {
@@ -514,43 +594,19 @@
 
           try {
             if (response.ok) {
+              this.clearPurchaseError();
               const addedId =
                 form.querySelector('[data-variant-id]')?.value || form.elements.id?.value;
               if (addedId) this.cartVariantIds.add(String(addedId));
               this.render(data.sections, fromBar);
               announce(this.live, this.dataset.addedMessage);
             } else {
-              // 422: sold out, inventory conflict (common with Bundles components), or already in cart.
-              const description = String(data?.description || data?.message || '');
-              const soldOut = /sold out|not available|cannot be added|inventory/i.test(description);
-
-              // Keep ?variant= so section HTML matches the selection that failed.
-              const sectionsUrl = new URL(window.location.href);
-              sectionsUrl.searchParams.set('sections', sectionIds);
-              const sections = await fetch(`${sectionsUrl.pathname}?${sectionsUrl.searchParams}`).then((r) =>
-                r.json()
-              );
-              this.render(sections, fromBar);
-
-              // Re-parse variants after render, then apply the cart response (Liquid can lag Bundles).
-              if (soldOut && Array.isArray(this.variants)) {
-                const sold = this.variants.find((entry) => Number(entry.id) === variantId);
-                if (sold) sold.available = false;
-              }
-
-              if (soldOut) {
-                this.syncVariantState({ updateUrl: false });
-                announce(this.live, description || this.dataset.soldMessage);
-              } else if (this.cartVariantIds.has(String(variantId))) {
-                this.syncVariantState({ updateUrl: false });
-                announce(this.live, this.dataset.inBagMessage);
-              } else {
-                const stillForSale = Boolean(this.querySelector('[data-product-form]'));
-                announce(
-                  this.live,
-                  description || (stillForSale ? this.dataset.inBagMessage : this.dataset.soldMessage)
-                );
-              }
+              await this.handleAddFailure({
+                data,
+                variantId,
+                sectionIds,
+                fromBar,
+              });
             }
           } catch (error) {
             window.location.reload();
@@ -558,6 +614,80 @@
             this.busy = false;
             this.removeAttribute('aria-busy');
           }
+        }
+
+        async handleAddFailure({ data, variantId, sectionIds, fromBar }) {
+          const description = String(data?.description || data?.message || '').trim();
+          const selectedBefore = Array.isArray(this.variants)
+            ? this.variants.find((entry) => Number(entry.id) === variantId)
+            : null;
+
+          // Keep ?variant= so section HTML matches the selection that failed.
+          const sectionsUrl = new URL(window.location.href);
+          sectionsUrl.searchParams.set('sections', sectionIds);
+          const sections = await fetch(`${sectionsUrl.pathname}?${sectionsUrl.searchParams}`).then((response) =>
+            response.json()
+          );
+          this.render(sections, fromBar);
+
+          const stillForSale = Boolean(this.querySelector('[data-product-form]'));
+          const selectedAfter = Array.isArray(this.variants)
+            ? this.variants.find((entry) => Number(entry.id) === variantId)
+            : null;
+          const combinationUnavailable =
+            (Array.isArray(this.variants) && this.variants.length > 0 && !selectedAfter) ||
+            selectedAfter?.available === false ||
+            selectedBefore?.available === false;
+
+          // Parent already represented as in-cart after the section refresh.
+          if (this.cartVariantIds.has(String(variantId))) {
+            this.syncVariantState({ updateUrl: false });
+            this.clearPurchaseError();
+            announce(this.live, this.dataset.inBagMessage);
+            return;
+          }
+
+          // Unavailable option combination — use the existing unavailable note + disabled ATC.
+          // Do not invent a Sold badge from a 422 alone.
+          if (combinationUnavailable && stillForSale) {
+            this.clearPurchaseError();
+            this.syncVariantState({ updateUrl: false });
+            announce(this.live, this.dataset.unavailableMessage);
+            return;
+          }
+
+          // Truly sold at the product level (Liquid removed the purchase form).
+          if (!stillForSale) {
+            this.clearPurchaseError();
+            announce(this.live, this.dataset.soldMessage);
+            return;
+          }
+
+          const cartIds = await this.refreshCartVariantIds();
+          this.syncVariantState({ updateUrl: false });
+
+          if (this.hasBundleComponentInCart(cartIds)) {
+            // Confirmed: a known bundle component variant is already in the cart.
+            this.showPurchaseError(this.dataset.bundleInCartMessage);
+            return;
+          }
+
+          if (this.isInventoryConflictDescription(description)) {
+            // Bundles / inventory rejection while this parent still looks available.
+            // Do not flip the availability badge to Sold or permanently disable ATC.
+            this.showPurchaseError(this.dataset.bundleAmbiguousMessage);
+            return;
+          }
+
+          // Preserve a short Shopify description when it is already customer-safe prose.
+          const safeDescription =
+            description &&
+            description.length <= 140 &&
+            !/[{}\[\]\\]/.test(description) &&
+            !/status|error|http|422|json/i.test(description)
+              ? description
+              : '';
+          this.showPurchaseError(safeDescription || this.dataset.addErrorMessage);
         }
 
         render(sections, fromBar) {

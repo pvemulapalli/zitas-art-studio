@@ -1,6 +1,6 @@
 # Zita's Art Studio — Project Status
 
-**Last updated:** 1 November 2026 (documentation refresh after M6 Stage 1 + Stage 2A; Bundles messaging fix and Stage 2B trial **not** started).
+**Last updated:** 1 November 2026 (L-PDP-17 Bundles messaging implemented in theme; development-store QA and Stage 2B **not** done).
 
 This is the **only** canonical record of project progress, current work, next steps and environment state. Other documents link here rather than tracking status themselves.
 
@@ -12,9 +12,9 @@ Launch task detail and priorities: [`docs/launch-readiness-checklist.md`](launch
 
 | Item | State |
 |---|---|
-| **Current** | **M6 Stage 2A complete** — Active-only migration preparation (offline). No Shopify imports. |
-| **Just finished (docs)** | Project status + launch checklist refresh (this edit). |
-| **Next implementation** | **Shopify Bundles inventory / availability error messaging** on the PDP (separate Cursor task — not started here). |
+| **Current** | **L-PDP-17 implemented** in `theme/` (Bundles inventory messaging). M6 Stage 2A complete. No imports. |
+| **Just finished** | Bundles PDP messaging fix (code + checklist); awaiting **dev-store QA** and deploy authorization. |
+| **Next** | Manual QA of L-PDP-17 on published/dev theme `#192367558949`, then authorize commit/deploy; then **M6 Stage 2B** Draft trial (not authorized). |
 | **Next catalog** | **M6 Stage 2B** — controlled Draft trial import on the Partner **development** store (not authorized yet). |
 | **Provisional effort** | **~20–35 hours** focused work remaining to launch — estimate only; excludes redesigns, unexpected migration issues, and waits on owner decisions. |
 
@@ -35,8 +35,8 @@ Recovery detail: [architecture/v2-recovery-audit-2026-10-23.md](architecture/v2-
 
 ## Launch critical path
 
-1. Project documentation refresh — **done (this update)**.
-2. Fix Shopify Bundles inventory / availability error messaging (PDP unclear when a component is already in cart or unavailable).
+1. Project documentation refresh — **done**.
+2. Fix Shopify Bundles inventory / availability error messaging — **implemented in theme**; **dev-store verification + deploy still pending**.
 3. Prepare and execute **Stage 2B** controlled development trial import (`buddha-the-awakened-one`, `dissolution`, `clouds`, `turquoise-waters` as **Draft**; do not overwrite PoC/QA/`artwork-bundle`).
 4. Validate imported products, images, pricing, inventory, and PDP behavior on development.
 5. Extract and migrate relevant production **collections** (membership not in product CSVs).
@@ -80,7 +80,7 @@ Distinguish **implemented** (code exists) from **tested**, **owner-approved**, a
 | Price / availability sync on variant change | Implemented; verified on fixtures |
 | Add to Cart | Implemented; verified on fixtures / available bundles |
 | Cart line display | Implemented; bundle `item_components` on cart **Verified** (dev) |
-| Shopify Bundles (dev) | **Installed**; available parent ATC verified; **inventory / availability error messaging still pending** (unclear PDP state when a component is in cart or unavailable) — **next theme task** |
+| Shopify Bundles (dev) | **Installed**; available parent ATC verified; **L-PDP-17 messaging Implemented** in theme (confirmed vs ambiguous conflict copy; no false Sold from 422) — **Requires verification** on live `artwork-bundle` |
 | Shopify Bundles (production) | **Not installed** |
 | Artwork inquiry → Contact | Implemented + prefill verified (`c11f7e1`) |
 | Contact form submit / CAPTCHA | **Requires verification** |

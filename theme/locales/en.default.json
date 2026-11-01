@@ -181,7 +181,10 @@
     "not_ready_to_hang": "Not ready to hang",
     "certificate": "Certificate",
     "story": "The story",
-    "variant_unavailable": "This option is currently unavailable.",
+    "variant_unavailable": "This artwork combination is unavailable.",
+    "bundle_component_in_cart": "An artwork in this set is already in your cart.",
+    "bundle_inventory_ambiguous": "An artwork in this set may be unavailable or in your cart.",
+    "add_error_generic": "We couldn't add this artwork. Please try again.",
     "sold_status": "Sold"
   },
   "footer": {

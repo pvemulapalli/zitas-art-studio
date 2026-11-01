@@ -1,7 +1,7 @@
 # Zita V2 — Launch Readiness Checklist
 
 **Created:** 31 October 2026
-**Updated:** 1 November 2026 (project status refresh; M6 Stage 1 + 2A recorded; Bundles messaging remains open; Stage 2B not authorized)
+**Updated:** 1 November 2026 (L-PDP-17 Bundles messaging implemented locally; Stage 2B not authorized)
 **Authority:** Pre-launch work tracking. Environment and milestone truth: [`docs/project-status.md`](project-status.md).
 **Evidence basis:** Git `main` / `origin/main`, architecture docs, owner decisions, Partner-dev QA through 1 November 2026, M6 offline catalog reports.
 **Production store:** Untouched (Phase B). Partner-dev proof ≠ production cutover.
@@ -12,7 +12,7 @@
 
 ```text
 1. Documentation refresh                          [DONE — 1 Nov 2026]
-2. Fix Bundles inventory/availability messaging  [P0 — next theme task]
+2. Fix Bundles inventory/availability messaging  [Implemented locally — L-PDP-17; dev-store QA pending]
 3. M6 Stage 2B Draft trial import (dev only)     [Not authorized]
 4. Validate trial products / images / inventory  [After 2B]
 5. Extract + migrate production collections      [P0 — data gap]
@@ -43,7 +43,7 @@ Recount from tables below when statuses change. Do not treat “open” as “un
 
 ### Top launch blockers (now)
 
-1. **Bundles inventory / availability messaging** still unclear when a component is already in cart or unavailable (L-PDP-17) — next theme fix.
+1. **L-PDP-17 Bundles messaging** — implemented in theme; **development-store verification still required** before treating as closed.
 2. **Active catalog + inventory migration** with preserved availability (L-CAT-08–12, L-COM-06) — Stage 2B not started.
 3. **Collection extraction + membership** (L-COL-01–02) — not in product CSVs.
 4. **Owner identity / inventory decisions** (duplicates, zero-stock Actives, `water-ii`, paired model).
@@ -55,7 +55,7 @@ Recount from tables below when statuses change. Do not treat “open” as “un
 
 V2 core storefront pages are **implemented** on Partner development (`zitas-art-studio-development.myshopify.com`, theme `#192367558949`) and on `origin/main`: Homepage, header/footer, PLP, original PDP, default product layout, cart, About, 404, Exhibitions, Contact, Portfolio.
 
-**PDP commerce:** Description under price + variants (`3ae754a`) **Implemented** / fixture-**Verified**. Shopify Bundles **installed on development** (`artwork-bundle`). Parent ATC for available combinations works. Commit `c11f7e1` fixed a **422** path that dropped `?variant=` and falsely announced “already in bag.” **A separate Bundles inventory/availability messaging defect remains open** (unclear PDP messaging when a component is already in the cart or unavailable) — **do not treat L-PDP-14 as closing that gap.**
+**PDP commerce:** Description under price + variants (`3ae754a`) **Implemented** / fixture-**Verified**. Shopify Bundles **installed on development** (`artwork-bundle`). Parent ATC for available combinations works. Commit `c11f7e1` fixed a **422** path that dropped `?variant=` and falsely announced “already in bag.” **L-PDP-17** adds customer-facing Bundles conflict messaging and stops treating inventory 422s as global Sold — **Implemented** + Theme Check / local static checks; **development-store verification pending** (do not mark fully Verified until live `artwork-bundle` QA).
 
 **Inquiry CTA:** Deep-link to Contact **Implemented** + prefill **Verified**; full form POST/CAPTCHA **Requires verification**.
 
@@ -93,7 +93,7 @@ Priorities: **P0** launch-blocking · **P1** launch polish · **P2** post-launch
 | L-PDP-08 | P0 | Published multi-variant product QA on Online Store channel | Praveen | **Verified** (dev fixtures live) | — | Handles `v2-variant-qa-size-finish`, `v2-variant-qa-diptych` storefront-reachable; keep as **dev-only** fixtures (see § QA fixtures) |
 | L-PDP-09 | P0 | Shared inventory / diptych commerce model (Bundles vs variants vs workflow) | Praveen + Ranjeeta | **Needs clarification** + partial | Owner listing decision; may defer production Bundles install if pairs stay single-SKU at launch | Dev Bundles app + `artwork-bundle` available ATC **Verified**; owner model for Active paired listings **Pending**; production Bundles install **Not started** (P1/P2 if launch without Bundles parents — **clarify**) |
 | L-PDP-14 | P0 | Bundle PDP Add to Cart reliability (422 / wrong “in bag” path) | Praveen | **Implemented** + **Verified** (dev) | Shopify Bundles parent variants; `c11f7e1` | 422 sold-out/conflict keeps `?variant=`, marks unavailable, announces Shopify description — **does not close L-PDP-17** |
-| L-PDP-17 | P0 | Bundles inventory / availability **error messaging** when a component is already in cart or unavailable | Praveen | **Not started** | L-PDP-14; `artwork-bundle` | PDP must show clear unavailable/conflict messaging — **next theme task after docs** |
+| L-PDP-17 | P0 | Bundles inventory / availability **error messaging** when a component is already in cart or unavailable | Praveen | **Implemented** + **local/static tested**; **Requires verification** (dev store) | L-PDP-14; `artwork-bundle` | Friendly messages for confirmed component-in-cart vs ambiguous inventory 422; unavailable combination copy; no Sold badge / permanent ATC disable from recoverable 422; visible `aria-live` error near purchase controls; Theme Check 0 offenses. **Pending:** live QA matrix on `#192367558949` |
 | L-PDP-15 | P1 | Artwork inquiry CTA → Contact deep-link with title/URL/variant | Praveen | **Implemented** + **Verified** (prefills on Contact) | Contact page | Label “Ask Ranjeeta About This Artwork”; query `type`, `title`, `url`, `variant`; no customer PII in query |
 | L-PDP-16 | P1 | Contact form submit + CAPTCHA + success with artwork prefill | Praveen | **Requires verification** | L-PDP-15; CAPTCHA | Prefill + type selection verified; full native POST/success not re-run in this pass |
 | L-PDP-10 | P1 | Accelerated checkout / Shop Pay on original PDP | Praveen | **Not started** | Payments enabled on store; design placement | `payment_button` absent on `zita-product-artwork`; only skeleton `product.liquid` has it — **decision required** |
@@ -255,7 +255,7 @@ Priorities: **P0** launch-blocking · **P1** launch polish · **P2** post-launch
 |---|---|---|
 | Favicon.ico + supporting icons | L-BR-01, L-BR-02 | **Not started** (P0) |
 | MerchantSignals SEO audit | L-SEO-01 | **Not started** (P0) |
-| Bundles inventory messaging | L-PDP-17 | **Not started** (P0) — next theme task |
+| Bundles inventory messaging | L-PDP-17 | **Implemented** locally; **dev-store QA pending** |
 | Bundles ATC 422 path | L-PDP-14 | **Verified** (dev) — distinct from L-PDP-17 |
 | Active catalog prep | L-CAT-08, L-CAT-09 | **Complete** (offline) |
 | Trial + full Active migration | L-CAT-10–12, L-CAT-01–05 | **Not started** / pending decisions |
@@ -287,7 +287,7 @@ Priorities: **P0** launch-blocking · **P1** launch polish · **P2** post-launch
 |---|---|---|
 | Homepage / shell | `3b1bf0f`, `dcee031` | Implemented — full visual/SEO QA still open |
 | PLP | `d00ba52` | Implemented — collection migration pending |
-| Original PDP | `f713471` … `3ae754a` + `c11f7e1` | Description/variants/inquiry **Verified** on dev; **L-PDP-17 Bundles messaging open**; Shop Pay / owner approval open |
+| Original PDP | `f713471` … `3ae754a` + `c11f7e1` + L-PDP-17 | Description/variants/inquiry **Verified** on dev; Bundles messaging **Implemented** (dev QA pending); Shop Pay / owner approval open |
 | Default product | `832d509` | V2 artwork layout — QA on non-original types open |
 | Cart | `3ecb3d2`, copy `3d31d13`, `item_components` | Implemented; bundle components display **Verified** on dev; broader regression **Requires verification** |
 | About | `6837063`, mobile fixes | Implemented; content **Blocked** / approval open |

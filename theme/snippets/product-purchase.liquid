@@ -93,6 +93,14 @@
       {{- 'product.variant_unavailable' | t -}}
     </p>
 
+    <p
+      class="pdp-purchase-error"
+      data-purchase-error
+      role="status"
+      aria-live="polite"
+      hidden
+    ></p>
+
     <div class="pdp-buy__actions" data-purchase-actions>
       <div data-purchase-add {% if in_bag %}hidden{% endif %}>
         <button

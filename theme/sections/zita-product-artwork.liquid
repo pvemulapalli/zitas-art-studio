@@ -99,17 +99,40 @@
 -%}
 
 {%- capture cart_variant_ids -%}
-  {%- for item in cart.items -%}{{ item.variant_id }}{% unless forloop.last %},{% endunless %}{%- endfor -%}
+  {%- for item in cart.items -%}
+    {{- item.variant_id -}}
+    {%- if item.item_components.size > 0 -%}
+      {%- for component in item.item_components -%}
+        ,{{- component.variant.id | default: component.id -}}
+      {%- endfor -%}
+    {%- endif -%}
+    {%- unless forloop.last -%},{%- endunless -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- capture bundle_component_ids -%}
+  {%- if product.requires_components and product.bundle_components.size > 0 -%}
+    {%- for component in product.bundle_components -%}
+      {{- component.variant.id -}}
+      {%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  {%- endif -%}
 {%- endcapture -%}
 
 <product-artwork
   class="pdp full-width"
   data-section-id="{{ section.id }}"
   data-cart-add-url="{{ routes.cart_add_url }}"
+  data-cart-url="{{ routes.cart_url }}"
   data-added-message="{{ 'product.added_to_bag' | t: title: product.title | escape }}"
   data-in-bag-message="{{ 'product.already_in_bag' | t: title: product.title | escape }}"
   data-sold-message="{{ 'product.just_collected' | t }}"
+  data-bundle-in-cart-message="{{ 'product.bundle_component_in_cart' | t | escape }}"
+  data-bundle-ambiguous-message="{{ 'product.bundle_inventory_ambiguous' | t | escape }}"
+  data-unavailable-message="{{ 'product.variant_unavailable' | t | escape }}"
+  data-add-error-message="{{ 'product.add_error_generic' | t | escape }}"
   data-cart-variant-ids="{{ cart_variant_ids | strip }}"
+  data-bundle-component-ids="{{ bundle_component_ids | strip }}"
   data-available-label="{{ 'product.available' | t | escape }} · {{ 'product.one_of_one' | t | escape }}"
   data-sold-label="{{ 'product.sold_status' | t | escape }}"
 >
