@@ -32,6 +32,8 @@
   assign dropdown_active = false
   assign preview_index = 0
   assign parent_listed = false
+  assign series_count = 0
+  assign explore_count = 0
 
   if dropdown_index >= 0
     assign dropdown = menu.links[dropdown_index]
@@ -73,6 +75,12 @@
     endif
 
     if series_group
+      assign series_count = series_group.links.size
+      assign explore_count = series_count | minus: 3
+      if explore_count < 0
+        assign explore_count = 0
+      endif
+
       assign preview_found = false
       for child in series_group.links
         if child.current
@@ -97,6 +105,9 @@
           endif
         endfor
       endif
+    else
+      assign series_count = 0
+      assign explore_count = 0
     endif
   endif
 -%}
@@ -123,66 +134,113 @@
                         {%- render 'icon', name: 'chevron-down', size: 14, class: 'site-nav__chevron' -%}
                       </summary>
                       <div class="mega-menu">
-                        <div class="mega-menu__inner page-width">
-                          {%- if series_group -%}
-                            <div class="mega-menu__series">
-                              <p class="eyebrow mega-menu__eyebrow" id="MegaMenuSeries-{{ section.id }}">
-                                {{- series_group.title | escape -}}
+                        <div class="mega-menu__inner page-width{% if explore_count == 0 %} mega-menu__inner--no-explore{% endif %}{% if series_count == 0 %} mega-menu__inner--no-series{% endif %}">
+                          {%- if series_group and series_count > 0 -%}
+                            <div class="mega-menu__series mega-menu__series--featured">
+                              <p class="eyebrow mega-menu__eyebrow" id="MegaMenuFeatured-{{ section.id }}">
+                                {{- 'header.featured_series' | t -}}
                               </p>
-                              <ul class="mega-menu__series-list list-unstyled" aria-labelledby="MegaMenuSeries-{{ section.id }}">
+                              <ul class="mega-menu__series-list list-unstyled" aria-labelledby="MegaMenuFeatured-{{ section.id }}">
                                 {%- for child in series_group.links -%}
+                                  {%- if forloop.index <= 3 -%}
+                                    <li>
+                                      <a
+                                        class="mega-menu__series-link{% if forloop.index0 == preview_index %} is-previewed{% endif %}"
+                                        href="{{ child.url }}"
+                                        data-preview-index="{{ forloop.index0 }}"
+                                        {% if child.current %}
+                                          aria-current="page"
+                                        {% endif %}
+                                      >
+                                        <span class="mega-menu__series-name">{{ child.title | escape }}</span>
+                                        {%- if child.type == 'collection_link' and child.object.products_count > 0 -%}
+                                          <span class="mega-menu__series-meta">
+                                            {{- 'header.originals_count' | t: count: child.object.products_count -}}
+                                          </span>
+                                        {%- endif -%}
+                                      </a>
+                                    </li>
+                                  {%- endif -%}
+                                {%- endfor -%}
+                              </ul>
+                            </div>
+
+                            {%- if explore_count > 0 -%}
+                              <div class="mega-menu__series mega-menu__series--explore">
+                                <p class="eyebrow mega-menu__eyebrow" id="MegaMenuExplore-{{ section.id }}">
+                                  {{- 'header.explore_more' | t -}}
+                                </p>
+                                <ul class="mega-menu__series-list list-unstyled" aria-labelledby="MegaMenuExplore-{{ section.id }}">
+                                  {%- for child in series_group.links -%}
+                                    {%- if forloop.index > 3 -%}
+                                      <li>
+                                        <a
+                                          class="mega-menu__series-link{% if forloop.index0 == preview_index %} is-previewed{% endif %}"
+                                          href="{{ child.url }}"
+                                          data-preview-index="{{ forloop.index0 }}"
+                                          {% if child.current %}
+                                            aria-current="page"
+                                          {% endif %}
+                                        >
+                                          <span class="mega-menu__series-name">{{ child.title | escape }}</span>
+                                          {%- if child.type == 'collection_link' and child.object.products_count > 0 -%}
+                                            <span class="mega-menu__series-meta">
+                                              {{- 'header.originals_count' | t: count: child.object.products_count -}}
+                                            </span>
+                                          {%- endif -%}
+                                        </a>
+                                      </li>
+                                    {%- endif -%}
+                                  {%- endfor -%}
+                                </ul>
+                              </div>
+                            {%- endif -%}
+                          {%- endif -%}
+
+                          {%- liquid
+                            assign show_all_originals = false
+                            if parent_url and parent_listed == false
+                              assign show_all_originals = true
+                            endif
+                            assign sibling_link_count = 0
+                            for child in link.links
+                              unless forloop.index0 == series_index
+                                assign sibling_link_count = sibling_link_count | plus: 1
+                              endunless
+                            endfor
+                          -%}
+                          {%- if show_all_originals or sibling_link_count > 0 -%}
+                            <ul class="mega-menu__links list-unstyled">
+                              {%- if show_all_originals -%}
+                                <li>
+                                  <a
+                                    href="{{ parent_url }}"
+                                    {% if link.current %}
+                                      aria-current="page"
+                                    {% endif %}
+                                  >
+                                    {{- 'header.all_originals' | t -}}
+                                  </a>
+                                </li>
+                              {%- endif -%}
+                              {%- for child in link.links -%}
+                                {%- unless forloop.index0 == series_index -%}
                                   <li>
                                     <a
-                                      class="mega-menu__series-link{% if forloop.index0 == preview_index %} is-previewed{% endif %}"
                                       href="{{ child.url }}"
-                                      data-preview-index="{{ forloop.index0 }}"
                                       {% if child.current %}
                                         aria-current="page"
                                       {% endif %}
                                     >
-                                      <span class="mega-menu__series-name">{{ child.title | escape }}</span>
-                                      {%- if child.type == 'collection_link' and child.object.products_count > 0 -%}
-                                        <span class="mega-menu__series-meta">
-                                          {{- 'header.originals_count' | t: count: child.object.products_count -}}
-                                        </span>
-                                      {%- endif -%}
+                                      {{- child.title | escape -}}
                                     </a>
                                   </li>
-                                {%- endfor -%}
-                              </ul>
-                            </div>
+                                {%- endunless -%}
+                              {%- endfor -%}
+                            </ul>
                           {%- endif -%}
 
-                          <ul class="mega-menu__links list-unstyled">
-                            {%- if parent_url and parent_listed == false -%}
-                              <li>
-                                <a
-                                  href="{{ parent_url }}"
-                                  {% if link.current %}
-                                    aria-current="page"
-                                  {% endif %}
-                                >
-                                  {{- 'header.all_originals' | t -}}
-                                </a>
-                              </li>
-                            {%- endif -%}
-                            {%- for child in link.links -%}
-                              {%- unless forloop.index0 == series_index -%}
-                                <li>
-                                  <a
-                                    href="{{ child.url }}"
-                                    {% if child.current %}
-                                      aria-current="page"
-                                    {% endif %}
-                                  >
-                                    {{- child.title | escape -}}
-                                  </a>
-                                </li>
-                              {%- endunless -%}
-                            {%- endfor -%}
-                          </ul>
-
-                          {%- if series_group -%}
+                          {%- if series_group and series_count > 0 -%}
                             <div class="mega-menu__preview" aria-hidden="true">
                               {%- for child in series_group.links -%}
                                 {%- liquid
@@ -532,9 +590,34 @@
 
   .mega-menu__inner {
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 0.9fr);
-    gap: clamp(24px, 4vw, 64px);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.95fr);
+    grid-template-areas:
+      'featured explore preview'
+      'utility utility preview';
+    column-gap: clamp(28px, 4vw, 64px);
+    row-gap: clamp(28px, 3vw, 40px);
     padding-block: 40px 48px;
+    align-items: start;
+  }
+
+  .mega-menu__inner--no-explore {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr);
+    grid-template-areas:
+      'featured preview'
+      'utility preview';
+  }
+
+  .mega-menu__inner--no-series {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+    grid-template-areas: 'utility preview';
+  }
+
+  .mega-menu__series--featured {
+    grid-area: featured;
+  }
+
+  .mega-menu__series--explore {
+    grid-area: explore;
   }
 
   .mega-menu__eyebrow {
@@ -558,9 +641,13 @@
 
   .mega-menu__series-name {
     font-family: var(--font-display);
-    font-size: 24px;
+    font-size: clamp(20px, 1.7vw, 24px);
     line-height: 1.2;
     transition: color var(--duration-fast) var(--ease-pour);
+  }
+
+  .mega-menu__series--explore .mega-menu__series-name {
+    font-size: clamp(18px, 1.5vw, 22px);
   }
 
   .mega-menu__series-link.is-previewed .mega-menu__series-name,
@@ -575,11 +662,14 @@
   }
 
   .mega-menu__links {
-    grid-column: 2;
+    grid-area: utility;
     display: grid;
     align-content: start;
     gap: 14px;
-    padding-block-start: 30px;
+  }
+
+  .mega-menu__links:empty {
+    display: none;
   }
 
   .mega-menu__links a {
@@ -598,7 +688,7 @@
   }
 
   .mega-menu__preview {
-    grid-column: 3;
+    grid-area: preview;
     display: grid;
     align-self: start;
   }
@@ -901,7 +991,7 @@
       "id": "menu",
       "label": "Menu",
       "default": "main-menu",
-      "info": "Give a top-level item (for example Originals) a nested group of collections (for example Current series) to build the dropdown. The group's links are the featured series; its other child links show beside them."
+      "info": "Give a top-level item (for example Originals) a nested group of collections (for example Current series). The first three links in that group become Featured series; any further links appear under Explore more. Reorder in Navigation to change which three are featured."
     },
     {
       "type": "text",

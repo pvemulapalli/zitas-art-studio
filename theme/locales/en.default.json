@@ -80,6 +80,8 @@
       "other": "{{ count }} originals"
     },
     "all_originals": "All originals",
+    "featured_series": "Featured series",
+    "explore_more": "Explore more",
     "menu": "Menu",
     "close": "Close",
     "follow_instagram": "Follow on Instagram"

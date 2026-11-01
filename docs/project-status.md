@@ -1,6 +1,6 @@
 # Zita's Art Studio — Project Status
 
-**Last updated:** 1 November 2026 (L-PDP-17 follow-up: keep selected variant after ATC; shortened ambiguous Bundles copy — commit/deploy pending; Stage 2B **not** done).
+**Last updated:** 1 November 2026 (Curated nav approved: mega-menu Featured/Explore More; footer Explore Art / The Studio).
 
 This is the **only** canonical record of project progress, current work, next steps and environment state. Other documents link here rather than tracking status themselves.
 
@@ -12,11 +12,11 @@ Launch task detail and priorities: [`docs/launch-readiness-checklist.md`](launch
 
 | Item | State |
 |---|---|
-| **Current** | **L-PDP-17 follow-up** in working tree — preserve selected variant after successful ATC; ambiguous inventory copy shortened. M6 Stage 2A complete. |
-| **Just finished** | Bundle QA regression fix (local); awaiting **commit/deploy authorization** then live QA. |
-| **Next** | Authorize commit + deploy to `#192367558949`, re-QA Artwork Bundle + Size/Finish fixture, then **M6 Stage 2B** (not authorized). |
-| **Next catalog** | **M6 Stage 2B** — controlled Draft trial import on the Partner **development** store (not authorized yet). |
-| **Provisional effort** | **~20–35 hours** focused work remaining to launch — estimate only; excludes redesigns, unexpected migration issues, and waits on owner decisions. |
+| **Current** | Development catalog **browseable**; curated Originals mega-menu + footer visually approved. |
+| **Just finished** | Finalize curated collection navigation (Featured Series / Explore More; footer Explore Art / The Studio). |
+| **Prior catalog** | Stage 2B–3B: 30 Active/published artworks; seven series + Originals; menus wired on `#192367558949`. |
+| **Next** | Broader storefront/commerce QA; Portfolio series pickers; Bundles L-PDP-17 deploy if still pending; content/SEO launch path. |
+| **Provisional effort** | **~15–30 hours** focused work remaining to launch — estimate only; excludes redesigns, unexpected migration issues, and waits on owner decisions. |
 
 ---
 
@@ -57,7 +57,7 @@ Distinguish **implemented** (code exists) from **tested**, **owner-approved**, a
 | Surface | Implemented | Tested (dev) | Owner-approved | Launch-ready |
 |---|---|---|---|---|
 | Homepage + shell (header/footer/announcement) | Yes | Partial / regression open | Design generally approved (teal homepage) | **No** — content/SEO/nav QA |
-| Originals / series PLP | Yes | Partial on PoC collection | Design accepted direction | **No** — real collections pending |
+| Originals / series PLP | Yes | Admin membership verified; HTML smoke password-gated | Design accepted direction | **No** — owner visual QA + editorial polish |
 | Original artwork PDP | Yes | Strong on PoC + QA fixtures | **Not** final PDP approval | **No** |
 | Default product template | Yes (V2 artwork layout) | Partial | — | **No** |
 | Cart (`/cart`) | Yes | Owner functional preview; broader regression open | Preview passed (not full regression) | **No** |
@@ -124,9 +124,30 @@ Ranjeeta: migrate only production products marked **Active**.
 - Collection metadata / membership need separate extraction.
 - **No production catalog changes authorized.**
 
-### Stage 2B — Controlled trial import (dev) — **not authorized**
+### Stage 2B — Development catalog import — **complete**
 
-Proposed Draft imports: `buddha-the-awakened-one`, `dissolution`, `clouds`, `turquoise-waters` (all confirmed Active). Plan only: `active-trial-import-plan.md`.
+- Trial four + remaining 26 imported as Draft, then standardized (dimensions + `original` template).
+- Development catalog: **35** products (30 migrated + 5 golden/QA/bundle).
+- Reports under `data/catalog-migration/output/stage-2b-*` (gitignored).
+
+### Stage 3A — Collections / navigation audit — **complete**
+
+- Production: **13** collections; development baseline: **4**.
+- Matrix + nav plan: `data/catalog-migration/output/stage-3-collections/`.
+
+### Stage 3B — Publish + collections + nav — **complete** (development only)
+
+| Result | Value |
+|---|---|
+| Migrated artworks Active | **30 / 30** |
+| Online Store published | **30 / 30** |
+| Development collections | **9** (incl. frontpage) |
+| Originals membership | **30** migrated artworks (QA/bundle excluded; owner-confirmed) |
+| Series collections | Walking the Trail 5 · Colored by Nature 5 · Sand and Cloud 6 · Reverence 4 · Elements 6 · Good Things Come in Pair 6 · New Works 2 |
+| Navigation | `main-menu`: Featured Series (first 3) + Explore More (rest); All Originals → Originals collection |
+| Footer | `footer-art` (Explore Art) + `footer-studio` (The Studio) on theme `#192367558949` |
+| Results | `stage-3b-implementation-results.md` |
+| Production | **Untouched** |
 
 ---
 

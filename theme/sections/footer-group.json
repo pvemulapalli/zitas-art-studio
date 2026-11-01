@@ -16,8 +16,8 @@
       "settings": {
         "newsletter_eyebrow": "Letters from the studio",
         "newsletter_heading": "New paintings, exhibitions and studio news, sent when there is something to share.",
-        "menu_art": "",
-        "menu_studio": "",
+        "menu_art": "footer-art",
+        "menu_studio": "footer-studio",
         "legal_menu": "",
         "copyright_name": "Ranjeeta Shroff"
       }
