@@ -29,6 +29,20 @@
     ]
   },
   {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Browser tab icon. Prefer a simple square mark (about 512×512 PNG). If blank, the theme uses the bundled Z monogram asset."
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image"
+      }
+    ]
+  },
+  {
     "name": "Contact and social",
     "settings": [
       {

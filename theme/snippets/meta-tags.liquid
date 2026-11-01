@@ -3,6 +3,26 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 {%- liquid
+  # Single favicon family: Theme Editor setting preferred; bundled Z monogram as fallback.
+  # Avoid duplicate icon tags — do not also hardcode shop.brand favicon links here.
+  if settings.favicon != blank
+    assign favicon_image = settings.favicon
+    assign favicon_url_32 = settings.favicon | image_url: width: 32, height: 32
+    assign favicon_url_180 = settings.favicon | image_url: width: 180, height: 180
+  else
+    assign favicon_url_32 = 'favicon-32.png' | asset_url
+    assign favicon_url_180 = 'favicon-180.png' | asset_url
+  endif
+-%}
+<link rel="icon" type="image/png" sizes="32x32" href="{{ favicon_url_32 }}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ favicon_url_180 }}">
+{%- if favicon_image != blank -%}
+  <link rel="shortcut icon" href="{{ favicon_url_32 }}">
+{%- else -%}
+  <link rel="shortcut icon" type="image/png" href="{{ 'favicon.png' | asset_url }}">
+{%- endif -%}
+
+{%- liquid
   assign og_title = page_title | default: shop.name
   assign og_url = canonical_url | default: request.origin
   assign og_type = 'website'
