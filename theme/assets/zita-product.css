@@ -502,6 +502,48 @@ html:has(.pdp-viewer[open]) {
   stroke-width: 2.5;
 }
 
+.pdp-description {
+  margin: 0;
+  max-width: 38em;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.pdp-description > *:first-child {
+  margin-block-start: 0;
+}
+
+.pdp-description > *:last-child {
+  margin-block-end: 0;
+}
+
+.pdp-description p,
+.pdp-description ul,
+.pdp-description ol {
+  margin: 0 0 0.85em;
+}
+
+.pdp-description ul,
+.pdp-description ol {
+  padding-inline-start: 1.2em;
+}
+
+.pdp-description a {
+  color: var(--color-teal);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pdp-description a:hover {
+  color: var(--color-copper);
+}
+
+.pdp-variants {
+  display: grid;
+  gap: 14px;
+}
+
 .pdp-variant {
   display: grid;
   gap: 8px;
@@ -524,6 +566,23 @@ html:has(.pdp-viewer[open]) {
   background: var(--color-gesso);
   font-size: 17px;
   color: var(--color-ink);
+}
+
+.pdp-variant__select:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.pdp-variant-unavailable {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-sold);
+}
+
+.pdp-buy__actions {
+  display: grid;
+  gap: 18px;
 }
 
 .pdp-sold {
@@ -680,8 +739,25 @@ html:has(.pdp-viewer[open]) {
 
 @media (max-width: 749px) {
   .pdp-desktop-only,
-  .pdp-crumb,
+  .pdp-crumb {
+    display: none;
+  }
+
+  /*
+    Keep the purchase form mounted on phones so description + option selectors
+    remain visible. Price, status, and Add stay in the sticky bar / mobile state.
+  */
   .pdp-buy {
+    display: grid;
+    padding: 12px 20px 0;
+    border-top: 0;
+  }
+
+  .pdp-buy__row,
+  .pdp-buy__actions,
+  .pdp-buy__ask,
+  .pdp-buy .pdp-sold,
+  .pdp-buy .pdp-note {
     display: none;
   }
 

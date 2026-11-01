@@ -313,21 +313,141 @@
           this.live = this.querySelector('[data-pdp-live]');
           this.controller = new AbortController();
           const { signal } = this.controller;
+          this.cartVariantIds = new Set(
+            (this.dataset.cartVariantIds || '')
+              .split(',')
+              .map((id) => id.trim())
+              .filter(Boolean)
+          );
           this.addEventListener('submit', (event) => this.onSubmit(event), { signal });
           this.addEventListener('change', (event) => this.onChange(event), { signal });
+          this.syncVariantState({ updateUrl: false });
         }
 
         disconnectedCallback() {
           this.controller?.abort();
         }
 
+        get variants() {
+          const node = this.querySelector('[data-product-variants]');
+          if (!node) return null;
+          if (!this._variants) {
+            try {
+              this._variants = JSON.parse(node.textContent);
+            } catch (error) {
+              this._variants = [];
+            }
+          }
+          return this._variants;
+        }
+
         onChange(event) {
-          const select = event.target.closest('[data-variant-select]');
-          const price = select?.selectedOptions[0]?.dataset.price;
-          if (!price) return;
-          this.querySelectorAll('[data-price]').forEach((element) => {
-            element.textContent = price;
+          if (!event.target.closest('[data-option-index], [data-variant-select]')) return;
+          this.syncVariantState({ updateUrl: true });
+        }
+
+        resolveVariant() {
+          const variants = this.variants;
+          if (!variants?.length) return null;
+
+          const optionSelects = [...this.querySelectorAll('[data-option-index]')];
+          if (optionSelects.length) {
+            const selected = optionSelects
+              .sort((a, b) => Number(a.dataset.optionIndex) - Number(b.dataset.optionIndex))
+              .map((select) => select.value);
+            return (
+              variants.find(
+                (variant) =>
+                  Array.isArray(variant.options) &&
+                  variant.options.length === selected.length &&
+                  variant.options.every((value, index) => value === selected[index])
+              ) || null
+            );
+          }
+
+          const legacy = this.querySelector('[data-variant-select]');
+          if (!legacy) return null;
+          const id = Number(legacy.value);
+          return variants.find((variant) => Number(variant.id) === id) || null;
+        }
+
+        applyPurchaseState({ available, inBag, priceFormatted }) {
+          const unavailableNote = this.querySelector('[data-variant-unavailable]');
+          const addWrap = this.querySelector('[data-purchase-add]');
+          const inBagWrap = this.querySelector('[data-purchase-in-bag]');
+          const addButton = this.querySelector('[data-add-button]');
+          const status = this.querySelector('[data-availability-status]');
+          const statusLabel = this.querySelector('[data-availability-label]');
+          const bar = this.querySelector('[data-pdp-region="bar"]');
+
+          if (priceFormatted) {
+            this.querySelectorAll('[data-price]').forEach((element) => {
+              element.textContent = priceFormatted;
+            });
+          }
+
+          if (unavailableNote) unavailableNote.hidden = available;
+          if (statusLabel) {
+            statusLabel.textContent = available
+              ? this.dataset.availableLabel
+              : this.dataset.soldLabel || 'Sold';
+          }
+          if (status) status.hidden = false;
+
+          if (addButton) addButton.disabled = !available || inBag;
+          if (addWrap) addWrap.hidden = inBag;
+          if (inBagWrap) inBagWrap.hidden = !inBag;
+
+          if (bar) {
+            const barAdd = bar.querySelector('button[type="submit"]');
+            if (barAdd) barAdd.disabled = !available || inBag;
+          }
+        }
+
+        syncVariantState({ updateUrl }) {
+          const idInput = this.querySelector('[data-variant-id]');
+          const variants = this.variants;
+
+          // Default single-variant products have no picker JSON — preserve server-rendered state,
+          // only sync the in-bag / add toggle from cart variant ids.
+          if (!variants?.length) {
+            if (!idInput) return;
+            const inBag = this.cartVariantIds.has(String(idInput.value));
+            const addWrap = this.querySelector('[data-purchase-add]');
+            const inBagWrap = this.querySelector('[data-purchase-in-bag]');
+            const addButton = this.querySelector('[data-add-button]');
+            const barAdd = this.querySelector('[data-pdp-region="bar"] button[type="submit"]');
+            if (addWrap) addWrap.hidden = inBag;
+            if (inBagWrap) inBagWrap.hidden = !inBag;
+            if (addButton) addButton.disabled = inBag;
+            if (barAdd) barAdd.disabled = inBag;
+            return;
+          }
+
+          const variant = this.resolveVariant();
+          if (variant && idInput) idInput.value = String(variant.id);
+
+          const available = Boolean(variant?.available);
+          const inBag = variant ? this.cartVariantIds.has(String(variant.id)) : false;
+          this.applyPurchaseState({
+            available: Boolean(variant) && available,
+            inBag,
+            priceFormatted: variant?.price_formatted,
           });
+
+          if (variant?.featured_media_id) {
+            const gallery = this.querySelector('product-gallery');
+            const panels = gallery ? [...gallery.querySelectorAll('.pdp-media__panel[data-media-id]')] : [];
+            const index = panels.findIndex((panel) => panel.dataset.mediaId === String(variant.featured_media_id));
+            if (index >= 0 && typeof gallery.show === 'function') gallery.show(index);
+            else if (index >= 0 && typeof gallery.setActive === 'function') gallery.setActive(index);
+          }
+
+          if (updateUrl && variant?.id && window.history?.replaceState) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('variant', String(variant.id));
+            window.history.replaceState({}, '', url);
+          }
         }
 
         get headerSectionId() {
@@ -345,12 +465,17 @@
 
           const fromBar = Boolean(event.submitter?.closest('[data-pdp-region="bar"]'));
           const sectionIds = [this.dataset.sectionId, this.headerSectionId].filter(Boolean).join(',');
+          // Prefer the picker-managed variant input; form.elements.id can be ambiguous
+          // when Shopify injects additional hidden fields into the product form.
+          const variantId = Number(
+            form.querySelector('[data-variant-id]')?.value || form.elements.id?.value
+          );
           // Shopify enforces the inventory ceiling for JSON `items` adds but lets
           // form-encoded adds exceed it, so a one-of-one could land in a bag twice.
           const body = JSON.stringify({
-            items: [{ id: Number(form.elements.id.value), quantity: 1 }],
+            items: [{ id: variantId, quantity: 1 }],
             sections: sectionIds,
-            sections_url: window.location.pathname,
+            sections_url: window.location.pathname + window.location.search,
           });
 
           let response;
@@ -369,6 +494,9 @@
 
           try {
             if (response.ok) {
+              const addedId =
+                form.querySelector('[data-variant-id]')?.value || form.elements.id?.value;
+              if (addedId) this.cartVariantIds.add(String(addedId));
               this.render(data.sections, fromBar);
               announce(this.live, this.dataset.addedMessage);
             } else {
@@ -396,11 +524,15 @@
             if (next) region.innerHTML = next.innerHTML;
           });
 
+          this._variants = null;
+
           const headerHtml = sections[this.headerSectionId];
           if (headerHtml) {
             const nextBag = new DOMParser().parseFromString(headerHtml, 'text/html').querySelector('.site-header__bag');
             if (nextBag) document.querySelector('.site-header__bag')?.replaceWith(nextBag);
           }
+
+          this.syncVariantState({ updateUrl: false });
 
           const region = this.querySelector(`[data-pdp-region="${fromBar ? 'bar' : 'buy'}"]`);
           region?.querySelector('[data-view-bag], a, button:not(:disabled)')?.focus();

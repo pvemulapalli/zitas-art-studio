@@ -1,11 +1,10 @@
 {% doc %}
   Renders the original-artwork purchase block shown from 750px.
 
-  Available (product.available): price, Available · one of one, the page's only product form
-  (quantity fixed at 1, no variant UI for a default variant) and the optional Ask Ranjeeta link.
-  Once the painting is in the cart, the Add button gives way to an "In your bag" label and View bag.
-  Sold (anything else): the Sold label, the sold note and the onward links. No price, no
-  disabled button. On phones this block is hidden and the sticky bar submits the same form.
+  Available: price, status, product description, option selectors when the product has
+  real variants, quantity fixed at 1, and the Add / In your bag controls. The sticky bar
+  submits the same form on phones.
+  Sold: Sold label, notes, description (when present), and onward links — no price.
 
   @param {product} product - Artwork product
   @param {variant} variant - Selected or first available variant
@@ -21,57 +20,103 @@
   @param {string} [commission_label] - Commission link text
 
   @example
-  {% render 'product-purchase', product: product, variant: current_variant, form_id: form_id, in_bag: in_bag, available_url: available_url %}
+  {% render 'product-purchase', product: product, variant: variant, form_id: form_id, in_bag: in_bag, available_url: available_url %}
 {% enddoc %}
+
+{%- liquid
+  assign description = product.description | strip
+-%}
 
 {%- if product.available -%}
   {%- form 'product', product, id: form_id, class: 'pdp-buy__form', novalidate: 'novalidate', data-product-form: '' -%}
     <div class="pdp-buy__row">
       <span class="pdp-price" data-price>{{ variant.price | money_without_trailing_zeros }}</span>
-      <span class="pdp-status">
+      <span class="pdp-status" data-availability-status>
         {%- render 'icon', name: 'check', size: 16 -%}
-        {{- 'product.available' | t }} · {{ 'product.one_of_one' | t -}}
+        <span data-availability-label>{{- 'product.available' | t }} · {{ 'product.one_of_one' | t -}}</span>
       </span>
     </div>
 
+    {%- if description != blank -%}
+      <div class="pdp-description">{{ description }}</div>
+    {%- endif -%}
+
     {%- if product.has_only_default_variant -%}
-      <input type="hidden" name="id" value="{{ variant.id }}">
+      <input type="hidden" name="id" value="{{ variant.id }}" data-variant-id>
     {%- else -%}
-      <div class="pdp-variant">
-        <label class="pdp-variant__label" for="{{ form_id }}-variant">{{ product.options | join: ' / ' | escape }}</label>
-        <select id="{{ form_id }}-variant" class="pdp-variant__select" name="id" data-variant-select>
-          {%- for option_variant in product.variants -%}
-            <option
-              value="{{ option_variant.id }}"
-              data-price="{{ option_variant.price | money_without_trailing_zeros | escape }}"
-              {% if option_variant.id == variant.id %}
-                selected
-              {% endif %}
-              {% unless option_variant.available %}
-                disabled
-              {% endunless %}
+      <div class="pdp-variants" data-variant-picker>
+        {%- for option in product.options_with_values -%}
+          <div class="pdp-variant">
+            <label class="pdp-variant__label" for="{{ form_id }}-option-{{ option.position }}">
+              {{- option.name | escape -}}
+            </label>
+            <select
+              id="{{ form_id }}-option-{{ option.position }}"
+              class="pdp-variant__select"
+              data-option-index="{{ forloop.index0 }}"
+              autocomplete="off"
             >
-              {{- option_variant.title | escape -}}
-            </option>
-          {%- endfor -%}
-        </select>
+              {%- for value in option.values -%}
+                <option
+                  value="{{ value | escape }}"
+                  {% if option.selected_value == value %}
+                    selected
+                  {% endif %}
+                >
+                  {{- value | escape -}}
+                </option>
+              {%- endfor -%}
+            </select>
+          </div>
+        {%- endfor -%}
+        <input type="hidden" name="id" value="{{ variant.id }}" data-variant-id>
       </div>
+
+      <script type="application/json" data-product-variants>
+        [
+          {%- for option_variant in product.variants -%}
+            {
+              "id": {{ option_variant.id | json }},
+              "available": {{ option_variant.available | json }},
+              "price_formatted": {{ option_variant.price | money_without_trailing_zeros | json }},
+              "options": {{ option_variant.options | json }},
+              "featured_media_id": {% if option_variant.featured_media %}{{ option_variant.featured_media.id | json }}{% else %}null{% endif %}
+            }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ]
+      </script>
     {%- endif -%}
 
     <input type="hidden" name="quantity" value="1">
 
-    {%- if in_bag -%}
-      <p class="pdp-in-bag">
-        {%- render 'icon', name: 'check', size: 14 -%}
-        {{- 'product.in_your_bag' | t -}}
-      </p>
-      <a class="button button--large pdp-buy__view-bag" href="{{ routes.cart_url }}" data-view-bag>
-        {{- 'product.view_bag' | t -}}
-        {%- render 'icon', name: 'arrow-right', size: 16, class: 'button__arrow' -%}
-      </a>
-    {%- else -%}
-      <button type="submit" class="button button--large pdp-buy__add">{{ 'product.add_to_bag' | t }}</button>
-    {%- endif -%}
+    <p class="pdp-variant-unavailable" data-variant-unavailable {% if variant.available %}hidden{% endif %}>
+      {{- 'product.variant_unavailable' | t -}}
+    </p>
+
+    <div class="pdp-buy__actions" data-purchase-actions>
+      <div data-purchase-add {% if in_bag %}hidden{% endif %}>
+        <button
+          type="submit"
+          class="button button--large pdp-buy__add"
+          data-add-button
+          {% unless variant.available %}
+            disabled
+          {% endunless %}
+        >
+          {{- 'product.add_to_bag' | t -}}
+        </button>
+      </div>
+      <div data-purchase-in-bag {% unless in_bag %}hidden{% endunless %}>
+        <p class="pdp-in-bag">
+          {%- render 'icon', name: 'check', size: 14 -%}
+          {{- 'product.in_your_bag' | t -}}
+        </p>
+        <a class="button button--large pdp-buy__view-bag" href="{{ routes.cart_url }}" data-view-bag>
+          {{- 'product.view_bag' | t -}}
+          {%- render 'icon', name: 'arrow-right', size: 16, class: 'button__arrow' -%}
+        </a>
+      </div>
+    </div>
   {%- endform -%}
 
   {%- if ask_url != blank and ask_label != blank -%}
@@ -89,6 +134,10 @@
       {%- if sold_note != blank and sold_series_note != blank %} {% endif -%}
       {{- sold_series_note | escape -}}
     </p>
+  {%- endif -%}
+
+  {%- if description != blank -%}
+    <div class="pdp-description">{{ description }}</div>
   {%- endif -%}
 
   {%- if available_label != blank -%}

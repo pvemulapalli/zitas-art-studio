@@ -91,6 +91,10 @@
   endif
 -%}
 
+{%- capture cart_variant_ids -%}
+  {%- for item in cart.items -%}{{ item.variant_id }}{% unless forloop.last %},{% endunless %}{%- endfor -%}
+{%- endcapture -%}
+
 <product-artwork
   class="pdp full-width"
   data-section-id="{{ section.id }}"
@@ -98,6 +102,9 @@
   data-added-message="{{ 'product.added_to_bag' | t: title: product.title | escape }}"
   data-in-bag-message="{{ 'product.already_in_bag' | t: title: product.title | escape }}"
   data-sold-message="{{ 'product.just_collected' | t }}"
+  data-cart-variant-ids="{{ cart_variant_ids | strip }}"
+  data-available-label="{{ 'product.available' | t | escape }} · {{ 'product.one_of_one' | t | escape }}"
+  data-sold-label="{{ 'product.sold_status' | t | escape }}"
 >
   <div class="pdp__inner page-width page-width--wide">
     <nav class="pdp-crumb" aria-label="{{ 'product.breadcrumb' | t }}">

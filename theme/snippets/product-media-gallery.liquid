@@ -135,6 +135,7 @@
       <div
         class="pdp-media__panel pdp-media__panel--{% if is_room %}room{% else %}art{% endif %}{% if forloop.first %} is-active{% endif %}"
         data-label="{{ caption_label | escape }}"
+        data-media-id="{{ media.id }}"
       >
         {%- render 'responsive-image',
           image: viewer_image,

@@ -180,7 +180,9 @@
     "ready_to_hang": "Ready to hang",
     "not_ready_to_hang": "Not ready to hang",
     "certificate": "Certificate",
-    "story": "The story"
+    "story": "The story",
+    "variant_unavailable": "This option is currently unavailable.",
+    "sold_status": "Sold"
   },
   "footer": {
     "email_label": "Email address",
