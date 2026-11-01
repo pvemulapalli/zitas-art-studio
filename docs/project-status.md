@@ -192,7 +192,7 @@ Plain-language migration checklist: `data/catalog-migration/reports/stage-2a/ran
 
 **P0 themes:** Bundles messaging fix · Stage 2B trial · Active catalog + inventory preserve · collections · commerce/checkout QA · critical content (About portrait, Portfolio art/copy, Contact placeholders, policies) · favicon · MerchantSignals / critical SEO · a11y/responsive on purchase paths · production backup/rollback · owner approvals.
 
-**P1 polish:** Shop Pay decision/impl · noncritical SEO/alts · series blurbs · performance samples · owner-editability QA.
+**P1 polish:** Sticky desktop/tablet header (**L-UX-01**) · floating desktop/tablet PDP purchase bar (**L-UX-02**) · Shop Pay decision/impl · noncritical SEO/alts · series blurbs · performance samples · owner-editability QA.
 
 **P2 post-launch:** Future bundle merchandising expansions · extra editorial/animation · expanded SEO monitoring · archive legacy products after confidence window.
 

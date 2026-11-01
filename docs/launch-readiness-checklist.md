@@ -1,7 +1,7 @@
 # Zita V2 — Launch Readiness Checklist
 
 **Created:** 31 October 2026
-**Updated:** 1 November 2026 (L-PDP-17 follow-up: preserve selected variant after ATC; shorten ambiguous inventory copy; Stage 2B not authorized)
+**Updated:** 1 November 2026 (tracked P1 UX polish: sticky desktop/tablet header L-UX-01; floating PDP purchase bar L-UX-02; Stage 2B not authorized)
 **Authority:** Pre-launch work tracking. Environment and milestone truth: [`docs/project-status.md`](project-status.md).
 **Evidence basis:** Git `main` / `origin/main`, architecture docs, owner decisions, Partner-dev QA through 1 November 2026, M6 offline catalog reports.
 **Production store:** Untouched (Phase B). Partner-dev proof ≠ production cutover.
@@ -36,7 +36,7 @@ Counts = rows that are **not** fully closed (excludes pure **Implemented + Verif
 | Priority | Open (approx.) | Role |
 |---|---:|---|
 | **P0** | **42** | Launch blockers / must-complete before public launch |
-| **P1** | **24** | Launch polish — complete if possible; not every row blocks cutover |
+| **P1** | **26** | Launch polish — complete if possible; not every row blocks cutover |
 | **P2** | **4** | Post-launch / near-term backlog |
 
 Recount from tables below when statuses change. Do not treat “open” as “unstarted” — many P0 rows are **Requires verification**.
@@ -100,6 +100,8 @@ Priorities: **P0** launch-blocking · **P1** launch polish · **P2** post-launch
 | L-PDP-11 | P0 | Final PDP visual + commerce approval | Ranjeeta | **Not started** | L-PDP-01–06 verified; ideally L-PDP-07–08; L-PDP-17 if Bundles used at launch | Written approval of description placement, selectors, sold state, mobile |
 | L-PDP-12 | P1 | Variant featured-media gallery sync | Praveen | **Implemented**; **Requires verification** | Variant featured media on real products | Code path exists; PoC fixtures lacked distinct media — retest on catalog |
 | L-PDP-13 | P1 | Hide Year / Framing; Medium / Surface / Size / COA trim per owner | Praveen + Ranjeeta | **Requires verification** | Metafield display rules; Surface render gap | Confirm PDP facts match Oct 2026 owner decisions on live products — was P2; raised to P1 (owner PDP decisions) |
+
+Related P1 UX (not blockers): sticky header **L-UX-01** and desktop/tablet floating PDP purchase bar **L-UX-02** — see §10b.
 
 ---
 
@@ -222,6 +224,15 @@ Priorities: **P0** launch-blocking · **P1** launch polish · **P2** post-launch
 
 ---
 
+## 10b. UX launch polish (shell / long-page navigation)
+
+| Task ID | Priority | Task | Owner | Status | Dependencies | Verification / acceptance |
+|---|---|---|---|---|---|---|
+| L-UX-01 | P1 | Sticky desktop/tablet header for persistent nav + cart while scrolling | Praveen | **Not started** | Approved V2 header/nav; mobile menu behavior | Compact sticky state OK; avoid excessive viewport obstruction; preserve dropdowns, mobile behavior, keyboard access, anchor positioning; respect `prefers-reduced-motion`; verify desktop + tablet breakpoints — **not a launch blocker** |
+| L-UX-02 | P1 | Desktop/tablet floating PDP purchase bar after primary buy controls leave the viewport | Praveen | **Not started** | Existing PDP purchase logic (`zita-product.js` / purchase snippets); L-PDP-17 messaging; mobile sticky bar already exists — preserve it | Compact bar: artwork thumbnail, title, selected price, purchase action; sync selected variant + inventory; Add to Cart / View Cart; sold-out + bundle-error states; reuse existing purchase logic; no footer/content overlap; a11y + responsive; art-first V2 language — **not a launch blocker** |
+
+---
+
 ## 11. Production deployment and rollback
 
 | Task ID | Priority | Task | Owner | Status | Dependencies | Verification / acceptance |
@@ -255,8 +266,10 @@ Priorities: **P0** launch-blocking · **P1** launch polish · **P2** post-launch
 |---|---|---|
 | Favicon.ico + supporting icons | L-BR-01, L-BR-02 | **Not started** (P0) |
 | MerchantSignals SEO audit | L-SEO-01 | **Not started** (P0) |
-| Bundles inventory messaging | L-PDP-17 | **Implemented** locally; **dev-store QA pending** |
+| Bundles inventory messaging | L-PDP-17 | **Implemented** on `#192367558949`; live QA / wrap polish landed (`67cd095`, `96f9e2e`) — confirm closed after owner sign-off |
 | Bundles ATC 422 path | L-PDP-14 | **Verified** (dev) — distinct from L-PDP-17 |
+| Sticky desktop/tablet header | L-UX-01 | **Not started** (P1 polish) |
+| Floating desktop/tablet PDP purchase bar | L-UX-02 | **Not started** (P1 polish) |
 | Active catalog prep | L-CAT-08, L-CAT-09 | **Complete** (offline) |
 | Trial + full Active migration | L-CAT-10–12, L-CAT-01–05 | **Not started** / pending decisions |
 | Collection extraction | L-COL-05, L-COL-01–02 | **Not started** |
