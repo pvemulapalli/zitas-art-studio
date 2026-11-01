@@ -1,6 +1,6 @@
 # Zita's Art Studio — Project Status
 
-**Last updated:** 1 November 2026 (L-PDP-17 Bundles messaging implemented in theme; development-store QA and Stage 2B **not** done).
+**Last updated:** 1 November 2026 (L-PDP-17 follow-up: keep selected variant after ATC; shortened ambiguous Bundles copy — commit/deploy pending; Stage 2B **not** done).
 
 This is the **only** canonical record of project progress, current work, next steps and environment state. Other documents link here rather than tracking status themselves.
 
@@ -12,9 +12,9 @@ Launch task detail and priorities: [`docs/launch-readiness-checklist.md`](launch
 
 | Item | State |
 |---|---|
-| **Current** | **L-PDP-17 implemented** in `theme/` (Bundles inventory messaging). M6 Stage 2A complete. No imports. |
-| **Just finished** | Bundles PDP messaging fix (code + checklist); awaiting **dev-store QA** and deploy authorization. |
-| **Next** | Manual QA of L-PDP-17 on published/dev theme `#192367558949`, then authorize commit/deploy; then **M6 Stage 2B** Draft trial (not authorized). |
+| **Current** | **L-PDP-17 follow-up** in working tree — preserve selected variant after successful ATC; ambiguous inventory copy shortened. M6 Stage 2A complete. |
+| **Just finished** | Bundle QA regression fix (local); awaiting **commit/deploy authorization** then live QA. |
+| **Next** | Authorize commit + deploy to `#192367558949`, re-QA Artwork Bundle + Size/Finish fixture, then **M6 Stage 2B** (not authorized). |
 | **Next catalog** | **M6 Stage 2B** — controlled Draft trial import on the Partner **development** store (not authorized yet). |
 | **Provisional effort** | **~20–35 hours** focused work remaining to launch — estimate only; excludes redesigns, unexpected migration issues, and waits on owner decisions. |
 

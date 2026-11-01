@@ -555,6 +555,56 @@
           return section?.id.replace('shopify-section-', '') || '';
         }
 
+        productContextUrl(variantId) {
+          const url = new URL(window.location.href);
+          if (variantId) url.searchParams.set('variant', String(variantId));
+          else url.searchParams.delete('variant');
+          // Section Rendering API uses a separate `sections` query; strip any stale value.
+          url.searchParams.delete('sections');
+          return url;
+        }
+
+        sectionsRequestUrl(sectionIds, variantId) {
+          const url = this.productContextUrl(variantId);
+          url.searchParams.set('sections', sectionIds);
+          return url;
+        }
+
+        preserveSelectedVariantUrl(variantId) {
+          if (!variantId || !window.history?.replaceState) return;
+          const url = this.productContextUrl(variantId);
+          window.history.replaceState({}, '', url);
+        }
+
+        selectVariantById(variantId) {
+          if (!variantId) return false;
+          const variants = this.variants;
+          if (!variants?.length) {
+            const idInput = this.querySelector('[data-variant-id]');
+            if (idInput) idInput.value = String(variantId);
+            return Boolean(idInput);
+          }
+
+          const variant = variants.find((entry) => Number(entry.id) === Number(variantId));
+          if (!variant) return false;
+
+          const optionSelects = [...this.querySelectorAll('[data-option-index]')];
+          if (optionSelects.length && Array.isArray(variant.options)) {
+            optionSelects
+              .sort((a, b) => Number(a.dataset.optionIndex) - Number(b.dataset.optionIndex))
+              .forEach((select, index) => {
+                if (variant.options[index] != null) select.value = variant.options[index];
+              });
+          } else {
+            const legacy = this.querySelector('[data-variant-select]');
+            if (legacy) legacy.value = String(variant.id);
+          }
+
+          const idInput = this.querySelector('[data-variant-id]');
+          if (idInput) idInput.value = String(variant.id);
+          return true;
+        }
+
         async onSubmit(event) {
           const form = event.target;
           if (!form.matches('[data-product-form]')) return;
@@ -570,12 +620,15 @@
           const variantId = Number(
             form.querySelector('[data-variant-id]')?.value || form.elements.id?.value
           );
+          this.preserveSelectedVariantUrl(variantId);
           // Shopify enforces the inventory ceiling for JSON `items` adds but lets
           // form-encoded adds exceed it, so a one-of-one could land in a bag twice.
+          // sections_url must include ?variant= so Liquid re-renders the same selection.
+          const contextUrl = this.productContextUrl(variantId);
           const body = JSON.stringify({
             items: [{ id: variantId, quantity: 1 }],
             sections: sectionIds,
-            sections_url: window.location.pathname + window.location.search,
+            sections_url: `${contextUrl.pathname}${contextUrl.search}`,
           });
 
           let response;
@@ -595,10 +648,8 @@
           try {
             if (response.ok) {
               this.clearPurchaseError();
-              const addedId =
-                form.querySelector('[data-variant-id]')?.value || form.elements.id?.value;
-              if (addedId) this.cartVariantIds.add(String(addedId));
-              this.render(data.sections, fromBar);
+              if (variantId) this.cartVariantIds.add(String(variantId));
+              this.render(data.sections, fromBar, { restoreVariantId: variantId });
               announce(this.live, this.dataset.addedMessage);
             } else {
               await this.handleAddFailure({
@@ -623,12 +674,12 @@
             : null;
 
           // Keep ?variant= so section HTML matches the selection that failed.
-          const sectionsUrl = new URL(window.location.href);
-          sectionsUrl.searchParams.set('sections', sectionIds);
-          const sections = await fetch(`${sectionsUrl.pathname}?${sectionsUrl.searchParams}`).then((response) =>
+          this.preserveSelectedVariantUrl(variantId);
+          const sectionsUrl = this.sectionsRequestUrl(sectionIds, variantId);
+          const sections = await fetch(`${sectionsUrl.pathname}${sectionsUrl.search}`).then((response) =>
             response.json()
           );
-          this.render(sections, fromBar);
+          this.render(sections, fromBar, { restoreVariantId: variantId });
 
           const stillForSale = Boolean(this.querySelector('[data-product-form]'));
           const selectedAfter = Array.isArray(this.variants)
@@ -690,7 +741,7 @@
           this.showPurchaseError(safeDescription || this.dataset.addErrorMessage);
         }
 
-        render(sections, fromBar) {
+        render(sections, fromBar, { restoreVariantId } = {}) {
           const html = sections?.[this.dataset.sectionId];
           if (!html) throw new Error('Section not rendered');
           const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -708,7 +759,10 @@
             if (nextBag) document.querySelector('.site-header__bag')?.replaceWith(nextBag);
           }
 
-          this.syncVariantState({ updateUrl: false });
+          // Section HTML from cart/add can re-render the first available variant. Restore the
+          // variant that was actually submitted so option selects, price, and in-cart state match.
+          if (restoreVariantId) this.selectVariantById(restoreVariantId);
+          this.syncVariantState({ updateUrl: Boolean(restoreVariantId) });
 
           const region = this.querySelector(`[data-pdp-region="${fromBar ? 'bar' : 'buy'}"]`);
           region?.querySelector('[data-view-bag], a, button:not(:disabled)')?.focus();
