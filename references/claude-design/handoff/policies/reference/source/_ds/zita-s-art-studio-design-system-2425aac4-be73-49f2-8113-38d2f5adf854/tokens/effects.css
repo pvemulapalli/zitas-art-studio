@@ -1,0 +1,20 @@
+/* Radii, borders, shadow, motion. Mostly square, hairline, flat. */
+:root{
+  --radius-0:0;
+  --radius-1:2px;    /* inputs, tags */
+  --radius-pill:999px; /* only for tiny count badges */
+
+  --border-w:1px; /* @kind spacing */
+  --rule:1px solid var(--border-hairline); /* @kind other */
+
+  /* Shadows: artwork may cast a soft "hung on the wall" shadow; UI surfaces rarely do. */
+  --shadow-hang:0 1px 2px rgba(13,20,26,.06),0 18px 40px -18px rgba(13,20,26,.28);
+  --shadow-overlay:0 24px 64px -24px rgba(13,20,26,.35);
+  --scrim:rgba(13,20,26,.48); /* @kind color */
+
+  --ease-pour:cubic-bezier(.22,.61,.36,1); /* @kind other */  /* slow settle, like paint levelling */
+  --ease-out:cubic-bezier(.16,1,.3,1); /* @kind other */
+  --dur-fast:160ms; /* @kind other */
+  --dur-base:320ms; /* @kind other */
+  --dur-slow:720ms; /* @kind other */
+}

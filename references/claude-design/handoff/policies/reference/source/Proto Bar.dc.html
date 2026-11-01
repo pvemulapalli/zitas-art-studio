@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/zita-s-art-studio-design-system-2425aac4-be73-49f2-8113-38d2f5adf854/styles.css">
+<link rel="stylesheet" href="zita-v2.css">
+</helmet>
+<div style="background:#0D141A;color:#CDD1D2;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;letter-spacing:.02em">
+  <div style="display:flex;align-items:center;gap:8px 20px;flex-wrap:wrap;padding:8px clamp(16px,2vw,28px)">
+    <span style="color:#7FB3C2">Zita · prototype v2 · approved direction</span>
+    <nav aria-label="Prototype pages" style="display:flex;gap:4px;flex-wrap:wrap;flex:1">
+      <sc-for list="{{ pages }}" as="p" hint-placeholder-count="5">
+        <a href="{{ p.href }}" style="padding:6px 10px;text-decoration:none;color:{{ p.fg }};background:{{ p.bg }}">{{ p.label }}</a>
+      </sc-for>
+    </nav>
+    <sc-if value="{{ hasView }}" hint-placeholder-val="{{ true }}">
+      <div role="group" aria-label="Viewport" style="display:flex;border:1px solid #3B4044">
+        <button type="button" onClick="{{ desk }}" aria-pressed="{{ isDesk }}" style="padding:6px 12px;border:0;cursor:pointer;font:inherit;color:{{ dFg }};background:{{ dBg }}">Desktop</button>
+        <button type="button" onClick="{{ mob }}" aria-pressed="{{ isMob }}" style="padding:6px 12px;border:0;cursor:pointer;font:inherit;color:{{ mFg }};background:{{ mBg }}">Mobile</button>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200,&quot;height&quot;:48},&quot;page&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;onView&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;function&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const page = this.props.page || '';
+    const v = this.props.view || 'desktop';
+    const pages = [['Foundations', 'Brand Foundations.dc.html'], ['Global shell', 'Global Shell.dc.html'], ['Homepage', 'Homepage.dc.html'], ['About', 'About.dc.html'], ['Exhibitions', 'Exhibitions.dc.html'], ['Portfolio', 'Portfolio.dc.html'], ['Policies', 'Policy Page.dc.html'], ['Contact', 'Contact.dc.html'], ['Hero carousel', 'Hero Carousel Spec.dc.html'], ['Listing (PLP)', 'Works PLP.dc.html'], ['Artwork (PDP)', 'Artwork PDP.dc.html']]
+      .map(([label, href]) => ({ label, href, fg: label === page ? '#0D141A' : '#CDD1D2', bg: label === page ? '#CFE4E9' : 'transparent' }));
+    const on = (x) => (x ? ['#0D141A', '#CFE4E9'] : ['#CDD1D2', 'transparent']);
+    const [dFg, dBg] = on(v === 'desktop'); const [mFg, mBg] = on(v === 'mobile');
+    const set = (x) => () => this.props.onView && this.props.onView(x);
+    return { pages, hasView: !!this.props.onView, isDesk: v === 'desktop', isMob: v === 'mobile', dFg, dBg, mFg, mBg, desk: set('desktop'), mob: set('mobile') };
+  }
+}
+</script>
+</body>
+</html>
