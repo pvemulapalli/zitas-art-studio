@@ -183,7 +183,7 @@
     "story": "The story",
     "variant_unavailable": "This artwork combination is unavailable.",
     "bundle_component_in_cart": "An artwork in this set is already in your cart.",
-    "bundle_inventory_ambiguous": "An artwork may be unavailable or already in your cart.",
+    "bundle_inventory_ambiguous": "Unable to add this set. Check your cart or availability.",
     "add_error_generic": "We couldn't add this artwork. Please try again.",
     "sold_status": "Sold"
   },
