@@ -19,7 +19,7 @@
   assign success_note = section.settings.success_note
   assign continue_line = section.settings.continue_line
   assign continue_label = section.settings.continue_label
-  assign continue_link = section.settings.continue_link | default: routes.all_products_collection_url
+  assign continue_link = section.settings.continue_link | default: '/collections/originals'
   assign public_email = section.settings.failure_email | default: settings.contact_email | default: 'info@zitasartstudio.com' | strip
   assign send_failure = section.settings.msg_send_failure | replace: '{{ email }}', public_email
 -%}

@@ -1,6 +1,6 @@
 # Zita's Art Studio — Project Status
 
-**Last updated:** 1 November 2026 (Footer CONTACT column removed; legal bar Contact Me → Contact page; launch checklist quick wins verified on `#192367558949`).
+**Last updated:** 2 November 2026 (Originals handle → `originals`; editorial CTAs; Organization JSON-LD; search exposure audit on `#192367558949`).
 
 This is the **only** canonical record of project progress, current work, next steps and environment state. Other documents link here rather than tracking status themselves.
 
@@ -14,10 +14,10 @@ Policy implementation: [`docs/qa/policy-page-implementation.md`](qa/policy-page-
 
 | Item | State |
 |---|---|
-| **Current** | Phase 4 QA **partial**: policy/footer Claude Design live; footer simplified (no CONTACT column); Contact Me points to `/pages/contact`. |
-| **Just finished** | Footer CONTACT column removed; `footer-legal` Contact Information → **Contact Me** (`/pages/contact`); Other Policies hides Contact Information policy; checklist quick wins verified (favicon, 404, password, sticky header). |
-| **Prior** | Native `/policies/*` editorial layout + footer legal bar; sticky header / PDP bar / Quick Add / favicon + Admin policies; Stage 2B–3B catalog. |
-| **Next** | Owner policy content + visual sign-off; CAPTCHA/contact submit verify; `water-ii` inventory; production cutover path. |
+| **Current** | Phase 4 QA **partial**: targeted SEO / Originals URL cleanup **done on development**; MerchantSignals full scan still open. |
+| **Just finished** | Development collection handle `v2-poc-original-artworks` → **`originals`** (30 products; Admin redirect); theme CTAs + PDP breadcrumbs use `/collections/originals`; homepage Organization JSON-LD; search exposure audited (exposed, functional, basic). |
+| **Prior** | Footer CONTACT column removed; Contact Me → `/pages/contact`; policy layout; sticky header / PDP bar / Quick Add / favicon; Stage 2B–3B catalog. |
+| **Next** | Owner policy content + visual sign-off; MerchantSignals full scan; `water-ii` inventory; production cutover path. |
 | **Provisional effort** | **~12–25 hours** focused work remaining to launch — estimate only; excludes redesigns, unexpected migration issues, and waits on owner decisions. |
 
 ---
@@ -146,8 +146,9 @@ Ranjeeta: migrate only production products marked **Active**.
 | Online Store published | **30 / 30** |
 | Development collections | **9** (incl. frontpage) |
 | Originals membership | **30** migrated artworks (QA/bundle excluded; owner-confirmed) |
+| Originals handle | **`originals`** (renamed 2 Nov 2026 from `v2-poc-original-artworks`; Admin `redirectNewHandle` → `/collections/v2-poc-original-artworks` → `/collections/originals`) |
 | Series collections | Walking the Trail 5 · Colored by Nature 5 · Sand and Cloud 6 · Reverence 4 · Elements 6 · Good Things Come in Pair 6 · New Works 2 |
-| Navigation | `main-menu`: Featured Series (first 3) + Explore More (rest); All Originals → Originals collection |
+| Navigation | `main-menu`: Featured Series (first 3) + Explore More (rest); All Originals → `/collections/originals` (resource menus auto-updated with handle) |
 | Footer | `footer-art` (Explore Art) + `footer-studio` (The Studio) only in main columns (no CONTACT details column); `footer-legal` bottom bar: Shipping · Returns · Privacy · Terms · **Contact Me** → `/pages/contact` |
 | Results | `stage-3b-implementation-results.md` |
 | Production | **Untouched** |
@@ -214,7 +215,7 @@ Plain-language migration checklist: `data/catalog-migration/reports/stage-2a/ran
 
 ## Remaining before launch (summary)
 
-**P0 themes:** Password-session storefront/commerce QA · `water-ii` inventory decision · L-PDP-17 live verify · production catalog/collections/metafields cutover · checkout/payments smoke · critical content (About portrait, Portfolio art/copy, Contact placeholders, policies) · favicon · MerchantSignals / critical SEO · a11y/responsive on purchase paths · production backup/rollback · owner approvals.
+**P0 themes:** Password-session storefront/commerce QA · `water-ii` inventory decision · L-PDP-17 live verify · production catalog/collections/metafields cutover · checkout/payments smoke · critical content (About portrait, Portfolio art/copy, Contact placeholders, policies) · MerchantSignals full scan (targeted Org + Originals URL remediations done on development) · a11y/responsive on purchase paths · production backup/rollback · owner approvals.
 
 **P1 polish:** Sticky header + floating PDP bar + Quick Add **implemented** — manual QA/sign-off open (`docs/qa/ux-refinements.md`) · Shop Pay decision/impl · noncritical SEO/alts · series blurbs · performance samples · owner-editability QA.
 

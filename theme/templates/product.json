@@ -12,7 +12,7 @@
       },
       "block_order": ["shipping"],
       "settings": {
-        "originals_collection": "v2-poc-original-artworks",
+        "originals_collection": "originals",
         "show_ask": true,
         "ask_label": "Ask Ranjeeta About This Artwork",
         "sold_note": "This painting has been collected.",
@@ -35,7 +35,7 @@
       "settings": {
         "heading": "More originals",
         "link_label": "All originals",
-        "link_collection": "v2-poc-original-artworks"
+        "link_collection": "originals"
       }
     }
   },

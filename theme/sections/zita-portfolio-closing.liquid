@@ -1,7 +1,7 @@
 {%- liquid
   assign heading = section.settings.heading
   assign button_label = section.settings.button_label
-  assign button_link = section.settings.button_link | default: routes.all_products_collection_url
+  assign button_link = section.settings.button_link | default: '/collections/originals'
   assign about_label = section.settings.about_label
   assign about_link = section.settings.about_link
   assign contact_label = section.settings.contact_label

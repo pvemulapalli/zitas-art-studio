@@ -14,7 +14,7 @@
       "settings": {
         "eyebrow": "Cart",
         "continue_label": "View originals",
-        "continue_url": ""
+        "continue_url": "/collections/originals"
       }
     }
   },

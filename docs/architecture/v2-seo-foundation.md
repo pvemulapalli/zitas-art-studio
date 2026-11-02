@@ -1,6 +1,6 @@
 # V2 SEO foundation
 
-**Status:** Planning and audit (23 October 2026)  
+**Status:** Living technical SEO notes (updated 2 November 2026)
 **Progress tracking:** [project-status.md](../project-status.md)
 
 SEO work is integrated into each remaining page implementation, not deferred to a final QA pass. The marketing agency may review the password-protected dev storefront before launch.
@@ -39,7 +39,9 @@ SEO work is integrated into each remaining page implementation, not deferred to 
 | **Meta description** | Rendered when `page_description` set on resource |
 | **Canonical** | `link rel="canonical" href="{{ canonical_url }}"` |
 | **Open Graph / Twitter** | Basic OG + Twitter cards; product OG price when product page |
-| **Product JSON-LD** | `product \| structured_data` on product pages only |
+| **Product JSON-LD** | `product \| structured_data` on product pages only (preserved) |
+| **Organization JSON-LD** | Homepage only via `snippets/meta-tags.liquid` — name `Zita's Art Studio` (not Development shop.name); `url` = `request.origin`; logo from favicon setting or `favicon-180.png`; `sameAs` only when Theme setting Instagram URL is set |
+| **Originals URL** | Canonical collection handle **`originals`**; legacy `v2-poc-original-artworks` redirected in Admin |
 | **Homepage h1** | Visually hidden h1 on index in `theme.liquid` |
 | **Skip link** | Present |
 | **404** | Custom `zita-not-found` section (local); correct 404 template type |
@@ -50,15 +52,14 @@ SEO work is integrated into each remaining page implementation, not deferred to 
 
 | Gap | Severity | Notes |
 |---|---|---|
-| **Skeleton `/search`** | Medium | Unstyled; weak internal discovery |
+| **Skeleton `/search`** | Low (accepted) | **Exposed** in desktop header + mobile menu; `/search` returns products (e.g. `water` → 7 hits). Basic Skeleton UI — predictive overlay deferred (C4). No SearchAction schema. Not a broken navigation path. |
 | **Collection SEO** | Medium | Editorial content in metafields; verify titles/descriptions in Admin |
-| **About / Exhibitions / Portfolio / Contact** | High | Pages not fully built; metadata strategy per checklist below |
+| **About / Exhibitions / Portfolio / Contact** | Medium | Pages implemented; metadata / owner content still open |
 | **Variant URLs** | Medium | PDP JS does not yet sync `?variant=` (planned milestone) |
 | **Global `contact_email` default** | Low (brand) | Schema default updated locally; **saved settings** on remote themes unchanged |
-| **“Bag” copy** | Low SEO / brand | Cart strings; planned “Add to Cart” pass |
 | **Shop Pay / accelerated checkout** | Commerce | Not on V2 original PDP yet |
 | **hreflang / Markets** | Deferred | USD-only launch |
-| **Breadcrumbs** | Good | PDP + semantic nav where implemented |
+| **Breadcrumbs** | Good | PDP + semantic nav; Originals crumb → `/collections/originals` |
 
 ### Content dependencies
 
@@ -93,7 +94,7 @@ For each template, confirm before launch:
 ### Sharing the dev storefront safely
 
 1. Share **store URL** + **storefront password** through a secure channel (not in Git).
-2. Always use **QA theme preview** for About until promoted:  
+2. Always use **QA theme preview** for About until promoted:
    `https://zitas-art-studio-development.myshopify.com/pages/about?preview_theme_id=193116733733`
 3. For sitewide V2 on published dev theme (when ready): password + published theme URL.
 4. **Do not** disable password protection for crawlers pre-launch.

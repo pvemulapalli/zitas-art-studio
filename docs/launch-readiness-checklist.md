@@ -1,8 +1,8 @@
 # Launch Readiness — Zita's Art Studio
 
-**Last updated:** 1 November 2026
+**Last updated:** 2 November 2026
 **Overall status:** Development storefront substantially complete. Remaining work is primarily **content approval**, **business decisions**, and **production launch validation**.
-**Git baseline:** `dd13cc5` on `main` / `origin/main`
+**Git baseline:** `dd13cc5` on `main` / `origin/main` (local SEO/URL cleanup uncommitted)
 **Development theme:** `#192367558949` · `zitas-art-studio-development.myshopify.com`
 **Production:** Untouched until Phase B authorization.
 
@@ -31,7 +31,7 @@ The Partner development storefront (theme, shell UX, policies layout, developmen
 | Store policies (returns, shipping, …) | Ranjeeta | Waiting | Review + approve content | Layout already on native `/policies/*` |
 | Development storefront visual/content feedback | Ranjeeta | Waiting | Review authenticated preview | Password session |
 | MerchantSignals scan | Praveen | **Ready for scan** | Run on authenticated storefront (not password gate) | Dev password session |
-| MerchantSignals remediations | Praveen | Not started | Fix confirmed findings | Scan results |
+| MerchantSignals remediations | Praveen | **Partial** | Targeted: Originals URL + Org JSON-LD done; finish after full scan | Scan results |
 | PDP “In your cart” accuracy (if still reproducible) | Praveen | Open | Reproduce + fix if needed | Bundles / cart state |
 | Production checkout / payment verification | Praveen | Deferred to launch | Smoke after production payments live | Phase B + payments |
 | Shop Pay on PDP / checkout (eligible) | Praveen | Not started | Verify where supported | Payments eligibility |
@@ -50,7 +50,7 @@ The Partner development storefront (theme, shell UX, policies layout, developmen
 ### Waiting on Praveen
 
 1. Run **MerchantSignals** on the development storefront (**Ready for scan** — authenticated pages, not the password gate).
-2. Review MerchantSignals findings and fix confirmed issues.
+2. Review remaining MerchantSignals findings after the 2 Nov targeted remediations (Originals `/collections/originals`, Organization JSON-LD).
 3. Address the previously reported PDP **“In your cart”** accuracy issue if still reproducible.
 4. Perform **production checkout/payment** verification during launch.
 5. Verify **Shop Pay** on PDP and checkout where supported and eligible.
@@ -71,6 +71,10 @@ The Partner development storefront (theme, shell UX, policies layout, developmen
 - Development password protection verified.
 - Git consolidation completed at `dd13cc5`.
 - Development Active catalog (30) + collections/nav migration complete (production cutover still deferred).
+- Originals collection handle renamed to `originals` with Admin redirect from `v2-poc-original-artworks`.
+- Editorial CTAs + PDP breadcrumbs point at `/collections/originals` (not `/collections/all`).
+- Homepage Organization JSON-LD (`Zita's Art Studio`) verified on development.
+- Search exposure audited: header/mobile link present; basic `/search` functional; no redesign.
 
 ### Deferred (not blocked theme development)
 
@@ -84,7 +88,7 @@ The Partner development storefront (theme, shell UX, policies layout, developmen
 # Technical checklist (detail)
 
 **Created:** 31 October 2026
-**Updated:** 1 November 2026 (owner dashboard; catalog/UX/policy reconciliation; MerchantSignals ready-for-scan)
+**Updated:** 2 November 2026 (Originals handle + Org JSON-LD remediations; search audit; MerchantSignals still ready-for-scan)
 **Authority:** Pre-launch work tracking. Environment truth: [`docs/project-status.md`](project-status.md).
 **Evidence basis:** Git `main` / `origin/main` @ `dd13cc5`, architecture docs, owner decisions, Partner-dev QA through 1 November 2026, M6 reports.
 **Production store:** Untouched (Phase B). Partner-dev proof ≠ production cutover.
@@ -128,7 +132,7 @@ Counts = rows that are **not** fully closed (excludes pure **Implemented + Verif
 
 1. **Owner content workbooks** — 30 artworks + 8 collections (L-CAT-01, collection editorial).
 2. **Owner decisions** — Water II inventory, policy content approval, paired/bundle examples, final visual feedback (L-CAT-12, L-CNT-06, L-CNT-10).
-3. **MerchantSignals** — **Ready for scan — Praveen** (L-SEO-01); remediate confirmed findings.
+3. **MerchantSignals** — **Ready for scan — Praveen** (L-SEO-01); targeted Originals URL + Organization schema remediations done on development — close remaining findings after full scan.
 4. **PDP “In your cart” accuracy** if still reproducible (related to L-PDP-17 / cart state messaging).
 5. **Production cutover safety** — backup, unpublished theme parity, checkout/payment smoke, Ranjeeta go/no-go (L-DEP-*, L-COM-02, L-CNT-10). Dedicated rollback drill is deferred in priority, not waived at publish.
 
@@ -248,7 +252,9 @@ Related P1 UX (not blockers): sticky header **L-UX-01**, floating PDP purchase b
 | Task ID | Priority | Task | Owner | Status | Dependencies | Verification / acceptance |
 |---|---|---|---|---|---|---|
 | L-SEO-01 | P0 | MerchantSignals SEO audit (full storefront pass) | Praveen | **Ready for scan — Praveen** | Authenticated development storefront session (scan real pages, **not** the password gate) | Written findings + remediations closed or accepted; do not claim scan completed until run |
-| L-SEO-02 | P0 | Product structured data verification (`product \| structured_data`) | Praveen | **Implemented**; **Requires verification** | Live PDP HTML | Rich Results / MerchantSignals confirm Product JSON-LD; variants OK |
+| L-SEO-02 | P0 | Product structured data verification (`product \| structured_data`) | Praveen | **Implemented**; spot-checked on development PDP (Product only; no Org duplicate) | Live PDP HTML | Rich Results / MerchantSignals confirm Product JSON-LD; variants OK |
+| L-SEO-02b | P0 | Organization JSON-LD (homepage) | Praveen | **Implemented + Verified** (development) | [`v2-seo-foundation.md`](architecture/v2-seo-foundation.md) | Name `Zita's Art Studio`; env `request.origin`; logo asset; no invented address/phone/social |
+| L-SEO-02c | P0 | Originals collection URL cleanup | Praveen | **Implemented + Verified** (development) | Admin handle + theme CTAs | `/collections/originals`; redirect from `v2-poc-original-artworks`; menus/resource links updated |
 | L-SEO-03 | P0 | Titles, meta descriptions, canonicals per key template | Praveen + agency | **Requires verification** | [`v2-seo-foundation.md`](architecture/v2-seo-foundation.md) | Homepage, PDP, collections, About, Exhibitions, Portfolio, Contact, policies, 404 |
 | L-SEO-04 | P0 | Production handle inventory + redirect plan (legacy → V2) | Praveen | **Not started** | Production export; Active handle list | No soft-404s; critical URLs 301 as planned |
 | L-SEO-05 | P1 | Sitemap / Search Console / robots at cutover | Praveen | **Not started** | Password removed only at launch | Production sitemap healthy (legacy audit saw `/sitemap.xml` **500** — **reverify**) |
@@ -351,7 +357,9 @@ Related P1 UX (not blockers): sticky header **L-UX-01**, floating PDP purchase b
 | Review item | Primary IDs | Status snapshot |
 |---|---|---|
 | Favicon.ico + supporting icons | L-BR-01, L-BR-02 | **Verified** on `#192367558949` |
-| MerchantSignals SEO audit | L-SEO-01 | **Ready for scan — Praveen** (authenticated storefront, not password gate) |
+| MerchantSignals SEO audit | L-SEO-01 | **Ready for scan — Praveen** (authenticated storefront, not password gate); targeted remediations L-SEO-02b/02c done |
+| Organization JSON-LD | L-SEO-02b | **Verified** on development homepage |
+| Originals `/collections/originals` | L-SEO-02c | **Verified** on development (handle + redirect + theme CTAs) |
 | Bundles + “In your cart” accuracy | L-PDP-17 | Bundles ATC tested; residual “In your cart” accuracy **Open** if reproducible |
 | Bundles ATC 422 path | L-PDP-14 | **Verified** (dev) |
 | Sticky header / Quick Add / floating ATC | L-UX-01, L-UX-02, L-UX-03 | **Approved** on development |

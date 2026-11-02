@@ -22,7 +22,7 @@
             "heading": "Moving into Unknown through flowing paint",
             "text": "“Every space deserves art that not only decorates but also provokes thought.”",
             "cta_label": "View originals",
-            "cta_url": "/collections/all",
+            "cta_url": "/collections/originals",
             "artwork": "",
             "credit": "",
             "text_position": "left",
@@ -93,7 +93,7 @@
         "eyebrow": "Current series",
         "heading": "Ranjeeta paints in series, each one a body of work.",
         "link_label": "All originals",
-        "link_url": "/collections/all"
+        "link_url": "/collections/originals"
       }
     },
     "point_of_view": {
@@ -138,7 +138,7 @@
             "statement_style": "statement",
             "body": "",
             "link_label": "View originals",
-            "link_url": "/collections/all",
+            "link_url": "/collections/originals",
             "mobile_text": ""
           }
         },

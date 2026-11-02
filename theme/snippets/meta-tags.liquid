@@ -92,6 +92,37 @@
   >
 {%- endif -%}
 
+{%- comment -%}
+  Organization JSON-LD on the homepage only.
+  Brand name is the production-facing label (not the Development shop.name).
+  Logo and sameAs only from verified theme assets / settings — never invented.
+{%- endcomment -%}
+{%- if request.page_type == 'index' -%}
+  {%- liquid
+    assign org_name = "Zita's Art Studio"
+    assign org_url = request.origin
+    if settings.favicon != blank
+      assign org_logo = settings.favicon | image_url: width: 512
+    else
+      assign org_logo = 'favicon-180.png' | asset_url
+    endif
+    if org_logo contains '://'
+    elsif org_logo != blank
+      assign org_logo = org_logo | prepend: 'https:'
+    endif
+  -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": {{ org_name | json }},
+      "url": {{ org_url | json }}{% if org_logo != blank %},
+      "logo": {{ org_logo | json }}{% endif %}{% if settings.social_instagram_link != blank %},
+      "sameAs": [{{ settings.social_instagram_link | json }}]{% endif %}
+    }
+  </script>
+{%- endif -%}
+
 <meta
   name="twitter:card"
   content="summary_large_image"

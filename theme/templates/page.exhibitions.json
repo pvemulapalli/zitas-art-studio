@@ -373,7 +373,7 @@
     "ex_closing": {
       "type": "zita-exhibitions-closing",
       "settings": {
-        "button_link": "/collections/all",
+        "button_link": "/collections/originals",
         "write_url": "/pages/contact"
       }
     }
