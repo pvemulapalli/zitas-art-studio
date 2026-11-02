@@ -2,6 +2,8 @@
 
 **Status:** Authoritative architecture reference for `theme/` — refine as each page is built
 
+**Pause (2 Nov 2026):** Project **PAUSED — awaiting Ranjeeta’s deliverables.** Production V2 upload/cutover is on **DEPLOYMENT HOLD** until Praveen authorizes resume. Live production theme remains **Flora** on `zitasart.myshopify.com`. See [project-status.md](../project-status.md) and [production-parity-audit.md](production-parity-audit.md).
+
 It maps approved **Design V2** to Shopify Online Store 2.0 structures on **Shopify Basic**. Progress and next steps are tracked only in [project-status.md](../project-status.md); this document records architecture decisions and how they were proven.
 
 **Related documents:**

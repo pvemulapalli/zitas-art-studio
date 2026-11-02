@@ -1,12 +1,14 @@
 # Launch Readiness — Zita's Art Studio
 
 **Last updated:** 2 November 2026
-**Overall status:** Development storefront substantially complete. Remaining work is primarily **content approval**, **business decisions**, and **production launch validation**.
-**Git baseline:** `dd13cc5` on `main` / `origin/main` (local SEO/URL cleanup uncommitted)
+**Overall status:** **PAUSED — Awaiting Ranjeeta's deliverables.** Development storefront substantially complete; production V2 deployment on hold.
+**Git baseline:** `9f51fd2` on `main` / `origin/main`
 **Development theme:** `#192367558949` · `zitas-art-studio-development.myshopify.com`
-**Production:** Untouched until Phase B authorization.
+**Production:** `zitasart.myshopify.com` · Flora `#145890541755` live · **no Zita V2 uploaded** · **untouched** for V2 cutover
 
-The Partner development storefront (theme, shell UX, policies layout, development catalog/collections) is in place. This document is the **single source of truth** for remaining launch work. Environment and milestone truth also lives in [`docs/project-status.md`](project-status.md). Do **not** mark owner approvals complete without explicit confirmation.
+**PRODUCTION DEPLOYMENT HOLD:** Do not upload or introduce Zita V2 on production until Praveen explicitly authorizes resuming production preparation. See [`project-status.md`](project-status.md) and [`architecture/production-parity-audit.md`](architecture/production-parity-audit.md).
+
+The Partner development storefront (theme, shell UX, policies layout, development catalog/collections) is in place. This document is the **single source of truth** for remaining launch work and the **owner-facing dashboard**. Environment and milestone truth also lives in [`docs/project-status.md`](project-status.md). Do **not** mark owner approvals complete without explicit confirmation.
 
 ### Responsibility legend
 
@@ -38,27 +40,29 @@ The Partner development storefront (theme, shell UX, policies layout, developmen
 | Integrate approved workbook content | Praveen | Blocked | Apply after workbooks done | Ranjeeta workbooks |
 | Final production changes | Praveen | Blocked | Execute after authorization | Go/no-go + backup |
 
-### Waiting on Ranjeeta
+### Waiting on Ranjeeta *(pause gate — primary)*
 
 1. Review and complete the **artwork content workbook** — 30 artworks.
 2. Review and complete the **collection content workbook** — 8 collections.
-3. Provide **one or two example artwork bundles**, including artwork selection and intended pricing.
+3. Provide **one or two example artwork bundles**, including artwork selection and intended pricing (paired-artwork / Bundles decision).
 4. Confirm **Water II** availability and inventory.
 5. Review and approve **store policies**, including returns and shipping commitments.
-6. Review the **development storefront** and provide final visual/content feedback.
+6. Review the **development storefront** and provide final visual/content approval.
 
-### Waiting on Praveen
+### Waiting on Praveen *(after Ranjeeta / at launch — not owner workbook tasks)*
 
 1. Run **MerchantSignals** on the development storefront (**Ready for scan** — authenticated pages, not the password gate).
 2. Review remaining MerchantSignals findings after the 2 Nov targeted remediations (Originals `/collections/originals`, Organization JSON-LD).
 3. Address the previously reported PDP **“In your cart”** accuracy issue if still reproducible.
-4. Perform **production checkout/payment** verification during launch.
-5. Verify **Shop Pay** on PDP and checkout where supported and eligible.
-6. **Integrate approved content** after Ranjeeta completes the workbooks.
-7. Make the **final production changes** after authorization.
+4. **Integrate approved content** after Ranjeeta completes the workbooks.
+5. Resume production preparation **only after explicit authorization** (see PRODUCTION DEPLOYMENT HOLD).
+6. Perform **production checkout/payment** verification at launch against **existing production** commerce config (do not migrate from development).
+7. Verify **Shop Pay** on PDP and checkout where supported and eligible.
+8. Make the **final production changes** after authorization and go/no-go.
 
 ### Completed (development)
 
+- Approved Claude Design layouts implemented on development theme `#192367558949`.
 - Shopify Bundles functionality tested by Praveen.
 - Contact form tested and working.
 - Sticky header approved.
@@ -69,17 +73,18 @@ The Partner development storefront (theme, shell UX, policies layout, developmen
 - Favicon verified.
 - 404 page verified.
 - Development password protection verified.
-- Git consolidation completed at `dd13cc5`.
-- Development Active catalog (30) + collections/nav migration complete (production cutover still deferred).
+- Git checkpoint `9f51fd2` on `origin/main` (includes Originals URL + Organization JSON-LD).
+- Development Active catalog (30) + collections/nav migration complete (production cutover paused).
 - Originals collection handle renamed to `originals` with Admin redirect from `v2-poc-original-artworks`.
 - Editorial CTAs + PDP breadcrumbs point at `/collections/originals` (not `/collections/all`).
 - Homepage Organization JSON-LD (`Zita's Art Studio`) verified on development.
 - Search exposure audited: header/mobile link present; basic `/search` functional; no redesign.
+- Production Shopify access established; Production Parity Audit complete ([production-parity-audit.md](architecture/production-parity-audit.md)).
 
-### Deferred (not blocked theme development)
+### Deferred / on hold
 
-- Production catalog migration until content approval.
-- Production payment testing until production launch.
+- Production catalog migration and V2 theme upload until owner deliverables **and** explicit authorization.
+- Production payment/tax/shipping/checkout **verification** at launch (never migrate these from development).
 - Final go/no-go until both parties agree.
 - Dedicated rollback-planning workstream is not currently prioritized (basic backup before publish remains required at cutover).
 
@@ -88,10 +93,10 @@ The Partner development storefront (theme, shell UX, policies layout, developmen
 # Technical checklist (detail)
 
 **Created:** 31 October 2026
-**Updated:** 2 November 2026 (Originals handle + Org JSON-LD remediations; search audit; MerchantSignals still ready-for-scan)
+**Updated:** 2 November 2026 (project PAUSED awaiting Ranjeeta; production parity audit documented; deployment hold)
 **Authority:** Pre-launch work tracking. Environment truth: [`docs/project-status.md`](project-status.md).
-**Evidence basis:** Git `main` / `origin/main` @ `dd13cc5`, architecture docs, owner decisions, Partner-dev QA through 1 November 2026, M6 reports.
-**Production store:** Untouched (Phase B). Partner-dev proof ≠ production cutover.
+**Evidence basis:** Git `main` / `origin/main` @ `9f51fd2`, architecture docs (incl. production-parity-audit), owner decisions, Partner-dev QA through 2 November 2026, M6 reports.
+**Production store:** `zitasart.myshopify.com` · Flora live · V2 **DEPLOYMENT HOLD**. Partner-dev proof ≠ production cutover.
 
 Historical IDs below are preserved. The owner dashboard above is the operator-facing summary; use the tables for verification notes and dependencies.
 

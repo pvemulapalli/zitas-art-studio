@@ -1,12 +1,28 @@
 # Zita's Art Studio — Project Status
 
-**Last updated:** 2 November 2026 (Originals handle → `originals`; editorial CTAs; Organization JSON-LD; search exposure audit on `#192367558949`).
+**Last updated:** 2 November 2026
+**Project status:** **PAUSED — Awaiting Ranjeeta's deliverables.**
 
 This is the **only** canonical record of project progress, current work, next steps and environment state. Other documents link here rather than tracking status themselves.
 
-Launch task detail and priorities: [`docs/launch-readiness-checklist.md`](launch-readiness-checklist.md).
+Launch task detail and owner dashboard: [`docs/launch-readiness-checklist.md`](launch-readiness-checklist.md).
+Production parity audit: [`docs/architecture/production-parity-audit.md`](architecture/production-parity-audit.md).
 Phase 4 evidence: [`docs/qa/final-development-qa.md`](qa/final-development-qa.md).
 Policy implementation: [`docs/qa/policy-page-implementation.md`](qa/policy-page-implementation.md).
+
+---
+
+## PRODUCTION DEPLOYMENT HOLD
+
+**Do not** upload, install, preview-publish, or otherwise introduce Zita V2 into the **production** Shopify store (`zitasart.myshopify.com`) until **Praveen explicitly authorizes** resuming production preparation.
+
+Reason: Ranjeeta continues reviewing the approved **development** storefront; an unfinished V2 theme must not appear in production Admin. **Flora `#145890541755` remains live.**
+
+During this hold:
+
+- Do **not** change production products, collections, pages, menus, Files, policies, or metafields for V2 cutover.
+- Production **payment, tax, shipping, and checkout** configurations remain authoritative — **never** migrate them from development.
+- Production migration and deployment are **explicitly paused**.
 
 ---
 
@@ -14,11 +30,12 @@ Policy implementation: [`docs/qa/policy-page-implementation.md`](qa/policy-page-
 
 | Item | State |
 |---|---|
-| **Current** | Phase 4 QA **partial**: targeted SEO / Originals URL cleanup **done on development**; MerchantSignals full scan still open. |
-| **Just finished** | Development collection handle `v2-poc-original-artworks` → **`originals`** (30 products; Admin redirect); theme CTAs + PDP breadcrumbs use `/collections/originals`; homepage Organization JSON-LD; search exposure audited (exposed, functional, basic). |
-| **Prior** | Footer CONTACT column removed; Contact Me → `/pages/contact`; policy layout; sticky header / PDP bar / Quick Add / favicon; Stage 2B–3B catalog. |
-| **Next** | Owner policy content + visual sign-off; MerchantSignals full scan; `water-ii` inventory; production cutover path. |
-| **Provisional effort** | **~12–25 hours** focused work remaining to launch — estimate only; excludes redesigns, unexpected migration issues, and waits on owner decisions. |
+| **Current** | **PAUSED** — waiting on Ranjeeta workbooks, policy approvals, Water II, paired/bundle decision, and final development visual/content approval. |
+| **Just finished** | Production Parity and Dependency Audit (authenticated read-only on `zitasart.myshopify.com`); SEO/Originals URL cleanup on development (`9f51fd2` on `origin/main`). |
+| **Development** | Approved Claude Design layouts implemented on `#192367558949`. Storefront QA complete subject to documented exceptions. Contact form and Shopify Bundles tested successfully. |
+| **Production** | Access established; audit complete; **Flora live**; **no Zita V2 uploaded**; **untouched** by V2 cutover. |
+| **Next (after resume)** | Integrate owner deliverables on development → explicit authorization → production prep per audit manifest → preview → launch verify → publish. |
+| **Provisional effort** | **~12–25 hours** focused work remaining to launch after owner deliverables — estimate only. |
 
 ---
 
@@ -26,27 +43,41 @@ Policy implementation: [`docs/qa/policy-page-implementation.md`](qa/policy-page-
 
 | Layer | State |
 |---|---|
-| **Git `main`** | Synced with **`origin/main`** (includes Exhibitions `9697dba`, Contact, Portfolio, PDP/commerce, Bundles ATC + inquiry `c11f7e1`, catalog `.gitignore` `a873932`). |
+| **Git `main`** | Checkpoint **`9f51fd2`** on **`origin/main`** (Originals URL + Organization JSON-LD). |
 | **Published dev theme** | **Zita V2 — Development** `#192367558949` on `zitas-art-studio-development.myshopify.com` (password-protected). |
-| **Production store** | `zitasartstudio.com` — **untouched** by V2 catalog/theme cutover (Phase B). |
-| **Prior About push target** | Theme `#192659095845` **no longer exists** — historical demo confusion; see recovery audit. |
+| **Production store** | Permanent domain **`zitasart.myshopify.com`** · primary **`www.zitasartstudio.com`**. Live theme **Flora `#145890541755`**. **No V2 theme.** **Not modified** for V2 cutover. |
+| **Prior About push target** | Theme `#192659095845` **no longer exists** — historical; see recovery audit. |
 
 Recovery detail: [architecture/v2-recovery-audit-2026-10-23.md](architecture/v2-recovery-audit-2026-10-23.md).
+Parity detail: [architecture/production-parity-audit.md](architecture/production-parity-audit.md).
+
+---
+
+## Restart sequence (paused — do not execute)
+
+1. Receive Ranjeeta’s completed deliverables.
+2. Review and approve artwork/collection content.
+3. Resolve outstanding owner decisions.
+4. Update and verify the development storefront.
+5. Obtain **explicit authorization** to begin production preparation.
+6. Execute the production dependency manifest ([production-parity-audit.md](architecture/production-parity-audit.md)).
+7. Complete production preview and launch verification (checkout **verify only** on production config).
+8. Obtain final owner approval before publishing V2.
 
 ---
 
 ## Launch critical path
 
 1. Project documentation refresh — **done**.
-2. Fix Shopify Bundles inventory / availability error messaging — **implemented + deployed** on `#192367558949`; **live storefront verification still pending** (password + Draft `artwork-bundle`).
+2. Fix Shopify Bundles inventory / availability error messaging — **implemented + tested** on development.
 3. Stage 2B controlled development trial import — **done**.
-4. Validate imported products, images, pricing, inventory on development — **Admin PASS**; **storefront PDP/cart still pending** password session.
+4. Validate imported products, images, pricing, inventory on development — **done** (Admin + storefront samples; residual exceptions documented).
 5. Extract and migrate relevant production **collections** — **done on development** (Stage 3B).
-6. Complete approved **Active** product migration on development (30 / published) — **done**; **production cutover not started**.
-7. Essential content, commerce, mobile, accessibility, and SEO QA (incl. favicon + MerchantSignals) — **in progress** (Phase 4 partial).
-8. Ranjeeta’s final approval.
-9. Deploy to production with verified backup / rollback.
-10. Production smoke testing.
+6. Complete approved **Active** product migration on development (30 / published) — **done**; **production cutover paused**.
+7. Essential content, commerce, mobile, accessibility, and SEO QA — **development substantially complete**; MerchantSignals full scan still open; owner content approvals open.
+8. Ranjeeta’s deliverables + final approval — **waiting** (**PAUSE gate**).
+9. Deploy to production — **HOLD** until explicit authorization.
+10. Production smoke testing — **not started**.
 
 Parallel where safe: content approvals (About portrait, Portfolio art/copy, Contact placeholders, policies), Shop Pay decision, series editorial copy, collection featured images, `water-ii` inventory decision.
 
@@ -215,7 +246,9 @@ Plain-language migration checklist: `data/catalog-migration/reports/stage-2a/ran
 
 ## Remaining before launch (summary)
 
-**P0 themes:** Password-session storefront/commerce QA · `water-ii` inventory decision · L-PDP-17 live verify · production catalog/collections/metafields cutover · checkout/payments smoke · critical content (About portrait, Portfolio art/copy, Contact placeholders, policies) · MerchantSignals full scan (targeted Org + Originals URL remediations done on development) · a11y/responsive on purchase paths · production backup/rollback · owner approvals.
+**Pause gate (owner):** Artwork workbook · collection workbook · Water II · policies · paired/bundle decision · development visual/content approval.
+
+**After resume (technical):** MerchantSignals full scan · integrate approved content · production prep per [production-parity-audit.md](architecture/production-parity-audit.md) · unpublished V2 upload (only when authorized) · production checkout **verification** (do not migrate commerce config) · publish.
 
 **P1 polish:** Sticky header + floating PDP bar + Quick Add **implemented** — manual QA/sign-off open (`docs/qa/ux-refinements.md`) · Shop Pay decision/impl · noncritical SEO/alts · series blurbs · performance samples · owner-editability QA.
 
